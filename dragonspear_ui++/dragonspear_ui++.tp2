@@ -1,0 +1,209 @@
+BACKUP ~dragonspear_ui++/backup~
+AUTHOR ~Pecca (https://forums.beamdog.com/discussion/50357/mod-dragonspear-ui-v2-31/p1)~
+VERSION ~v2.32~
+
+LANGUAGE
+	~English~ ~dragonspear_ui++/tra~ ~dragonspear_ui++/tra/english.tra~
+LANGUAGE 
+	~Polski (by Etamin)~ ~dragonspear_ui++/tra/english.tra~ ~dragonspear_ui++/tra/polish.tra~
+LANGUAGE 
+	~Italian (by Aedan)~ ~dragonspear_ui++/tra/english.tra~ ~dragonspear_ui++/tra/italian.tra~
+
+	
+/////////////////////////////////////////////////////////////////////////////////
+///  M_BG.LUA BACKUP
+/////////////////////////////////////////////////////////////////////////////////
+
+BEGIN @1004 NO_LOG_RECORD
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+REQUIRE_PREDICATE FILE_EXISTS ~override/M_BG.lua~ @1005
+
+COPY_EXISTING ~M_BG.lua~ ~dragonspear_ui++/backup-M_BG~
+
+
+/////////////////////////////////////////////////////////////////////////////////
+///  SOD GUI OVERHAUL CORE COMPONENT
+/////////////////////////////////////////////////////////////////////////////////
+
+BEGIN @1000
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+COPY ~dragonspear_ui++/content~ ~override~
+
+COPY ~dragonspear_ui++/language~ ~override~
+
+ACTION_IF (NOT FILE_EXISTS_IN_GAME ~M_BG.lua~) BEGIN
+<<<<<<<< .../M_BG.lua
+BGImages = {
+{"NO PORTRAIT","D","NOPORTM"}
+}
+>>>>>>>>
+	COPY ~.../M_BG.lua~ ~override~
+END ELSE BEGIN
+	COPY_EXISTING + ~M_BG.lua~ ~override~
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\({[%TAB% ]*"[^"]+"[%TAB% ]*,[%TAB% ]*"[MFD]"[%TAB% ]*,[%TAB% ]*"\)\([^"]+\)\("[%TAB% ]*},?[%WNL%%LNL%%MNL%%TAB% ]*\)~ BEGIN
+			PATCH_IF (NOT FILE_EXISTS ~%USER_DIRECTORY%/portraits/%MATCH2%.bmp~) BEGIN
+				SPRINT MATCH1 ~~
+				SPRINT MATCH2 ~~
+				SPRINT MATCH3 ~~
+			END
+		END ~%MATCH1%%MATCH2%%MATCH3%~
+	BUT_ONLY
+END
+
+COPY_EXISTING ~M_BG.lua~ ~override~
+	PATCH_BASH_FOR ~%USER_DIRECTORY%/portraits~ ~^.+bmp$~ BEGIN
+		PATCH_IF (STRING_LENGTH ~%BASH_FOR_RES%~ < 8) AND (NOT FILE_CONTAINS_EVALUATED (~M_BG.lua~ ~"%BASH_FOR_RES%"~)) BEGIN
+			PATCH_IF ((~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~^[Mm]#~)=0) BEGIN
+				SPRINT gender ~M~
+			END ELSE PATCH_IF ((~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~^[Ff]#~)=0) BEGIN
+				SPRINT gender ~F~
+			END ELSE BEGIN
+				SPRINT gender ~D~
+			END
+			REPLACE_TEXTUALLY ~\({[%TAB% ]*"[^"]+"[%TAB% ]*,[%TAB% ]*"[MFD]"[%TAB% ]*,[%TAB% ]*"[^"]+"[%TAB% ]*}\),?[%WNL%%LNL%%MNL%%TAB% ]*}~ ~\1,
+{"%BASH_FOR_RES%","%gender%","%BASH_FOR_RES%"},
+}~
+		END
+	END
+	
+
+/////////////////////////////////////////////////////////////////////////////////
+///  TRANSPARENT TOOLTIP BACKGROUND
+/////////////////////////////////////////////////////////////////////////////////
+
+BEGIN @1007
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+COPY ~dragonspear_ui++/content-tooltip~ ~override~
+
+	
+/////////////////////////////////////////////////////////////////////////////////
+///  UPDATE DIALOG.TLK STRINGS
+/////////////////////////////////////////////////////////////////////////////////
+
+BEGIN @1001
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+STRING_SET ~23084~ @101
+STRING_SET ~24366~ @102
+STRING_SET ~11947~ @106
+STRING_SET ~11949~ @107
+STRING_SET ~11951~ @108
+STRING_SET ~11952~ @109
+STRING_SET ~11953~ @110
+
+
+/////////////////////////////////////////////////////////////////////////////////
+///  QUICKSAVE SLOTS NUMBER
+/////////////////////////////////////////////////////////////////////////////////
+
+BEGIN ~1~
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+SUBCOMPONENT @1008
+
+COPY_EXISTING ~savename.2da~ ~override~
+	SET_2DA_ENTRY 1 3 4 1
+
+
+BEGIN ~2~
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+SUBCOMPONENT @1008
+
+COPY_EXISTING ~savename.2da~ ~override~
+	SET_2DA_ENTRY 1 3 4 2
+
+	
+BEGIN ~3~
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+SUBCOMPONENT @1008
+
+COPY_EXISTING ~savename.2da~ ~override~
+	SET_2DA_ENTRY 1 3 4 3
+	
+
+BEGIN ~4~
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+SUBCOMPONENT @1008
+
+COPY_EXISTING ~savename.2da~ ~override~
+	SET_2DA_ENTRY 1 3 4 4
+	
+	
+BEGIN ~5~
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+SUBCOMPONENT @1008
+
+COPY_EXISTING ~savename.2da~ ~override~
+	SET_2DA_ENTRY 1 3 4 5
+	
+	
+BEGIN ~6~
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+SUBCOMPONENT @1008
+
+COPY_EXISTING ~savename.2da~ ~override~
+	SET_2DA_ENTRY 1 3 4 6
+
+	
+/////////////////////////////////////////////////////////////////////////////////
+///  PORTRAIT PICKER UPDATE
+/////////////////////////////////////////////////////////////////////////////////
+
+BEGIN @1002
+
+REQUIRE_PREDICATE GAME_IS ~bgee~ @1003
+
+REQUIRE_PREDICATE FILE_EXISTS ~override/RGCGAPP.png~ @1006
+
+ACTION_IF (NOT FILE_EXISTS_IN_GAME ~M_BG.lua~) BEGIN
+<<<<<<<< .../M_BG.lua
+BGImages = {
+{"NO PORTRAIT","D","NOPORTM"}
+}
+>>>>>>>>
+	COPY + ~.../M_BG.lua~ ~override~
+END ELSE BEGIN
+	COPY_EXISTING + ~M_BG.lua~ ~override~
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\({[%TAB% ]*"[^"]+"[%TAB% ]*,[%TAB% ]*"[MFD]"[%TAB% ]*,[%TAB% ]*"\)\([^"]+\)\("[%TAB% ]*},?[%WNL%%LNL%%MNL%%TAB% ]*\)~ BEGIN
+			PATCH_IF (NOT FILE_EXISTS ~%USER_DIRECTORY%/portraits/%MATCH2%.bmp~) BEGIN
+				SPRINT MATCH1 ~~
+				SPRINT MATCH2 ~~
+				SPRINT MATCH3 ~~
+			END
+		END ~%MATCH1%%MATCH2%%MATCH3%~
+	BUT_ONLY
+END
+
+COPY_EXISTING + ~M_BG.lua~ ~override~
+	PATCH_BASH_FOR ~%USER_DIRECTORY%/portraits~ ~^.+bmp$~ BEGIN
+		PATCH_IF (STRING_LENGTH ~%BASH_FOR_RES%~ < 8) AND (NOT FILE_CONTAINS_EVALUATED (~M_BG.lua~ ~"%BASH_FOR_RES%"~)) BEGIN
+			PATCH_IF ((~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~^[Mm]#~)=0) BEGIN
+				SPRINT gender ~M~
+			END ELSE PATCH_IF ((~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~^[Ff]#~)=0) BEGIN
+				SPRINT gender ~F~
+			END ELSE BEGIN
+				SPRINT gender ~D~
+			END
+			REPLACE_TEXTUALLY ~\({[%TAB% ]*"[^"]+"[%TAB% ]*,[%TAB% ]*"[MFD]"[%TAB% ]*,[%TAB% ]*"[^"]+"[%TAB% ]*}\),?[%WNL%%LNL%%MNL%%TAB% ]*}~ ~\1,
+{"%BASH_FOR_RES%","%gender%","%BASH_FOR_RES%"},
+}~
+		END
+	END

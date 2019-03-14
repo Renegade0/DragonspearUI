@@ -1,0 +1,20 @@
+@101=~Ore~
+@102=~Non Raggiungibile~
+@103=~Paralisi/Veleno/Morte~
+@104=~Verga/Bastone/Bacchetta~
+@105=~Pietrificazione/Metamorfosi~
+@106=~Nemico più potente ucciso~
+@107=~Incantesimo preferito~
+@108=~Totale PE nel gruppo~
+@109=~Totale uccisioni nel gruppo~
+@110=~Esperienza dalle uccisioni~
+
+@1000=~Installa componente principale di SoD GUI Overhaul~
+@1001=~Aggiorna diverse stringhe nel file dialog.tlk~
+@1002=~Aggiorna selezione ritratti~
+@1003=~BGEE non trovato, salta installazione~
+@1004=~Backup file M_BG.lua~
+@1005=~File M_BG.lua non trovato~
+@1006=~Componente principale di SoD GUI Overhaul non trovata~
+@1007=~Aggiungi Tooltip trasparenti sullo sfondo~
+@1008=~Seleziona il numero di slot per i Salvataggi Rapidi~
