@@ -1204,7 +1204,7 @@ menu
 	
 	-- class section
 		
-	label
+	text
 	{
 		enabled		"showClass == 1"
 		area		830 102 454 558
@@ -1213,7 +1213,7 @@ menu
 		scrollbar	'GUISCRC'
 	}
 	
-	label
+	text
 	{
 		enabled		"showBiography == 1"
 		area		830 102 454 558
