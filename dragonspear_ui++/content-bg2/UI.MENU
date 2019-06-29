@@ -11476,6 +11476,40 @@ function filterMemorizedMageSpells7()
 	return out
 end
 
+function filterMemorizedMageSpells8()
+	local out = {}
+	currentSpellLevel = math.min(currentSpellLevel, 9)
+	for k,v in pairs(characters[id].mageSpells[8]) do
+		for i=v.memorizedCount, 1, -1 do
+			local spell = deepcopy(v)
+			if(i <= v.castableCount) then
+				spell.castable = 1
+			else
+				spell.castable = 0
+			end
+			table.insert(out, spell)
+		end
+	end
+	return out
+end
+
+function filterMemorizedMageSpells9()
+	local out = {}
+	currentSpellLevel = math.min(currentSpellLevel, 9)
+	for k,v in pairs(characters[id].mageSpells[9]) do
+		for i=v.memorizedCount, 1, -1 do
+			local spell = deepcopy(v)
+			if(i <= v.castableCount) then
+				spell.castable = 1
+			else
+				spell.castable = 0
+			end
+			table.insert(out, spell)
+		end
+	end
+	return out
+end
+
 function findFirstDifferenceInSpellList(oldList, newList)
 	local ret = -1
 	local spellIndex = 1
@@ -11520,6 +11554,8 @@ function refreshMageBook()
 			newBottomSpells5 = filterMemorizedMageSpells5()
 			newBottomSpells6 = filterMemorizedMageSpells6()
 			newBottomSpells7 = filterMemorizedMageSpells7()
+			newBottomSpells8 = filterMemorizedMageSpells8()
+			newBottomSpells9 = filterMemorizedMageSpells9()
 			
 			if showMageMemorizationFlash == true then
 				createMageMemorizationSparkle(0,0,36,36,"memorizedListMage", findFirstDifferenceInSpellList(bottomSpells, newBottomSpells))
@@ -11533,6 +11569,8 @@ function refreshMageBook()
 			bottomSpells5 = newBottomSpells5
 			bottomSpells6 = newBottomSpells6
 			bottomSpells7 = newBottomSpells7
+			bottomSpells8 = newBottomSpells8
+			bottomSpells9 = newBottomSpells9
 			bottomSpellsPlaceHolder = makeBlankTable(characters[id].mageDetails[currentSpellLevel].maxMemorized) 
 			bottomSpellsPlaceHolder1 = makeBlankTable(characters[id].mageDetails[1].maxMemorized) 
 			bottomSpellsPlaceHolder2 = makeBlankTable(characters[id].mageDetails[2].maxMemorized) 
@@ -11541,6 +11579,8 @@ function refreshMageBook()
 			bottomSpellsPlaceHolder5 = makeBlankTable(characters[id].mageDetails[5].maxMemorized) 
 			bottomSpellsPlaceHolder6 = makeBlankTable(characters[id].mageDetails[6].maxMemorized) 
 			bottomSpellsPlaceHolder7 = makeBlankTable(characters[id].mageDetails[7].maxMemorized) 
+			bottomSpellsPlaceHolder8 = makeBlankTable(characters[id].mageDetails[8].maxMemorized) 
+			bottomSpellsPlaceHolder9 = makeBlankTable(characters[id].mageDetails[9].maxMemorized) 
 		else
 			bookSpells = characters[id].mageSpells[currentSpellLevel]
 			bottomSpells = {}
@@ -11551,6 +11591,8 @@ function refreshMageBook()
 			bottomSpells5 = {}
 			bottomSpells6 = {}
 			bottomSpells7 = {}
+			bottomSpells8 = {}
+			bottomSpells9 = {}
 			bottomSpellsPlaceHolder = {}
 			bottomSpellsPlaceHolder1 = {}
 			bottomSpellsPlaceHolder2 = {}
@@ -11559,6 +11601,8 @@ function refreshMageBook()
 			bottomSpellsPlaceHolder5 = {}
 			bottomSpellsPlaceHolder6 = {}
 			bottomSpellsPlaceHolder7 = {}
+			bottomSpellsPlaceHolder8 = {}
+			bottomSpellsPlaceHolder9 = {}
 		end
 	elseif bookMode == 1 then
 		bookSpells = filterContingencyMageSpells()
