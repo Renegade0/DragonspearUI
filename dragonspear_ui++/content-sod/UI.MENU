@@ -4925,7 +4925,7 @@ menu
 		if requester.selling == false then
 			itemRequestAmt = 0
 			requestAmt = 0
-		elseif requester.selling < 10
+		elseif requester.selling < 10 then
 			itemRequestAmt = 1
 			requestAmt = 1
 		else
@@ -14886,8 +14886,8 @@ menu
 				storeScreen:SelectStoreItem(storeItemsVar - 1,  false)
 			else
 				storeScreen:SelectStoreItem(storeItemsVar - 1,  true)
-				local count = store.storeItems[storeItemsVar].item.count
-				local stock = store.storeItems[storeItemsVar].numInStock
+				local count = store.storeItems[storeItemsVar].item.count or 0
+				local stock = store.storeItems[storeItemsVar].numInStock or 0
 				if (count > 1) then
 					storeScreen:SetStoreItemCount(storeItemsVar - 1, count)
 				elseif (stock > 1) then
@@ -14981,8 +14981,8 @@ menu
 					storeScreen:SelectGroupItem(storeGroupItemsVar - 1,  false)
 				else
 					storeScreen:SelectGroupItem(storeGroupItemsVar - 1,  true)
-					local count = store.groupItems[storeGroupItemsVar].item.count
-					local stock = store.groupItems[storeGroupItemsVar].numInStock
+					local count = store.groupItems[storeGroupItemsVar].item.count or 0
+					local stock = store.groupItems[storeGroupItemsVar].numInStock or 0
 					if (count > 1) then
 						storeScreen:SetGroupItemCount(storeGroupItemsVar - 1, count)
 					elseif (stock > 1) then
@@ -15002,8 +15002,8 @@ menu
 				itemDescLeftButtonAction()
 			else
 				if store.groupItems[storeGroupItemsVar].valid ~= 0 then
-					local count = store.groupItems[storeGroupItemsVar].item.count
-					local stock = store.groupItems[storeGroupItemsVar].numInStock
+					local count = store.groupItems[storeGroupItemsVar].item.count or 0
+					local stock = store.groupItems[storeGroupItemsVar].numInStock or 0
 					if(count > 1) then
 						popupRequester(count, groupSplitStack, false)
 					elseif stock > 1 then
@@ -15077,8 +15077,8 @@ menu
 					storeScreen:SelectGroupItem(storeGroupItemsVar - 1,  false)
 				else
 					storeScreen:SelectGroupItem(storeGroupItemsVar - 1,  true)
-					local count = store.groupItems[storeGroupItemsVar].item.count
-					local stock = store.groupItems[storeGroupItemsVar].numInStock
+					local count = store.groupItems[storeGroupItemsVar].item.count or 0
+					local stock = store.groupItems[storeGroupItemsVar].numInStock or 0
 					if (count > 1) then
 						storeScreen:SetGroupItemCount(storeGroupItemsVar - 1, count)
 					elseif (stock > 1) then
@@ -15094,8 +15094,8 @@ menu
 		actionDbl
 		"
 			if store.groupItems[storeGroupItemsVar].valid ~= 0 then
-				local count = store.groupItems[storeGroupItemsVar].item.count
-				local stock = store.groupItems[storeGroupItemsVar].numInStock
+				local count = store.groupItems[storeGroupItemsVar].item.count or 0
+				local stock = store.groupItems[storeGroupItemsVar].numInStock or 0
 				if(count > 1) then
 					popupRequester(count, groupSplitStack, false)
 				elseif stock > 1 then
