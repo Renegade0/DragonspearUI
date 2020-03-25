@@ -11743,9 +11743,11 @@ menu
 		currentAnimationID = 1
 		updateCounterMemorizationSparkles = 1
 		Infinity_PopMenu('WORLD_QUICKLOOT');
+		pushSidebars()
 		"
 	onclose "
 		spellDescString = nil
+		popSidebars()
 	"
 
 	button
