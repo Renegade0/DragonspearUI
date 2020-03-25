@@ -11356,10 +11356,12 @@ function contingencyDoneButtonText()
 	end
 end
 
-function filterMemorizedMageSpells()
+function filterMemorizedMageSpells(level)
 	local out = {}
 	currentSpellLevel = math.min(currentSpellLevel, 9)
-	for k,v in pairs(characters[id].mageSpells[currentSpellLevel]) do
+	level = level or currentSpellLevel
+
+	for k,v in pairs(characters[id].mageSpells[level]) do
 		for i=v.memorizedCount, 1, -1 do
 			local spell = deepcopy(v)
 			if(i <= v.castableCount) then
@@ -11403,126 +11405,6 @@ function filterContingencyMageSpells()
 	return out
 end
 
-function filterMemorizedMageSpells1()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 9)
-	for k,v in pairs(characters[id].mageSpells[1]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedMageSpells2()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 9)
-	for k,v in pairs(characters[id].mageSpells[2]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedMageSpells3()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 9)
-	for k,v in pairs(characters[id].mageSpells[3]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedMageSpells4()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 9)
-	for k,v in pairs(characters[id].mageSpells[4]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedMageSpells5()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 9)
-	for k,v in pairs(characters[id].mageSpells[5]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedMageSpells6()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 9)
-	for k,v in pairs(characters[id].mageSpells[6]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedMageSpells7()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 9)
-	for k,v in pairs(characters[id].mageSpells[7]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-
 function findFirstDifferenceInSpellList(oldList, newList)
 	local ret = -1
 	local spellIndex = 1
@@ -11559,53 +11441,30 @@ function refreshMageBook()
 	if bookMode == 0 then
 		if characters[id].hasMageBook then
 			bookSpells = characters[id].mageSpells[currentSpellLevel]
-			newBottomSpells = filterMemorizedMageSpells()
-			newBottomSpells1 = filterMemorizedMageSpells1()
-			newBottomSpells2 = filterMemorizedMageSpells2()
-			newBottomSpells3 = filterMemorizedMageSpells3()
-			newBottomSpells4 = filterMemorizedMageSpells4()
-			newBottomSpells5 = filterMemorizedMageSpells5()
-			newBottomSpells6 = filterMemorizedMageSpells6()
-			newBottomSpells7 = filterMemorizedMageSpells7()
+			local spells = { current = filterMemorizedMageSpells() }
+			for i = 1, 9 do
+				spells[i] = filterMemorizedMageSpells(i)
+			end
 
 			if showMageMemorizationFlash == true then
-				createMageMemorizationSparkle(0,0,36,36,"memorizedListMage", findFirstDifferenceInSpellList(bottomSpells, newBottomSpells))
+				createMageMemorizationSparkle(0,0,36,36,"memorizedListMage", findFirstDifferenceInSpellList(bottomSpells, spells.current))
 				showMageMemorizationFlash = false
 			end
-			bottomSpells = newBottomSpells
-			bottomSpells1 = newBottomSpells1
-			bottomSpells2 = newBottomSpells2
-			bottomSpells3 = newBottomSpells3
-			bottomSpells4 = newBottomSpells4
-			bottomSpells5 = newBottomSpells5
-			bottomSpells6 = newBottomSpells6
-			bottomSpells7 = newBottomSpells7
+
+			bottomSpells = spells.current
 			bottomSpellsPlaceHolder = makeBlankTable(characters[id].mageDetails[currentSpellLevel].maxMemorized)
-			bottomSpellsPlaceHolder1 = makeBlankTable(characters[id].mageDetails[1].maxMemorized)
-			bottomSpellsPlaceHolder2 = makeBlankTable(characters[id].mageDetails[2].maxMemorized)
-			bottomSpellsPlaceHolder3 = makeBlankTable(characters[id].mageDetails[3].maxMemorized)
-			bottomSpellsPlaceHolder4 = makeBlankTable(characters[id].mageDetails[4].maxMemorized)
-			bottomSpellsPlaceHolder5 = makeBlankTable(characters[id].mageDetails[5].maxMemorized)
-			bottomSpellsPlaceHolder6 = makeBlankTable(characters[id].mageDetails[6].maxMemorized)
-			bottomSpellsPlaceHolder7 = makeBlankTable(characters[id].mageDetails[7].maxMemorized)
+			for i = 1, 9 do
+				_G['bottomSpells' .. i] = spells[i]
+				_G['bottomSpellsPlaceHolder' .. i] = makeBlankTable(characters[id].mageDetails[i].maxMemorized)
+			end
 		else
 			bookSpells = characters[id].mageSpells[currentSpellLevel]
 			bottomSpells = {}
-			bottomSpells1 = {}
-			bottomSpells2 = {}
-			bottomSpells3 = {}
-			bottomSpells4 = {}
-			bottomSpells5 = {}
-			bottomSpells6 = {}
-			bottomSpells7 = {}
 			bottomSpellsPlaceHolder = {}
-			bottomSpellsPlaceHolder1 = {}
-			bottomSpellsPlaceHolder2 = {}
-			bottomSpellsPlaceHolder3 = {}
-			bottomSpellsPlaceHolder4 = {}
-			bottomSpellsPlaceHolder5 = {}
-			bottomSpellsPlaceHolder6 = {}
-			bottomSpellsPlaceHolder7 = {}
+			for i = 1, 9 do
+				_G['bottomSpells' .. i] = {}
+				_G['bottomSpellsPlaceHolder' .. i] = {}
+			end
 		end
 	elseif bookMode == 1 then
 		bookSpells = filterContingencyMageSpells()
@@ -11620,126 +11479,30 @@ function setMageBookLevel(num)
 	currentSpellLevel = num
 	mageScreen:SetSpellLevel(num-1)
 	refreshMageBook()
+
+	-- hide description on book page change
+	spellDescString = nil
+end
+
+function addMageBookLevel(value)
+	local level = currentSpellLevel + value
+
+	if level >= 1 and level <= 9 then
+		setMageBookLevel(level)
+		currentBookSpell = 0
+		currentSpellLevel = level
+		mageScreen:SetSpellLevel(level - 1)
+		getSpellButtHighlight(level)
+		refreshMageBook()
+	end
 end
 
 function incrementMageBookLevel()
-	if currentSpellLevel == 1 then
-		setMageBookLevel(2)
-		currentBookSpell = 0
-		currentSpellLevel = 2
-		mageScreen:SetSpellLevel(2-1)
-		getSpellButtHighlight(2)
-		refreshMageBook()
-	elseif currentSpellLevel == 2 then
-		setMageBookLevel(3)
-		currentBookSpell = 0
-		currentSpellLevel = 3
-		mageScreen:SetSpellLevel(3-1)
-		getSpellButtHighlight(3)
-		refreshMageBook()
-	elseif currentSpellLevel == 3 then
-		setMageBookLevel(4)
-		currentBookSpell = 0
-		currentSpellLevel = 4
-		mageScreen:SetSpellLevel(4-1)
-		getSpellButtHighlight(4)
-		refreshMageBook()
-	elseif currentSpellLevel == 4 then
-		setMageBookLevel(5)
-		currentBookSpell = 0
-		currentSpellLevel = 5
-		mageScreen:SetSpellLevel(5-1)
-		getSpellButtHighlight(5)
-		refreshMageBook()
-	elseif currentSpellLevel == 5 then
-		setMageBookLevel(6)
-		currentBookSpell = 0
-		currentSpellLevel = 6
-		mageScreen:SetSpellLevel(6-1)
-		getSpellButtHighlight(6)
-		refreshMageBook()
-	elseif currentSpellLevel == 6 then
-		setMageBookLevel(7)
-		currentBookSpell = 0
-		currentSpellLevel = 7
-		mageScreen:SetSpellLevel(7-1)
-		getSpellButtHighlight(7)
-		refreshMageBook()
-	elseif currentSpellLevel == 7 then
-		setMageBookLevel(8)
-		currentBookSpell = 0
-		currentSpellLevel = 8
-		mageScreen:SetSpellLevel(8-1)
-		getSpellButtHighlight(8)
-		refreshMageBook()
-	elseif currentSpellLevel == 8 then
-		setMageBookLevel(9)
-		currentBookSpell = 0
-		currentSpellLevel = 9
-		mageScreen:SetSpellLevel(9-1)
-		getSpellButtHighlight(9)
-		refreshMageBook()
-	end
+	addMageBookLevel(1)
 end
 
 function decrementMageBookLevel()
-	if currentSpellLevel == 2 then
-		setMageBookLevel(1)
-		currentBookSpell = 0
-		currentSpellLevel = 1
-		mageScreen:SetSpellLevel(1-1)
-		getSpellButtHighlight(1)
-		refreshMageBook()
-	elseif currentSpellLevel == 3 then
-		setMageBookLevel(2)
-		currentBookSpell = 0
-		currentSpellLevel = 2
-		mageScreen:SetSpellLevel(2-1)
-		getSpellButtHighlight(2)
-		refreshMageBook()
-	elseif currentSpellLevel == 4 then
-		setMageBookLevel(3)
-		currentBookSpell = 0
-		currentSpellLevel = 3
-		mageScreen:SetSpellLevel(3-1)
-		getSpellButtHighlight(3)
-		refreshMageBook()
-	elseif currentSpellLevel == 5 then
-		setMageBookLevel(4)
-		currentBookSpell = 0
-		currentSpellLevel = 4
-		mageScreen:SetSpellLevel(4-1)
-		getSpellButtHighlight(4)
-		refreshMageBook()
-	elseif currentSpellLevel == 6 then
-		setMageBookLevel(5)
-		currentBookSpell = 0
-		currentSpellLevel = 5
-		mageScreen:SetSpellLevel(5-1)
-		getSpellButtHighlight(5)
-		refreshMageBook()
-	elseif currentSpellLevel == 7 then
-		setMageBookLevel(6)
-		currentBookSpell = 0
-		currentSpellLevel = 6
-		mageScreen:SetSpellLevel(6-1)
-		getSpellButtHighlight(6)
-		refreshMageBook()
-	elseif currentSpellLevel == 8 then
-		setMageBookLevel(7)
-		currentBookSpell = 0
-		currentSpellLevel = 7
-		mageScreen:SetSpellLevel(7-1)
-		getSpellButtHighlight(7)
-		refreshMageBook()
-	elseif currentSpellLevel == 9 then
-		setMageBookLevel(8)
-		currentBookSpell = 0
-		currentSpellLevel = 8
-		mageScreen:SetSpellLevel(8-1)
-		getSpellButtHighlight(8)
-		refreshMageBook()
-	end
+	addMageBookLevel(-1)
 end
 
 currentAnimationID = 1
@@ -11785,18 +11548,20 @@ function createMageMemorizationSparkle(x,y,w,h, fromList, listIndex)
 end
 
 function unmemorizingMageSpell(resref)
-	local index = 1
 	local sparkle = -1
-	for index = 1, #(bottomSpells), 1 do
-		if bottomSpells[index].resref == resref then
+	local level = ''
+
+	for index, spell in ipairs(bottomSpells) do
+		if spell.resref == resref then
 			sparkle = index
-			if bottomSpells[index].castable == 0 then
+			level = spell.level + 1
+			if spell.castable == 0 then
 				break
 			end
 		end
 	end
 
---	createMageMemorizationSparkle(0, 0, 36, 36, 'memorizedListMage', sparkle)
+	createMageMemorizationSparkle(0, 0, 36, 36, 'memorizedListMage' .. level, sparkle)
 end
 
 function getSpellButtHighlight(num)
@@ -11819,6 +11584,31 @@ memorizationFlashes =
 	{false, 0, false},
 	{false, 0, false}
 }
+
+Mage = {}
+
+function Mage:unmemorizeSpell(level, spells, slot)
+	local spell = spells[slot]
+	if not spell then
+		return
+	end
+	setMageBookLevel(level)
+
+	showMageMemorizationFlash = false
+	mageScreen:UnmemorizeSpell(spell.level, spell.memorizedIndex)
+	Infinity_PlaySound('GAM_44')
+end
+
+function Mage:eraseSpell(index)
+	local spell = bookSpells[index]
+
+	if spell and bookMode == 0 and characters[id].hasSorcererBook == false then
+		popup2Button('24485', 'REMOVE_BUTTON', function()
+			mageScreen:EraseKnownSpell(spell.resref)
+			spellDescString = nil
+		end)
+	end
+end
 `
 menu
 {
@@ -11853,7 +11643,7 @@ menu
 
 	button
 	{
-		enabled 	"CurrentlyInGame()"
+		enabled 	"spellDescString == nil and CurrentlyInGame()"
 		on escape
 		action
 		"
@@ -12155,73 +11945,55 @@ menu
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells1[rowNumber].icon" align	center center greyscale lua "bottomSpells1[rowNumber].castable == 0" } }
 		area 740 188 512 36
 		name "memorizedListMage1" enabled 	"#bottomSpells1 ~= 0" rowwidth	36 table		"bottomSpells1" var		currentBottomSpell1 enabled "spellDescString == nil"
-		action " setMageBookLevel(1)
-			if bookMode == 0 then	if #bottomSpells1 ~= 0 then	createMageMemorizationSparkle(1, 0, 40, 40, 'memorizedListMage1', -1)	mageScreen:UnmemorizeSpell( bottomSpells1[currentBottomSpell1].level, bottomSpells1[currentBottomSpell1].memorizedIndex )	Infinity_PlaySound('GAM_24')	end
-			elseif bookMode == 1 then	mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )	table.remove(sequencerSpells, currentBottomSpell)	bottomSpells = sequencerSpells	currentBottomSpell = 1	end	"
+		action "Mage:unmemorizeSpell(1, bottomSpells1, currentBottomSpell1)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells2[rowNumber].icon" align	center center greyscale lua "bottomSpells2[rowNumber].castable == 0" } }
 		area 740 243 512 36
 		name "memorizedListMage2" enabled 	"#bottomSpells2 ~= 0" rowwidth	36 table		"bottomSpells2" var		currentBottomSpell2 enabled "spellDescString == nil"
-		action " setMageBookLevel(2)
-			if bookMode == 0 then	if #bottomSpells2 ~= 0 then	createMageMemorizationSparkle(1, 0, 40, 40, 'memorizedListMage2', -1)	mageScreen:UnmemorizeSpell( bottomSpells2[currentBottomSpell2].level, bottomSpells2[currentBottomSpell2].memorizedIndex )	Infinity_PlaySound('GAM_24')	end
-			elseif bookMode == 1 then	mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )	table.remove(sequencerSpells, currentBottomSpell)	bottomSpells = sequencerSpells	currentBottomSpell = 1	end	"
+		action "Mage:unmemorizeSpell(2, bottomSpells2, currentBottomSpell2)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells3[rowNumber].icon" align	center center greyscale lua "bottomSpells3[rowNumber].castable == 0" } }
 		area 740 298 512 36
 		name "memorizedListMage3" enabled 	"#bottomSpells3 ~= 0" rowwidth	36 table		"bottomSpells3" var		currentBottomSpell3 enabled "spellDescString == nil"
-		action " setMageBookLevel(3)
-			if bookMode == 0 then	if #bottomSpells3 ~= 0 then	createMageMemorizationSparkle(1, 0, 40, 40, 'memorizedListMage3', -1)	mageScreen:UnmemorizeSpell( bottomSpells3[currentBottomSpell3].level, bottomSpells3[currentBottomSpell3].memorizedIndex )	Infinity_PlaySound('GAM_24')	end
-			elseif bookMode == 1 then	mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )	table.remove(sequencerSpells, currentBottomSpell)	bottomSpells = sequencerSpells	currentBottomSpell = 1	end	"
+		action "Mage:unmemorizeSpell(3, bottomSpells3, currentBottomSpell3)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells4[rowNumber].icon" align	center center greyscale lua "bottomSpells4[rowNumber].castable == 0" } }
 		area 740 353 512 36
 		name "memorizedListMage4" enabled 	"#bottomSpells4 ~= 0" rowwidth	36 table		"bottomSpells4" var		currentBottomSpell4 enabled "spellDescString == nil"
-		action " setMageBookLevel(4)
-			if bookMode == 0 then	if #bottomSpells4 ~= 0 then	createMageMemorizationSparkle(1, 0, 40, 40, 'memorizedListMage4', -1)	mageScreen:UnmemorizeSpell( bottomSpells4[currentBottomSpell4].level, bottomSpells4[currentBottomSpell4].memorizedIndex )	Infinity_PlaySound('GAM_24')	end
-			elseif bookMode == 1 then	mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )	table.remove(sequencerSpells, currentBottomSpell)	bottomSpells = sequencerSpells	currentBottomSpell = 1	end	"
+		action "Mage:unmemorizeSpell(4, bottomSpells4, currentBottomSpell4)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells5[rowNumber].icon" align	center center greyscale lua "bottomSpells5[rowNumber].castable == 0" } }
 		area 740 408 512 36
 		name "memorizedListMage5" enabled 	"#bottomSpells5 ~= 0" rowwidth	36 table		"bottomSpells5" var		currentBottomSpell5 enabled "spellDescString == nil"
-		action " setMageBookLevel(5)
-			if bookMode == 0 then	if #bottomSpells5 ~= 0 then	createMageMemorizationSparkle(1, 0, 40, 40, 'memorizedListMage5', -1)	mageScreen:UnmemorizeSpell( bottomSpells5[currentBottomSpell5].level, bottomSpells5[currentBottomSpell5].memorizedIndex )	Infinity_PlaySound('GAM_24')	end
-			elseif bookMode == 1 then	mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )	table.remove(sequencerSpells, currentBottomSpell)	bottomSpells = sequencerSpells	currentBottomSpell = 1	end	"
+		action "Mage:unmemorizeSpell(5, bottomSpells5, currentBottomSpell5)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells6[rowNumber].icon" align	center center greyscale lua "bottomSpells6[rowNumber].castable == 0" } }
 		area 740 463 512 36
 		name "memorizedListMage6" enabled 	"#bottomSpells6 ~= 0" rowwidth	36 table		"bottomSpells6" var		currentBottomSpell6 enabled "spellDescString == nil"
-		action " setMageBookLevel(6)
-			if bookMode == 0 then	if #bottomSpells6 ~= 0 then	createMageMemorizationSparkle(1, 0, 40, 40, 'memorizedListMage6', -1)	mageScreen:UnmemorizeSpell( bottomSpells6[currentBottomSpell6].level, bottomSpells6[currentBottomSpell6].memorizedIndex )	Infinity_PlaySound('GAM_24')	end
-			elseif bookMode == 1 then	mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )	table.remove(sequencerSpells, currentBottomSpell)	bottomSpells = sequencerSpells	currentBottomSpell = 1	end	"
+		action "Mage:unmemorizeSpell(6, bottomSpells6, currentBottomSpell6)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells7[rowNumber].icon" align	center center greyscale lua "bottomSpells7[rowNumber].castable == 0" } }
 		area 740 518 512 36
 		name "memorizedListMage7" enabled 	"#bottomSpells7 ~= 0" rowwidth	36 table		"bottomSpells7" var		currentBottomSpell7 enabled "spellDescString == nil"
-		action " setMageBookLevel(7)
-			if bookMode == 0 then	if #bottomSpells7 ~= 0 then	createMageMemorizationSparkle(1, 0, 40, 40, 'memorizedListMage7', -1)	mageScreen:UnmemorizeSpell( bottomSpells7[currentBottomSpell7].level, bottomSpells7[currentBottomSpell7].memorizedIndex )	Infinity_PlaySound('GAM_24')	end
-			elseif bookMode == 1 then	mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )	table.remove(sequencerSpells, currentBottomSpell)	bottomSpells = sequencerSpells	currentBottomSpell = 1	end	"
+		action "Mage:unmemorizeSpell(7, bottomSpells7, currentBottomSpell7)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells8[rowNumber].icon" align	center center greyscale lua "bottomSpells8[rowNumber].castable == 0" } }
-		area 740 573 512 37
+		area 740 573 512 36
 		name "memorizedListMage8" enabled 	"#bottomSpells8 ~= 0" rowwidth	36 table		"bottomSpells8" var		currentBottomSpell8 enabled "spellDescString == nil"
-		action " setMageBookLevel(8)
-			if bookMode == 0 then	if #bottomSpells8 ~= 0 then	createMageMemorizationSparkle(1, 0, 40, 40, 'memorizedListMage8', -1)	mageScreen:UnmemorizeSpell( bottomSpells8[currentBottomSpell8].level, bottomSpells8[currentBottomSpell8].memorizedIndex )	Infinity_PlaySound('GAM_24')	end
-			elseif bookMode == 1 then	mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )	table.remove(sequencerSpells, currentBottomSpell)	bottomSpells = sequencerSpells	currentBottomSpell = 1	end	"
+		action "Mage:unmemorizeSpell(8, bottomSpells8, currentBottomSpell8)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells9[rowNumber].icon" align	center center greyscale lua "bottomSpells9[rowNumber].castable == 0" } }
 		area 740 628 512 36
 		name "memorizedListMage9" enabled 	"#bottomSpells9 ~= 0" rowwidth	36 table		"bottomSpells9" var		currentBottomSpell9 enabled "spellDescString == nil"
-		action " setMageBookLevel(9)
-			if bookMode == 0 then	if #bottomSpells9 ~= 0 then	createMageMemorizationSparkle(1, 0, 40, 40, 'memorizedListMage9', -1)	mageScreen:UnmemorizeSpell( bottomSpells9[currentBottomSpell9].level, bottomSpells9[currentBottomSpell9].memorizedIndex )	Infinity_PlaySound('GAM_24')	end
-			elseif bookMode == 1 then	mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )	table.remove(sequencerSpells, currentBottomSpell)	bottomSpells = sequencerSpells	currentBottomSpell = 1	end	"
+		action "Mage:unmemorizeSpell(9, bottomSpells9, currentBottomSpell9)"
 	}
 	--list
 	--{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells[rowNumber].icon" align	center center greyscale lua "bottomSpells[rowNumber].castable == 0" } }
@@ -12292,7 +12064,7 @@ menu
 		area		740 154 508 545
 		text		lua "Infinity_FetchString(spellDescString)"
 		text style	"normal_parchment"
-		scrollbar	'RGSCR3' --GUISCRP
+		scrollbar	GUISCRP -- 'RGSCR3' is glitchy for me
 		enabled 	"spellDescString ~= nil"
 		--mosaic "RGPRDESC"
 		--action "spellDescString = null"
@@ -12300,6 +12072,7 @@ menu
 
 	button
 	{
+		on escape
 		area 1194 148 32 40
 		enabled "spellDescString ~= nil"
 		text "X"
@@ -12317,37 +12090,7 @@ menu
 		text style "rg_trajan"
 		--text shadow 1
 		--text color lua "parchment"
-		action "
-		if bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 1 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[1].resref ) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 2 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[2].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 3 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[3].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 4 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[4].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 5 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[5].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 6 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[6].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 7 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[7].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 8 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[8].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 9 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[9].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 10 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[10].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 11 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[11].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 12 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[12].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 13 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[13].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 14 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[14].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 15 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[15].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 16 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[16].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 17 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[17].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 18 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[18].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 19 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[19].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 20 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[20].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 21 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[21].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 22 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[22].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 23 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[23].resref) end) spellDescString = nil
-		elseif bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 24 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[24].resref) end) spellDescString = nil
-		--elseif cellNumber == 1 and bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 25 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[25].resref) end) spellDescString = nil
-		--elseif cellNumber == 1 and bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 26 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[26].resref) end) spellDescString = nil
-		--elseif cellNumber == 1 and bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 27 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[27].resref) end) spellDescString = nil
-		--elseif cellNumber == 1 and bookMode == 0 and characters[id].hasSorcererBook == false and spellDescIndex == 28 then popup2Button(24485, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[28].resref) end) spellDescString = nil
-		end
-		"
+		action "Mage:eraseSpell(spellDescIndex)"
 	}
 
 	list
@@ -13161,129 +12904,12 @@ function priestBookDescription()
 	return ""
 end
 
-function filterMemorizedPriestSpells()
+function filterMemorizedPriestSpells(level)
 	local out = {}
 	currentSpellLevel = math.min(currentSpellLevel, 7)
-	for k,v in pairs(characters[id].priestSpells[currentSpellLevel]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
+	level = level or currentSpellLevel
 
-function filterMemorizedPriestSpells1()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 7)
-	for k,v in pairs(characters[id].priestSpells[1]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedPriestSpells2()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 7)
-	for k,v in pairs(characters[id].priestSpells[2]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedPriestSpells3()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 7)
-	for k,v in pairs(characters[id].priestSpells[3]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedPriestSpells4()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 7)
-	for k,v in pairs(characters[id].priestSpells[4]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedPriestSpells5()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 7)
-	for k,v in pairs(characters[id].priestSpells[5]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedPriestSpells6()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 7)
-	for k,v in pairs(characters[id].priestSpells[6]) do
-		for i=v.memorizedCount, 1, -1 do
-			local spell = deepcopy(v)
-			if(i <= v.castableCount) then
-				spell.castable = 1
-			else
-				spell.castable = 0
-			end
-			table.insert(out, spell)
-		end
-	end
-	return out
-end
-
-function filterMemorizedPriestSpells7()
-	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 7)
-	for k,v in pairs(characters[id].priestSpells[7]) do
+	for k,v in pairs(characters[id].priestSpells[level]) do
 		for i=v.memorizedCount, 1, -1 do
 			local spell = deepcopy(v)
 			if(i <= v.castableCount) then
@@ -13305,52 +12931,29 @@ function refreshPriestBook()
 		currentSpellLevel = 1
 	end
 	if characters[id].hasClericBook then
-		newBottomSpells = filterMemorizedPriestSpells()
-		newBottomSpells1 = filterMemorizedPriestSpells1()
-		newBottomSpells2 = filterMemorizedPriestSpells2()
-		newBottomSpells3 = filterMemorizedPriestSpells3()
-		newBottomSpells4 = filterMemorizedPriestSpells4()
-		newBottomSpells5 = filterMemorizedPriestSpells5()
-		newBottomSpells6 = filterMemorizedPriestSpells6()
-		newBottomSpells7 = filterMemorizedPriestSpells7()
+		local spells = { current = filterMemorizedPriestSpells() }
+		for i = 1, 7 do
+			spells[i] = filterMemorizedPriestSpells(i)
+		end
 
 		if showPriestMemorizationFlash == true then
-			createPriestMemorizationSparkle(0,0,36,36,"memorizedListPriest", findFirstDifferenceInSpellList(bottomSpells, newBottomSpells))
+			createPriestMemorizationSparkle(0,0,36,36,"memorizedListPriest", findFirstDifferenceInSpellList(bottomSpells, spells.current))
 			showPriestMemorizationFlash = false
 		end
-		bottomSpells = newBottomSpells
-		bottomSpells1 = newBottomSpells1
-		bottomSpells2 = newBottomSpells2
-		bottomSpells3 = newBottomSpells3
-		bottomSpells4 = newBottomSpells4
-		bottomSpells5 = newBottomSpells5
-		bottomSpells6 = newBottomSpells6
-		bottomSpells7 = newBottomSpells7
+
+		bottomSpells = spells.current
 		bottomSpellsPlaceHolder = makeBlankTable(characters[id].priestDetails[currentSpellLevel].maxMemorized)
-		bottomSpellsPlaceHolder1 = makeBlankTable(characters[id].priestDetails[1].maxMemorized)
-		bottomSpellsPlaceHolder2 = makeBlankTable(characters[id].priestDetails[2].maxMemorized)
-		bottomSpellsPlaceHolder3 = makeBlankTable(characters[id].priestDetails[3].maxMemorized)
-		bottomSpellsPlaceHolder4 = makeBlankTable(characters[id].priestDetails[4].maxMemorized)
-		bottomSpellsPlaceHolder5 = makeBlankTable(characters[id].priestDetails[5].maxMemorized)
-		bottomSpellsPlaceHolder6 = makeBlankTable(characters[id].priestDetails[6].maxMemorized)
-		bottomSpellsPlaceHolder7 = makeBlankTable(characters[id].priestDetails[7].maxMemorized)
+		for i = 1, 7 do
+			_G['bottomSpells' .. i] = spells[i]
+			_G['bottomSpellsPlaceHolder' .. i] = makeBlankTable(characters[id].priestDetails[i].maxMemorized)
+		end
 	else
 		bottomSpells = {}
-		bottomSpells1 = {}
-		bottomSpells2 = {}
-		bottomSpells3 = {}
-		bottomSpells4 = {}
-		bottomSpells5 = {}
-		bottomSpells6 = {}
-		bottomSpells7 = {}
 		bottomSpellsPlaceHolder = {}
-		bottomSpellsPlaceHolder1 = {}
-		bottomSpellsPlaceHolder2 = {}
-		bottomSpellsPlaceHolder3 = {}
-		bottomSpellsPlaceHolder4 = {}
-		bottomSpellsPlaceHolder5 = {}
-		bottomSpellsPlaceHolder6 = {}
-		bottomSpellsPlaceHolder7 = {}
+		for i = 1, 7 do
+			_G['bottomSpells' .. i] = {}
+			_G['bottomSpellsPlaceHolder' .. i] = {}
+		end
 	end
 end
 
@@ -13360,96 +12963,25 @@ function setPriestBookLevel(num)
 	refreshPriestBook()
 end
 
-function incrementPriestBookLevel()
-	if currentSpellLevel == 1 then
-		setPriestBookLevel(2)
+function addPriestBookLevel(value)
+	local level = currentSpellLevel + value
+
+	if level >= 1 and level <= 7 then
+		setPriestBookLevel(level)
 		currentBookSpell = 0
-		currentSpellLevel = 2
-		PriestScreen:SetSpellLevel(2-1)
-		getPrSpellButtHighlight(2)
-		refreshPriestBook()
-	elseif currentSpellLevel == 2 then
-		setPriestBookLevel(3)
-		currentBookSpell = 0
-		currentSpellLevel = 3
-		PriestScreen:SetSpellLevel(3-1)
-		getPrSpellButtHighlight(3)
-		refreshPriestBook()
-	elseif currentSpellLevel == 3 then
-		setPriestBookLevel(4)
-		currentBookSpell = 0
-		currentSpellLevel = 4
-		PriestScreen:SetSpellLevel(4-1)
-		getPrSpellButtHighlight(4)
-		refreshPriestBook()
-	elseif currentSpellLevel == 4 then
-		setPriestBookLevel(5)
-		currentBookSpell = 0
-		currentSpellLevel = 5
-		PriestScreen:SetSpellLevel(5-1)
-		getPrSpellButtHighlight(5)
-		refreshPriestBook()
-	elseif currentSpellLevel == 5 then
-		setPriestBookLevel(6)
-		currentBookSpell = 0
-		currentSpellLevel = 6
-		PriestScreen:SetSpellLevel(6-1)
-		getPrSpellButtHighlight(6)
-		refreshPriestBook()
-	elseif currentSpellLevel == 6 then
-		setPriestBookLevel(7)
-		currentBookSpell = 0
-		currentSpellLevel = 7
-		PriestScreen:SetSpellLevel(7-1)
-		getPrSpellButtHighlight(7)
+		currentSpellLevel = level
+		PriestScreen:SetSpellLevel(level-1)
+		getPrSpellButtHighlight(level)
 		refreshPriestBook()
 	end
 end
 
+function incrementPriestBookLevel()
+	addPriestBookLevel(1)
+end
+
 function decrementPriestBookLevel()
-	if currentSpellLevel == 2 then
-		setPriestBookLevel(1)
-		currentBookSpell = 0
-		currentSpellLevel = 1
-		PriestScreen:SetSpellLevel(1-1)
-		getPrSpellButtHighlight(1)
-		refreshPriestBook()
-	elseif currentSpellLevel == 3 then
-		setPriestBookLevel(2)
-		currentBookSpell = 0
-		currentSpellLevel = 2
-		PriestScreen:SetSpellLevel(2-1)
-		getPrSpellButtHighlight(2)
-		refreshPriestBook()
-	elseif currentSpellLevel == 4 then
-		setPriestBookLevel(3)
-		currentBookSpell = 0
-		currentSpellLevel = 3
-		PriestScreen:SetSpellLevel(3-1)
-		getPrSpellButtHighlight(3)
-		refreshPriestBook()
-	elseif currentSpellLevel == 5 then
-		setPriestBookLevel(4)
-		currentBookSpell = 0
-		currentSpellLevel = 4
-		PriestScreen:SetSpellLevel(4-1)
-		getPrSpellButtHighlight(4)
-		refreshPriestBook()
-	elseif currentSpellLevel == 6 then
-		setPriestBookLevel(5)
-		currentBookSpell = 0
-		currentSpellLevel = 5
-		PriestScreen:SetSpellLevel(5-1)
-		getPrSpellButtHighlight(5)
-		refreshPriestBook()
-	elseif currentSpellLevel == 7 then
-		setPriestBookLevel(6)
-		currentBookSpell = 0
-		currentSpellLevel = 6
-		PriestScreen:SetSpellLevel(6-1)
-		getPrSpellButtHighlight(6)
-		refreshPriestBook()
-	end
+	addPriestBookLevel(-1)
 end
 
 function createPriestMemorizationSparkle(x,y,w,h, fromList, listIndex)
@@ -13463,18 +12995,20 @@ function createPriestMemorizationSparkle(x,y,w,h, fromList, listIndex)
 end
 
 function unmemorizingPriestSpell(resref)
-	local index = 1
 	local sparkle = -1
-	for index = 1, #(bottomSpells), 1 do
-		if bottomSpells[index].resref == resref then
+	local level = ''
+
+	for index, spell in ipairs(bottomSpells) do
+		if spell.resref == resref then
 			sparkle = index
-			if bottomSpells[index].castable == 0 then
+			level = spell.level + 1
+			if spell.castable == 0 then
 				break
 			end
 		end
 	end
 
---	createPriestMemorizationSparkle(0, 0, 36, 36, 'memorizedListPriest', sparkle)
+	createPriestMemorizationSparkle(0, 0, 36, 36, 'memorizedListPriest' .. level, sparkle)
 end
 
 function getPrSpellButtHighlight(num)
@@ -13482,6 +13016,20 @@ function getPrSpellButtHighlight(num)
 		return 2
 	else return 0
 	end
+end
+
+Priest = {}
+
+function Priest:unmemorizeSpell(level, spells, slot)
+	local spell = spells[slot]
+	if not spell then
+		return
+	end
+	setPriestBookLevel(level)
+
+	showPriestMemorizationFlash = false
+	priestScreen:UnmemorizeSpell(spell.level, spell.memorizedIndex)
+	Infinity_PlaySound('GAM_44')
 end
 `
 menu
@@ -13510,6 +13058,7 @@ menu
 
 	button
 	{
+		enabled "spellDescString == nil"
 		on escape
 		action
 		"
@@ -13939,50 +13488,43 @@ menu
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells1[rowNumber].icon" align	center center greyscale lua "bottomSpells1[rowNumber].castable == 0" } }
 		area 740 188 512 36
 		name "memorizedListPriest1" enabled 	"#bottomSpells1 ~= 0" rowwidth	36 table		"bottomSpells1" var		currentBottomSpell1 enabled "spellDescString == nil"
-		action " setPriestBookLevel(1)
-			if bottomSpells1[currentBottomSpell1] then showPriestMemorizationFlash = false priestScreen:UnmemorizeSpell( bottomSpells1[currentBottomSpell1].level, bottomSpells1[currentBottomSpell1].memorizedIndex ) Infinity_PlaySound('GAM_44') end "
+		action "Priest:unmemorizeSpell(1, bottomSpells1, currentBottomSpell1)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells2[rowNumber].icon" align	center center greyscale lua "bottomSpells2[rowNumber].castable == 0" } }
 		area 740 243 512 36
 		name "memorizedListPriest2" enabled 	"#bottomSpells2 ~= 0" rowwidth	36 table		"bottomSpells2" var		currentBottomSpell2 enabled "spellDescString == nil"
-		action " setPriestBookLevel(2)
-			if bottomSpells2[currentBottomSpell2] then showPriestMemorizationFlash = false priestScreen:UnmemorizeSpell( bottomSpells2[currentBottomSpell2].level, bottomSpells2[currentBottomSpell2].memorizedIndex ) Infinity_PlaySound('GAM_44') end "
+		action "Priest:unmemorizeSpell(2, bottomSpells2, currentBottomSpell2)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells3[rowNumber].icon" align	center center greyscale lua "bottomSpells3[rowNumber].castable == 0" } }
 		area 740 298 512 36
 		name "memorizedListPriest3" enabled 	"#bottomSpells3 ~= 0" rowwidth	36 table		"bottomSpells3" var		currentBottomSpell3 enabled "spellDescString == nil"
-		action " setPriestBookLevel(3)
-			if bottomSpells3[currentBottomSpell3] then showPriestMemorizationFlash = false priestScreen:UnmemorizeSpell( bottomSpells3[currentBottomSpell3].level, bottomSpells3[currentBottomSpell3].memorizedIndex ) Infinity_PlaySound('GAM_44') end "
+		action "Priest:unmemorizeSpell(3, bottomSpells3, currentBottomSpell3)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells4[rowNumber].icon" align	center center greyscale lua "bottomSpells4[rowNumber].castable == 0" } }
 		area 740 353 512 36
 		name "memorizedListPriest4" enabled 	"#bottomSpells4 ~= 0" rowwidth	36 table		"bottomSpells4" var		currentBottomSpell4 enabled "spellDescString == nil"
-		action " setPriestBookLevel(4)
-			if bottomSpells4[currentBottomSpell4] then showPriestMemorizationFlash = false priestScreen:UnmemorizeSpell( bottomSpells4[currentBottomSpell4].level, bottomSpells4[currentBottomSpell4].memorizedIndex ) Infinity_PlaySound('GAM_44') end "
+		action "Priest:unmemorizeSpell(4, bottomSpells4, currentBottomSpell4)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells5[rowNumber].icon" align	center center greyscale lua "bottomSpells5[rowNumber].castable == 0" } }
 		area 740 408 512 36
 		name "memorizedListPriest5" enabled 	"#bottomSpells5 ~= 0" rowwidth	36 table		"bottomSpells5" var		currentBottomSpell5 enabled "spellDescString == nil"
-		action " setPriestBookLevel(5)
-			if bottomSpells5[currentBottomSpell5] then showPriestMemorizationFlash = false priestScreen:UnmemorizeSpell( bottomSpells5[currentBottomSpell5].level, bottomSpells5[currentBottomSpell5].memorizedIndex ) Infinity_PlaySound('GAM_44') end "
+		action "Priest:unmemorizeSpell(5, bottomSpells5, currentBottomSpell5)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells6[rowNumber].icon" align	center center greyscale lua "bottomSpells6[rowNumber].castable == 0" } }
 		area 740 463 512 36
 		name "memorizedListPriest6" enabled 	"#bottomSpells6 ~= 0" rowwidth	36 table		"bottomSpells6" var		currentBottomSpell6 enabled "spellDescString == nil"
-		action " setPriestBookLevel(6)
-			if bottomSpells6[currentBottomSpell6] then showPriestMemorizationFlash = false priestScreen:UnmemorizeSpell( bottomSpells6[currentBottomSpell6].level, bottomSpells6[currentBottomSpell6].memorizedIndex ) Infinity_PlaySound('GAM_44') end "
+		action "Priest:unmemorizeSpell(6, bottomSpells6, currentBottomSpell6)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells7[rowNumber].icon" align	center center greyscale lua "bottomSpells7[rowNumber].castable == 0" } }
 		area 740 518 512 36
 		name "memorizedListPriest7" enabled 	"#bottomSpells7 ~= 0" rowwidth	36 table		"bottomSpells7" var		currentBottomSpell7 enabled "spellDescString == nil"
-		action " setPriestBookLevel(7)
-			if bottomSpells7[currentBottomSpell7] then showPriestMemorizationFlash = false priestScreen:UnmemorizeSpell( bottomSpells7[currentBottomSpell7].level, bottomSpells7[currentBottomSpell7].memorizedIndex ) Infinity_PlaySound('GAM_44') end "
+		action "Priest:unmemorizeSpell(7, bottomSpells7, currentBottomSpell7)"
 	}
 
 
@@ -14017,6 +13559,7 @@ menu
 
 	button
 	{
+		on escape
 		area 1194 148 32 40
 		enabled "spellDescString ~= nil"
 		text "X"
