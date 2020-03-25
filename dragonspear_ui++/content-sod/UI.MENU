@@ -694,6 +694,81 @@ end
 	showJustText = 0
 	showMemorized = 0
 	showBothLists = 0
+
+Record = {}
+
+function Record:create(id)
+	local character = characters[id]
+	if character == nil then
+		return { valid = false, classes = { {} } }
+	end
+
+	local classes = {}
+	local record = {
+		id = id,
+		name = character.name,
+		class = character.class,
+		classes = classes,
+		valid = true,
+	}
+
+	for _, key in ipairs({ "first", "second", "third" }) do
+		local level = character.classlevel[key]
+		if not level then
+			break
+		end
+
+		-- Lines are (might be localized):
+		-- [1] [className]: Level [N]
+		-- [2] One of these:
+		--   a) Experience: [XP]
+		--   b) LEVEL DRAINED
+		-- [3] One of these:
+		--   a) Next Level: [XP] # first-class or multi-class
+		--   b) Inactive         # inactive dual-class
+		--   c) nil              # active dual-class
+		local lines = {}
+		for s in level.details:gmatch('[^\r\n]+') do
+			table.insert(lines, s)
+		end
+
+		local xp = lines[2]:match('[0-9]+')
+		local class = {
+			name = lines[1]:match('^[^:]+'),
+			level = lines[1]:match('[0-9]+$'),
+		}
+
+		if xp then
+			if level.active == false then
+				class.xp = xp .. ' XP'
+				class.inactive = lines[3]
+			else
+				class.xp = level.xp .. ' / ' .. level.nextLvlXp .. ' XP'
+				class.progress = 100 * level.xp / level.nextLvlXp
+			end
+		else -- level drained or something else non-numeric
+			class.xp = lines[2]
+		end
+
+		table.insert(classes, class)
+	end
+
+	if #classes > 1 then
+		classes[1].label = classes[1].name .. ' -'
+
+		-- nil - first-class, true - multi-class, false - dual-class
+		local level = character.classlevel.second
+		if level.active == true then
+			record.multiclass = true
+		elseif level.active == false then
+			record.dualclass = true
+		end
+	else
+		classes[1].label = ''
+	end
+
+	return record
+end
 `
 menu
 {
@@ -735,9 +810,12 @@ menu
 			end
 		end
 		Infinity_PopMenu('WORLD_QUICKLOOT');
+
+		record = Record:create(currentID)
 	"
 	onclose
 	"
+		record = nil
 		popSidebars()
 	"
 
@@ -774,20 +852,22 @@ menu
 	label
 	{
 		area		280 214 210 4
-		progressbar lua "getPercent(characters[currentID].classlevel.first.xp, characters[currentID].classlevel.first.nextLvlXp)" --progress percentage, number 0-100
+		enabled		"record.classes[1].progress ~= nil"
+		progressbar lua "record.classes[1].progress"  -- progress percentage, number 0-100
 		greyscale	0 --display greyscale or not, number 0-1
 		progressbar color	128 0 0 255	 --color when percentage != 100
 		progressbar full	128 0 0 255	 --color when percentage == 100
 	}
 	label
 	{
+		enabled		"record.classes[1].progress ~= nil"
 		area		278 212 214 8
 		mosaic rgprogb
 	}
 	label
 	{
 		area		280 190 237 30
-		text		lua "characters[currentID].classlevel.first.xp .. ' / ' .. characters[currentID].classlevel.first.nextLvlXp .. ' XP'"
+		text		lua "record.classes[1].xp"
 		text style  'normal'
 		text align	left top
 		text shadow 1
@@ -795,8 +875,8 @@ menu
 	label
 	{
 		area		280 244 210 4
-		enabled	"characters[currentID].classlevel.second ~= nil"
-		progressbar lua "getPercent(characters[currentID].classlevel.second.xp, characters[currentID].classlevel.second.nextLvlXp)" --progress percentage, number 0-100
+		enabled		"record.classes[2] ~= nil and record.classes[2].progress ~= nil"
+		progressbar	lua "record.classes[2].progress"  -- progress percentage, number 0-100
 		greyscale	0 --display greyscale or not, number 0-1
 		progressbar color	128 0 0 255	 --color when percentage != 100
 		progressbar full	128 0 0 255	 --color when percentage == 100
@@ -804,13 +884,23 @@ menu
 	label
 	{
 		area		278 242 214 8
-		enabled	"characters[currentID].classlevel.second ~= nil"
+		enabled		"record.classes[2] ~= nil and record.classes[2].progress ~= nil"
 		mosaic rgprogb
 	}
 	label
 	{
 		area		280 220 237 30
-		text		lua "characters[currentID].classlevel.second.xp .. ' / ' .. characters[currentID].classlevel.second.nextLvlXp .. ' XP'"
+		enabled		"record.classes[2] ~= nil"
+		text		lua "record.classes[2].xp"
+		text style  'normal'
+		text align	left top
+		text shadow 1
+	}
+	label
+	{
+		area		280 245 237 30
+		enabled		"record.classes[2] and record.classes[2].inactive ~= nil"
+		text		lua "record.classes[2].inactive"
 		text style  'normal'
 		text align	left top
 		text shadow 1
@@ -818,8 +908,8 @@ menu
 	label
 	{
 		area		280 274 210 4
-		enabled	"characters[currentID].classlevel.third ~= nil"
-		progressbar lua "getPercent(characters[currentID].classlevel.third.xp, characters[currentID].classlevel.third.nextLvlXp)" --progress percentage, number 0-100
+		enabled		"record.classes[3] ~= nil and record.classes[3].progress ~= nil"
+		progressbar	lua "record.classes[3].progress"  -- progress percentage, number 0-100
 		greyscale	0 --display greyscale or not, number 0-1
 		progressbar color	128 0 0 255	 --color when percentage != 100
 		progressbar full	128 0 0 255	 --color when percentage == 100
@@ -827,13 +917,14 @@ menu
 	label
 	{
 		area		278 272 214 8
-		enabled	"characters[currentID].classlevel.third ~= nil"
+		enabled		"record.classes[3] ~= nil and record.classes[3].progress ~= nil"
 		mosaic rgprogb
 	}
 	label
 	{
 		area		280 250 237 30
-		text		lua "characters[currentID].classlevel.third.xp .. ' / ' .. characters[currentID].classlevel.third.nextLvlXp .. ' XP'"
+		enabled		"record.classes[3] ~= nil"
+		text		lua "record.classes[3].xp"
 		text style  'normal'
 		text align	left top
 		text shadow 1
@@ -870,6 +961,7 @@ menu
 	label
 	{
 		area		27 220 237 30
+		enabled		"record.classes[2] ~= nil"
 		text lua 	"getClassString2() .. ' - ' .. Infinity_FetchString(7192) .. ' ' .. getLevelString2() .. ': '"
 		text style  'normal'
 		text align	right top
@@ -877,6 +969,7 @@ menu
 	label
 	{
 		area		27 250 237 30
+		enabled 	"record.classes[3] ~= nil"
 		text lua 	"getClassString3() .. ' - ' .. Infinity_FetchString(7192) .. ' ' .. getLevelString3() .. ': '"
 		text style  'normal'
 		text align	right top
