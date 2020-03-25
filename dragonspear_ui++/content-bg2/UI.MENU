@@ -29853,6 +29853,7 @@ menu
 	onOpen
 	"
 		ClassicDialog = Infinity_GetINIValue('Game Options','ClassicDialog',0)
+		disableDialogOnSpace = Infinity_GetINIValue('Game Options', 'Disable Space Key In Conversations', 1)
 		SetBottomPosition()
 		resizeDialog()
 		greySidebars()
@@ -29886,10 +29887,18 @@ menu
 		end
 		Infinity_PopMenu('WORLD_DIALOG_CONFIRM')
 	"
-	--classic dialog
+
+	-- Optionally disable continuing dialog on space bar
 	label
 	{
 		on space
+		name "worldDialogOnSpaceLabel"
+		enabled "disableDialogOnSpace == 1"
+	}
+
+	--classic dialog
+	label
+	{
 		enabled "ClassicDialog == 1"
 		name "worldDialogBackgroundBottom"
 		area 125 0 863 303
@@ -29918,7 +29927,6 @@ menu
 	}
 	--label
 	--{
-	--	on space
 	--	enabled "ClassicDialog == 1"
 	--	name "worldDialogBackgroundBottom"
 	--	area 0 0 863 253
@@ -30001,7 +30009,6 @@ menu
 	--enhanced dialog
 	button
 	{
-		on space
 		enabled "ClassicDialog ~= 1"
 		area 0 0 500 330
 		name "worldDialogBackground"
