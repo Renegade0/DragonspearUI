@@ -30302,7 +30302,7 @@ menu
 			width 100
 			label
 			{
-				area 0 0 810 -1
+				area 0 0 745 -1
 					text lua "combatLog[rowNumber]"
 					text style "gamelog"
 			}
