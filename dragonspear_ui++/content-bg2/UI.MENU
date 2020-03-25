@@ -281,43 +281,43 @@ function updateAttrTablex()
 listItems = {}
 
 	if statusEffects[1] ~= nil then
-		table.insert(listItems, { '233', '^D' .. t('STATUS_EFFECTS_LABEL') .. ':' .. '^B'})
+		table.insert(listItems, { nil, '^D' .. t('STATUS_EFFECTS_LABEL') .. ':' .. '^B'})
 	end
 	for k, v in pairs(characters[currentID].statusEffects) do
 		table.insert(listItems, {v.current, '    ' .. Infinity_FetchString(v.strRef)})
 	end
 	if statusEffects[1] ~= nil then
-		table.insert(listItems, { '233', '' })
+		table.insert(listItems, { nil, '' })
 	end
-	table.insert(listItems, { '233', '^D' .. t('SKILLS_LABEL') .. ':' .. '^B'})
-	table.insert(listItems, { '233', t('LORE_LABEL') .. ': ' .. characters[currentID].proficiencies.lore.current })
-	table.insert(listItems, { '233', t('REPUTATION_LABEL') .. ': ' .. characters[currentID].proficiencies.reputation.current })
+	table.insert(listItems, { nil, '^D' .. t('SKILLS_LABEL') .. ':' .. '^B'})
+	table.insert(listItems, { nil, t('LORE_LABEL') .. ': ' .. characters[currentID].proficiencies.lore.current })
+	table.insert(listItems, { nil, t('REPUTATION_LABEL') .. ': ' .. characters[currentID].proficiencies.reputation.current })
 
 
 	for k, v in ipairs(characters[currentID].proficiencies.class_skills) do
-		table.insert(listItems, { '233', Infinity_FetchString(v.strRef) .. ': '.. v.current .. '^-'})
+		table.insert(listItems, { nil, Infinity_FetchString(v.strRef) .. ': '.. v.current .. '^-'})
 	end
 
-	table.insert(listItems, { '233', '' })
-	table.insert(listItems, { '233', '^D' .. t('PROFICIENCIES_LABEL') .. ':' .. '^B'})
+	table.insert(listItems, { nil, '' })
+	table.insert(listItems, { nil, '^D' .. t('PROFICIENCIES_LABEL') .. ':' .. '^B'})
 	if characters[currentID].proficiencies.weapons.current ~= "" then
-		table.insert(listItems, { '233', characters[currentID].proficiencies.weapons.current })
+		table.insert(listItems, { nil, characters[currentID].proficiencies.weapons.current })
 	end
 
 	if characters[currentID].proficiencies.fightingstyles.current ~= "" then
-		table.insert(listItems, { '233', characters[currentID].proficiencies.fightingstyles.current})
+		table.insert(listItems, { nil, characters[currentID].proficiencies.fightingstyles.current})
 	end
 
-	table.insert(listItems, { '233', '' })
-	table.insert(listItems, { '233', '^D' .. t('SAVING_THROWS_LABEL') .. ':' .. '^B'})
-	table.insert(listItems, { '233', characters[currentID].proficiencies.savingThrows})
-	table.insert(listItems, { '233', '' })
-	table.insert(listItems, { '233', '^D' .. t('RESISTANCES_LABEL') .. ':' .. '^B' .. '^B'})
-	table.insert(listItems, { '233', characters[currentID].proficiencies.resistances})
-	--table.insert(listItems, { '233', '' })
-	table.insert(listItems, { '233', '^D' .. '\n' .. 'Ability bonuses:' .. '^B'})
+	table.insert(listItems, { nil, '' })
+	table.insert(listItems, { nil, '^D' .. t('SAVING_THROWS_LABEL') .. ':' .. '^B'})
+	table.insert(listItems, { nil, characters[currentID].proficiencies.savingThrows})
+	table.insert(listItems, { nil, '' })
+	table.insert(listItems, { nil, '^D' .. t('RESISTANCES_LABEL') .. ':' .. '^B' .. '^B'})
+	table.insert(listItems, { nil, characters[currentID].proficiencies.resistances})
+	--table.insert(listItems, { nil, '' })
+	table.insert(listItems, { nil, '^D' .. '\n' .. 'Ability bonuses:' .. '^B'})
 	for k, v in ipairs(characters[currentID].proficiencies.ability) do
-		table.insert(listItems, {'233', v.current})
+		table.insert(listItems, {nil, v.current})
 	end
 end
 
@@ -379,43 +379,43 @@ function updateAttrTable()
 
 
 	if statusEffects[1] ~= nil then
-		table.insert(listItems, { '233', '^D' .. t('STATUS_EFFECTS_LABEL') .. ':' .. '^B'})
+		table.insert(listItems, { nil, '^D' .. t('STATUS_EFFECTS_LABEL') .. ':' .. '^B'})
 	end
 	for k, v in pairs(characters[currentID].statusEffects) do
 		table.insert(listItems, {v.current, '    ' .. Infinity_FetchString(v.strRef)})
 	end
 	if statusEffects[1] ~= nil then
-		table.insert(listItems, { '233', '' })
+		table.insert(listItems, { nil, '' })
 	end
-	table.insert(listItems, { '233', '^D' .. t('SKILLS_LABEL') .. ':' .. '^B'})
-	table.insert(listItems, { '233', t('LORE_LABEL') .. ': ' .. characters[currentID].proficiencies.lore.current })
-	table.insert(listItems, { '233', t('REPUTATION_LABEL') .. ': ' .. characters[currentID].proficiencies.reputation.current })
+	table.insert(listItems, { nil, '^D' .. t('SKILLS_LABEL') .. ':' .. '^B'})
+	table.insert(listItems, { nil, t('LORE_LABEL') .. ': ' .. characters[currentID].proficiencies.lore.current })
+	table.insert(listItems, { nil, t('REPUTATION_LABEL') .. ': ' .. characters[currentID].proficiencies.reputation.current })
 
 
 	for k, v in ipairs(characters[currentID].proficiencies.class_skills) do
-		table.insert(listItems, { '233', Infinity_FetchString(v.strRef) .. ': '.. v.current .. '^-'})
+		table.insert(listItems, { nil, Infinity_FetchString(v.strRef) .. ': '.. v.current .. '^-'})
 	end
 
-	table.insert(listItems, { '233', '' })
-	table.insert(listItems, { '233', '^D' .. t('PROFICIENCIES_LABEL') .. ':' .. '^B'})
+	table.insert(listItems, { nil, '' })
+	table.insert(listItems, { nil, '^D' .. t('PROFICIENCIES_LABEL') .. ':' .. '^B'})
 	if characters[currentID].proficiencies.weapons.current ~= "" then
-		table.insert(listItems, { '233', characters[currentID].proficiencies.weapons.current })
+		table.insert(listItems, { nil, characters[currentID].proficiencies.weapons.current })
 	end
 
 	if characters[currentID].proficiencies.fightingstyles.current ~= "" then
-		table.insert(listItems, { '233', characters[currentID].proficiencies.fightingstyles.current})
+		table.insert(listItems, { nil, characters[currentID].proficiencies.fightingstyles.current})
 	end
 
-	table.insert(listItems, { '233', '' })
-	table.insert(listItems, { '233', '^D' .. t('SAVING_THROWS_LABEL') .. ':' .. '^B'})
-	table.insert(listItems, { '233', characters[currentID].proficiencies.savingThrows})
-	table.insert(listItems, { '233', '' })
-	table.insert(listItems, { '233', '^D' .. t('RESISTANCES_LABEL') .. ':' .. '^B' .. '^B'})
-	table.insert(listItems, { '233', characters[currentID].proficiencies.resistances})
-	--table.insert(listItems, { '233', '' })
-	table.insert(listItems, { '233', '^D' .. '\n' .. 'Ability bonuses:' .. '^B'})
+	table.insert(listItems, { nil, '' })
+	table.insert(listItems, { nil, '^D' .. t('SAVING_THROWS_LABEL') .. ':' .. '^B'})
+	table.insert(listItems, { nil, characters[currentID].proficiencies.savingThrows})
+	table.insert(listItems, { nil, '' })
+	table.insert(listItems, { nil, '^D' .. t('RESISTANCES_LABEL') .. ':' .. '^B' .. '^B'})
+	table.insert(listItems, { nil, characters[currentID].proficiencies.resistances})
+	--table.insert(listItems, { nil, '' })
+	table.insert(listItems, { nil, '^D' .. '\n' .. 'Ability bonuses:' .. '^B'})
 	for k, v in ipairs(characters[currentID].proficiencies.ability) do
-		table.insert(listItems, {'233', v.current})
+		table.insert(listItems, {nil, v.current})
 	end
 
 end
@@ -1274,11 +1274,19 @@ menu
 		column
 		{
 			width 100
+
+		    -- status effect icon
+			label
+			{
+				area        0 5 -1 -1 -- '5' aligns the icon with the text
+				bam         'STATES'
+				sequence    lua "listItems[rowNumber][1]"
+				enabled     "listItems[rowNumber][1] ~= nil"
+			}
+
 			label
 			{
 				area        0 0 -1 -1
-				bam            'STATES'
-				sequence    lua "listItems[rowNumber][1]"
 				text        lua "listItems[rowNumber][2]"
 				text style  'normal'
 				text align    left bottom
