@@ -16666,7 +16666,7 @@ menu
 			button
 			{
 				area 5 0 52 52
-				mosaic "RGQSLOT"
+				bam STONSLOT
 				enabled "QLfilter(rowNumber) and QuicklootMode == UIStrings.UI_Advanced"
 				frame lua "loot.groundItems[rowNumber].item['frame']"
 				icon lua "loot.groundItems[rowNumber].item['icon']"
@@ -16775,361 +16775,361 @@ menu
 
 	button
 	{
-		name "quicklootSlot0"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(0)"	area 76 5 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(0,'name')"	tint lua	"getGroundItemProperty(0,'tint')"
+		name "quicklootSlot0"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(0)"	area 76 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(0,'name')"	tint lua	"getGroundItemProperty(0,'tint')"
 		icon lua	"getGroundItemProperty(0,'icon')"	count lua	"getGroundItemProperty(0,'count')"	usages lua	"getGroundItemProperty(0,'usages')"
 		action "groundItemClick2(0)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(0,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot1"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(1)"	area 130 5 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(1,'name')"	tint lua	"getGroundItemProperty(1,'tint')"
+		name "quicklootSlot1"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(1)"	area 130 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(1,'name')"	tint lua	"getGroundItemProperty(1,'tint')"
 		icon lua	"getGroundItemProperty(1,'icon')"	count lua	"getGroundItemProperty(1,'count')"	usages lua	"getGroundItemProperty(1,'usages')"
 		action "groundItemClick2(1)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(1,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot2"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(2)"	area 184 5 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(2,'name')"	tint lua	"getGroundItemProperty(2,'tint')"
+		name "quicklootSlot2"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(2)"	area 184 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(2,'name')"	tint lua	"getGroundItemProperty(2,'tint')"
 		icon lua	"getGroundItemProperty(2,'icon')"	count lua	"getGroundItemProperty(2,'count')"	usages lua	"getGroundItemProperty(2,'usages')"
 		action "groundItemClick2(2)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(2,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot3"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(3)"	area 238 5 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(3,'name')"	tint lua	"getGroundItemProperty(3,'tint')"
+		name "quicklootSlot3"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(3)"	area 238 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(3,'name')"	tint lua	"getGroundItemProperty(3,'tint')"
 		icon lua	"getGroundItemProperty(3,'icon')"	count lua	"getGroundItemProperty(3,'count')"	usages lua	"getGroundItemProperty(3,'usages')"
 		action "groundItemClick2(3)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(3,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot4"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(4)"	area 292 5 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(4,'name')"	tint lua	"getGroundItemProperty(4,'tint')"
+		name "quicklootSlot4"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(4)"	area 292 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(4,'name')"	tint lua	"getGroundItemProperty(4,'tint')"
 		icon lua	"getGroundItemProperty(4,'icon')"	count lua	"getGroundItemProperty(4,'count')"	usages lua	"getGroundItemProperty(4,'usages')"
 		action "groundItemClick2(4)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(4,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot5"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(5)"	area 346 5 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(5,'name')"	tint lua	"getGroundItemProperty(5,'tint')"
+		name "quicklootSlot5"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(5)"	area 346 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(5,'name')"	tint lua	"getGroundItemProperty(5,'tint')"
 		icon lua	"getGroundItemProperty(5,'icon')"	count lua	"getGroundItemProperty(5,'count')"	usages lua	"getGroundItemProperty(5,'usages')"
 		action "groundItemClick2(5)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(5,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot6"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(6)"	area 76 59 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(6,'name')"	tint lua	"getGroundItemProperty(6,'tint')"
+		name "quicklootSlot6"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(6)"	area 76 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(6,'name')"	tint lua	"getGroundItemProperty(6,'tint')"
 		icon lua	"getGroundItemProperty(6,'icon')"	count lua	"getGroundItemProperty(6,'count')"	usages lua	"getGroundItemProperty(6,'usages')"
 		action "groundItemClick2(6)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(6,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot7"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(7)"	area 130 59 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(7,'name')"	tint lua	"getGroundItemProperty(7,'tint')"
+		name "quicklootSlot7"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(7)"	area 130 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(7,'name')"	tint lua	"getGroundItemProperty(7,'tint')"
 		icon lua	"getGroundItemProperty(7,'icon')"	count lua	"getGroundItemProperty(7,'count')"	usages lua	"getGroundItemProperty(7,'usages')"
 		action "groundItemClick2(7)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(7,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot8"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(8)"	area 184 59 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(8,'name')"	tint lua	"getGroundItemProperty(8,'tint')"
+		name "quicklootSlot8"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(8)"	area 184 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(8,'name')"	tint lua	"getGroundItemProperty(8,'tint')"
 		icon lua	"getGroundItemProperty(8,'icon')"	count lua	"getGroundItemProperty(8,'count')"	usages lua	"getGroundItemProperty(8,'usages')"
 		action "groundItemClick2(8)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(8,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot9"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(9)"	area 238 59 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(9,'name')"	tint lua	"getGroundItemProperty(9,'tint')"
+		name "quicklootSlot9"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(9)"	area 238 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(9,'name')"	tint lua	"getGroundItemProperty(9,'tint')"
 		icon lua	"getGroundItemProperty(9,'icon')"	count lua	"getGroundItemProperty(9,'count')"	usages lua	"getGroundItemProperty(9,'usages')"
 		action "groundItemClick2(9)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(9,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot10"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(10)"	area 292 59 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(10,'name')"	tint lua	"getGroundItemProperty(10,'tint')"
+		name "quicklootSlot10"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(10)"	area 292 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(10,'name')"	tint lua	"getGroundItemProperty(10,'tint')"
 		icon lua	"getGroundItemProperty(10,'icon')"	count lua	"getGroundItemProperty(10,'count')"	usages lua	"getGroundItemProperty(10,'usages')"
 		action "groundItemClick2(10)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(10,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot11"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(11)"	area 346 59 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(11,'name')"	tint lua	"getGroundItemProperty(11,'tint')"
+		name "quicklootSlot11"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(11)"	area 346 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(11,'name')"	tint lua	"getGroundItemProperty(11,'tint')"
 		icon lua	"getGroundItemProperty(11,'icon')"	count lua	"getGroundItemProperty(11,'count')"	usages lua	"getGroundItemProperty(11,'usages')"
 		action "groundItemClick2(11)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(11,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot12"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(12)"	area 76 113 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(12,'name')"	tint lua	"getGroundItemProperty(12,'tint')"
+		name "quicklootSlot12"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(12)"	area 76 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(12,'name')"	tint lua	"getGroundItemProperty(12,'tint')"
 		icon lua	"getGroundItemProperty(12,'icon')"	count lua	"getGroundItemProperty(12,'count')"	usages lua	"getGroundItemProperty(12,'usages')"
 		action "groundItemClick2(12)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(12,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot13"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(13)"	area 130 113 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(13,'name')"	tint lua	"getGroundItemProperty(13,'tint')"
+		name "quicklootSlot13"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(13)"	area 130 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(13,'name')"	tint lua	"getGroundItemProperty(13,'tint')"
 		icon lua	"getGroundItemProperty(13,'icon')"	count lua	"getGroundItemProperty(13,'count')"	usages lua	"getGroundItemProperty(13,'usages')"
 		action "groundItemClick2(13)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(13,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot14"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(14)"	area 184 113 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(14,'name')"	tint lua	"getGroundItemProperty(14,'tint')"
+		name "quicklootSlot14"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(14)"	area 184 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(14,'name')"	tint lua	"getGroundItemProperty(14,'tint')"
 		icon lua	"getGroundItemProperty(14,'icon')"	count lua	"getGroundItemProperty(14,'count')"	usages lua	"getGroundItemProperty(14,'usages')"
 		action "groundItemClick2(14)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(14,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot15"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(15)"	area 238 113 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(15,'name')"	tint lua	"getGroundItemProperty(15,'tint')"
+		name "quicklootSlot15"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(15)"	area 238 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(15,'name')"	tint lua	"getGroundItemProperty(15,'tint')"
 		icon lua	"getGroundItemProperty(15,'icon')"	count lua	"getGroundItemProperty(15,'count')"	usages lua	"getGroundItemProperty(15,'usages')"
 		action "groundItemClick2(15)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(15,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot16"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(16)"	area 292 113 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(16,'name')"	tint lua	"getGroundItemProperty(16,'tint')"
+		name "quicklootSlot16"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(16)"	area 292 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(16,'name')"	tint lua	"getGroundItemProperty(16,'tint')"
 		icon lua	"getGroundItemProperty(16,'icon')"	count lua	"getGroundItemProperty(16,'count')"	usages lua	"getGroundItemProperty(16,'usages')"
 		action "groundItemClick2(16)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(16,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot17"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(17)"	area 346 113 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(17,'name')"	tint lua	"getGroundItemProperty(17,'tint')"
+		name "quicklootSlot17"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(17)"	area 346 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(17,'name')"	tint lua	"getGroundItemProperty(17,'tint')"
 		icon lua	"getGroundItemProperty(17,'icon')"	count lua	"getGroundItemProperty(17,'count')"	usages lua	"getGroundItemProperty(17,'usages')"
 		action "groundItemClick2(17)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(17,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot18"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(18)"	area 76 167 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(18,'name')"	tint lua	"getGroundItemProperty(18,'tint')"
+		name "quicklootSlot18"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(18)"	area 76 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(18,'name')"	tint lua	"getGroundItemProperty(18,'tint')"
 		icon lua	"getGroundItemProperty(18,'icon')"	count lua	"getGroundItemProperty(18,'count')"	usages lua	"getGroundItemProperty(18,'usages')"
 		action "groundItemClick2(18)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(18,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot19"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(19)"	area 130 167 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(19,'name')"	tint lua	"getGroundItemProperty(19,'tint')"
+		name "quicklootSlot19"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(19)"	area 130 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(19,'name')"	tint lua	"getGroundItemProperty(19,'tint')"
 		icon lua	"getGroundItemProperty(19,'icon')"	count lua	"getGroundItemProperty(19,'count')"	usages lua	"getGroundItemProperty(19,'usages')"
 		action "groundItemClick2(19)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(19,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot20"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(20)"	area 184 167 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(20,'name')"	tint lua	"getGroundItemProperty(20,'tint')"
+		name "quicklootSlot20"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(20)"	area 184 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(20,'name')"	tint lua	"getGroundItemProperty(20,'tint')"
 		icon lua	"getGroundItemProperty(20,'icon')"	count lua	"getGroundItemProperty(20,'count')"	usages lua	"getGroundItemProperty(20,'usages')"
 		action "groundItemClick2(20)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(20,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot21"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(21)"	area 238 167 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(21,'name')"	tint lua	"getGroundItemProperty(21,'tint')"
+		name "quicklootSlot21"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(21)"	area 238 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(21,'name')"	tint lua	"getGroundItemProperty(21,'tint')"
 		icon lua	"getGroundItemProperty(21,'icon')"	count lua	"getGroundItemProperty(21,'count')"	usages lua	"getGroundItemProperty(21,'usages')"
 		action "groundItemClick2(21)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(21,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot22"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(22)"	area 292 167 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(22,'name')"	tint lua	"getGroundItemProperty(22,'tint')"
+		name "quicklootSlot22"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(22)"	area 292 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(22,'name')"	tint lua	"getGroundItemProperty(22,'tint')"
 		icon lua	"getGroundItemProperty(22,'icon')"	count lua	"getGroundItemProperty(22,'count')"	usages lua	"getGroundItemProperty(22,'usages')"
 		action "groundItemClick2(22)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(22,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot23"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(23)"	area 346 167 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(23,'name')"	tint lua	"getGroundItemProperty(23,'tint')"
+		name "quicklootSlot23"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(23)"	area 346 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(23,'name')"	tint lua	"getGroundItemProperty(23,'tint')"
 		icon lua	"getGroundItemProperty(23,'icon')"	count lua	"getGroundItemProperty(23,'count')"	usages lua	"getGroundItemProperty(23,'usages')"
 		action "groundItemClick2(23)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(23,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot24"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(24)"	area 76 221 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(24,'name')"	tint lua	"getGroundItemProperty(24,'tint')"
+		name "quicklootSlot24"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(24)"	area 76 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(24,'name')"	tint lua	"getGroundItemProperty(24,'tint')"
 		icon lua	"getGroundItemProperty(24,'icon')"	count lua	"getGroundItemProperty(24,'count')"	usages lua	"getGroundItemProperty(24,'usages')"
 		action "groundItemClick2(24)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(24,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot25"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(25)"	area 130 221 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(25,'name')"	tint lua	"getGroundItemProperty(25,'tint')"
+		name "quicklootSlot25"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(25)"	area 130 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(25,'name')"	tint lua	"getGroundItemProperty(25,'tint')"
 		icon lua	"getGroundItemProperty(25,'icon')"	count lua	"getGroundItemProperty(25,'count')"	usages lua	"getGroundItemProperty(25,'usages')"
 		action "groundItemClick2(25)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(25,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot26"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(26)"	area 184 221 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(26,'name')"	tint lua	"getGroundItemProperty(26,'tint')"
+		name "quicklootSlot26"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(26)"	area 184 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(26,'name')"	tint lua	"getGroundItemProperty(26,'tint')"
 		icon lua	"getGroundItemProperty(26,'icon')"	count lua	"getGroundItemProperty(26,'count')"	usages lua	"getGroundItemProperty(26,'usages')"
 		action "groundItemClick2(26)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(26,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot27"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(27)"	area 238 221 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(27,'name')"	tint lua	"getGroundItemProperty(27,'tint')"
+		name "quicklootSlot27"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(27)"	area 238 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(27,'name')"	tint lua	"getGroundItemProperty(27,'tint')"
 		icon lua	"getGroundItemProperty(27,'icon')"	count lua	"getGroundItemProperty(27,'count')"	usages lua	"getGroundItemProperty(27,'usages')"
 		action "groundItemClick2(27)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(27,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot28"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(28)"	area 292 221 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(28,'name')"	tint lua	"getGroundItemProperty(28,'tint')"
+		name "quicklootSlot28"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(28)"	area 292 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(28,'name')"	tint lua	"getGroundItemProperty(28,'tint')"
 		icon lua	"getGroundItemProperty(28,'icon')"	count lua	"getGroundItemProperty(28,'count')"	usages lua	"getGroundItemProperty(28,'usages')"
 		action "groundItemClick2(28)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(28,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot29"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(29)"	area 346 221 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(29,'name')"	tint lua	"getGroundItemProperty(29,'tint')"
+		name "quicklootSlot29"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(29)"	area 346 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(29,'name')"	tint lua	"getGroundItemProperty(29,'tint')"
 		icon lua	"getGroundItemProperty(29,'icon')"	count lua	"getGroundItemProperty(29,'count')"	usages lua	"getGroundItemProperty(29,'usages')"
 		action "groundItemClick2(29)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(29,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot30"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(30)"	area 76 275 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(30,'name')"	tint lua	"getGroundItemProperty(30,'tint')"
+		name "quicklootSlot30"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(30)"	area 76 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(30,'name')"	tint lua	"getGroundItemProperty(30,'tint')"
 		icon lua	"getGroundItemProperty(30,'icon')"	count lua	"getGroundItemProperty(30,'count')"	usages lua	"getGroundItemProperty(30,'usages')"
 		action "groundItemClick2(30)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(30,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot31"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(31)"	area 130 275 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(31,'name')"	tint lua	"getGroundItemProperty(31,'tint')"
+		name "quicklootSlot31"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(31)"	area 130 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(31,'name')"	tint lua	"getGroundItemProperty(31,'tint')"
 		icon lua	"getGroundItemProperty(31,'icon')"	count lua	"getGroundItemProperty(31,'count')"	usages lua	"getGroundItemProperty(31,'usages')"
 		action "groundItemClick2(31)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(31,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot32"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(32)"	area 184 275 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(32,'name')"	tint lua	"getGroundItemProperty(32,'tint')"
+		name "quicklootSlot32"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(32)"	area 184 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(32,'name')"	tint lua	"getGroundItemProperty(32,'tint')"
 		icon lua	"getGroundItemProperty(32,'icon')"	count lua	"getGroundItemProperty(32,'count')"	usages lua	"getGroundItemProperty(32,'usages')"
 		action "groundItemClick2(32)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(32,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot33"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(33)"	area 238 275 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(33,'name')"	tint lua	"getGroundItemProperty(33,'tint')"
+		name "quicklootSlot33"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(33)"	area 238 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(33,'name')"	tint lua	"getGroundItemProperty(33,'tint')"
 		icon lua	"getGroundItemProperty(33,'icon')"	count lua	"getGroundItemProperty(33,'count')"	usages lua	"getGroundItemProperty(33,'usages')"
 		action "groundItemClick2(33)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(33,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot34"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(34)"	area 292 275 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(34,'name')"	tint lua	"getGroundItemProperty(34,'tint')"
+		name "quicklootSlot34"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(34)"	area 292 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(34,'name')"	tint lua	"getGroundItemProperty(34,'tint')"
 		icon lua	"getGroundItemProperty(34,'icon')"	count lua	"getGroundItemProperty(34,'count')"	usages lua	"getGroundItemProperty(34,'usages')"
 		action "groundItemClick2(34)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(34,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot35"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(35)"	area 346 275 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(35,'name')"	tint lua	"getGroundItemProperty(35,'tint')"
+		name "quicklootSlot35"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(35)"	area 346 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(35,'name')"	tint lua	"getGroundItemProperty(35,'tint')"
 		icon lua	"getGroundItemProperty(35,'icon')"	count lua	"getGroundItemProperty(35,'count')"	usages lua	"getGroundItemProperty(35,'usages')"
 		action "groundItemClick2(35)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(35,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot36"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(36)"	area 76 329 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(36,'name')"	tint lua	"getGroundItemProperty(36,'tint')"
+		name "quicklootSlot36"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(36)"	area 76 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(36,'name')"	tint lua	"getGroundItemProperty(36,'tint')"
 		icon lua	"getGroundItemProperty(36,'icon')"	count lua	"getGroundItemProperty(36,'count')"	usages lua	"getGroundItemProperty(36,'usages')"
 		action "groundItemClick2(36)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(36,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot37"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(37)"	area 130 329 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(37,'name')"	tint lua	"getGroundItemProperty(37,'tint')"
+		name "quicklootSlot37"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(37)"	area 130 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(37,'name')"	tint lua	"getGroundItemProperty(37,'tint')"
 		icon lua	"getGroundItemProperty(37,'icon')"	count lua	"getGroundItemProperty(37,'count')"	usages lua	"getGroundItemProperty(37,'usages')"
 		action "groundItemClick2(37)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(37,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot38"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(38)"	area 184 329 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(38,'name')"	tint lua	"getGroundItemProperty(38,'tint')"
+		name "quicklootSlot38"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(38)"	area 184 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(38,'name')"	tint lua	"getGroundItemProperty(38,'tint')"
 		icon lua	"getGroundItemProperty(38,'icon')"	count lua	"getGroundItemProperty(38,'count')"	usages lua	"getGroundItemProperty(38,'usages')"
 		action "groundItemClick2(38)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(38,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot39"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(39)"	area 238 329 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(39,'name')"	tint lua	"getGroundItemProperty(39,'tint')"
+		name "quicklootSlot39"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(39)"	area 238 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(39,'name')"	tint lua	"getGroundItemProperty(39,'tint')"
 		icon lua	"getGroundItemProperty(39,'icon')"	count lua	"getGroundItemProperty(39,'count')"	usages lua	"getGroundItemProperty(39,'usages')"
 		action "groundItemClick2(39)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(39,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot40"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(40)"	area 292 329 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(40,'name')"	tint lua	"getGroundItemProperty(40,'tint')"
+		name "quicklootSlot40"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(40)"	area 292 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(40,'name')"	tint lua	"getGroundItemProperty(40,'tint')"
 		icon lua	"getGroundItemProperty(40,'icon')"	count lua	"getGroundItemProperty(40,'count')"	usages lua	"getGroundItemProperty(40,'usages')"
 		action "groundItemClick2(40)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(40,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot41"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(41)"	area 346 329 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(41,'name')"	tint lua	"getGroundItemProperty(41,'tint')"
+		name "quicklootSlot41"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(41)"	area 346 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(41,'name')"	tint lua	"getGroundItemProperty(41,'tint')"
 		icon lua	"getGroundItemProperty(41,'icon')"	count lua	"getGroundItemProperty(41,'count')"	usages lua	"getGroundItemProperty(41,'usages')"
 		action "groundItemClick2(41)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(41,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot42"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(42)"	area 76 383 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(42,'name')"	tint lua	"getGroundItemProperty(42,'tint')"
+		name "quicklootSlot42"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(42)"	area 76 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(42,'name')"	tint lua	"getGroundItemProperty(42,'tint')"
 		icon lua	"getGroundItemProperty(42,'icon')"	count lua	"getGroundItemProperty(42,'count')"	usages lua	"getGroundItemProperty(42,'usages')"
 		action "groundItemClick2(42)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(42,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot43"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(43)"	area 130 383 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(43,'name')"	tint lua	"getGroundItemProperty(43,'tint')"
+		name "quicklootSlot43"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(43)"	area 130 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(43,'name')"	tint lua	"getGroundItemProperty(43,'tint')"
 		icon lua	"getGroundItemProperty(43,'icon')"	count lua	"getGroundItemProperty(43,'count')"	usages lua	"getGroundItemProperty(43,'usages')"
 		action "groundItemClick2(43)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(43,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot44"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(44)"	area 184 383 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(44,'name')"	tint lua	"getGroundItemProperty(44,'tint')"
+		name "quicklootSlot44"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(44)"	area 184 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(44,'name')"	tint lua	"getGroundItemProperty(44,'tint')"
 		icon lua	"getGroundItemProperty(44,'icon')"	count lua	"getGroundItemProperty(44,'count')"	usages lua	"getGroundItemProperty(44,'usages')"
 		action "groundItemClick2(44)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(44,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot45"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(45)"	area 238 383 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(45,'name')"	tint lua	"getGroundItemProperty(45,'tint')"
+		name "quicklootSlot45"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(45)"	area 238 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(45,'name')"	tint lua	"getGroundItemProperty(45,'tint')"
 		icon lua	"getGroundItemProperty(45,'icon')"	count lua	"getGroundItemProperty(45,'count')"	usages lua	"getGroundItemProperty(45,'usages')"
 		action "groundItemClick2(45)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(45,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot46"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(46)"	area 292 383 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(46,'name')"	tint lua	"getGroundItemProperty(46,'tint')"
+		name "quicklootSlot46"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(46)"	area 292 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(46,'name')"	tint lua	"getGroundItemProperty(46,'tint')"
 		icon lua	"getGroundItemProperty(46,'icon')"	count lua	"getGroundItemProperty(46,'count')"	usages lua	"getGroundItemProperty(46,'usages')"
 		action "groundItemClick2(46)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(46,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot47"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(47)"	area 346 383 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(47,'name')"	tint lua	"getGroundItemProperty(47,'tint')"
+		name "quicklootSlot47"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(47)"	area 346 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(47,'name')"	tint lua	"getGroundItemProperty(47,'tint')"
 		icon lua	"getGroundItemProperty(47,'icon')"	count lua	"getGroundItemProperty(47,'count')"	usages lua	"getGroundItemProperty(47,'usages')"
 		action "groundItemClick2(47)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(47,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot48"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(48)"	area 76 437 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(48,'name')"	tint lua	"getGroundItemProperty(48,'tint')"
+		name "quicklootSlot48"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(48)"	area 76 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(48,'name')"	tint lua	"getGroundItemProperty(48,'tint')"
 		icon lua	"getGroundItemProperty(48,'icon')"	count lua	"getGroundItemProperty(48,'count')"	usages lua	"getGroundItemProperty(48,'usages')"
 		action "groundItemClick2(48)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(48,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot49"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(49)"	area 130 437 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(49,'name')"	tint lua	"getGroundItemProperty(49,'tint')"
+		name "quicklootSlot49"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(49)"	area 130 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(49,'name')"	tint lua	"getGroundItemProperty(49,'tint')"
 		icon lua	"getGroundItemProperty(49,'icon')"	count lua	"getGroundItemProperty(49,'count')"	usages lua	"getGroundItemProperty(49,'usages')"
 		action "groundItemClick2(49)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(49,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot50"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(50)"	area 184 437 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(50,'name')"	tint lua	"getGroundItemProperty(50,'tint')"
+		name "quicklootSlot50"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(50)"	area 184 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(50,'name')"	tint lua	"getGroundItemProperty(50,'tint')"
 		icon lua	"getGroundItemProperty(50,'icon')"	count lua	"getGroundItemProperty(50,'count')"	usages lua	"getGroundItemProperty(50,'usages')"
 		action "groundItemClick2(50)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(50,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot51"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(51)"	area 238 437 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(51,'name')"	tint lua	"getGroundItemProperty(51,'tint')"
+		name "quicklootSlot51"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(51)"	area 238 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(51,'name')"	tint lua	"getGroundItemProperty(51,'tint')"
 		icon lua	"getGroundItemProperty(51,'icon')"	count lua	"getGroundItemProperty(51,'count')"	usages lua	"getGroundItemProperty(51,'usages')"
 		action "groundItemClick2(51)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(51,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot52"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(52)"	area 292 437 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(52,'name')"	tint lua	"getGroundItemProperty(52,'tint')"
+		name "quicklootSlot52"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(52)"	area 292 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(52,'name')"	tint lua	"getGroundItemProperty(52,'tint')"
 		icon lua	"getGroundItemProperty(52,'icon')"	count lua	"getGroundItemProperty(52,'count')"	usages lua	"getGroundItemProperty(52,'usages')"
 		action "groundItemClick2(52)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(52,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot53"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(53)"	area 346 437 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(53,'name')"	tint lua	"getGroundItemProperty(53,'tint')"
+		name "quicklootSlot53"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(53)"	area 346 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(53,'name')"	tint lua	"getGroundItemProperty(53,'tint')"
 		icon lua	"getGroundItemProperty(53,'icon')"	count lua	"getGroundItemProperty(53,'count')"	usages lua	"getGroundItemProperty(53,'usages')"
 		action "groundItemClick2(53)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(53,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot54"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(54)"	area 76 491 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(54,'name')"	tint lua	"getGroundItemProperty(54,'tint')"
+		name "quicklootSlot54"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(54)"	area 76 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(54,'name')"	tint lua	"getGroundItemProperty(54,'tint')"
 		icon lua	"getGroundItemProperty(54,'icon')"	count lua	"getGroundItemProperty(54,'count')"	usages lua	"getGroundItemProperty(54,'usages')"
 		action "groundItemClick2(54)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(54,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot55"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(55)"	area 130 491 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(55,'name')"	tint lua	"getGroundItemProperty(55,'tint')"
+		name "quicklootSlot55"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(55)"	area 130 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(55,'name')"	tint lua	"getGroundItemProperty(55,'tint')"
 		icon lua	"getGroundItemProperty(55,'icon')"	count lua	"getGroundItemProperty(55,'count')"	usages lua	"getGroundItemProperty(55,'usages')"
 		action "groundItemClick2(55)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(55,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot56"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(56)"	area 184 491 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(56,'name')"	tint lua	"getGroundItemProperty(56,'tint')"
+		name "quicklootSlot56"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(56)"	area 184 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(56,'name')"	tint lua	"getGroundItemProperty(56,'tint')"
 		icon lua	"getGroundItemProperty(56,'icon')"	count lua	"getGroundItemProperty(56,'count')"	usages lua	"getGroundItemProperty(56,'usages')"
 		action "groundItemClick2(56)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(56,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot57"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(57)"	area 238 491 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(57,'name')"	tint lua	"getGroundItemProperty(57,'tint')"
+		name "quicklootSlot57"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(57)"	area 238 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(57,'name')"	tint lua	"getGroundItemProperty(57,'tint')"
 		icon lua	"getGroundItemProperty(57,'icon')"	count lua	"getGroundItemProperty(57,'count')"	usages lua	"getGroundItemProperty(57,'usages')"
 		action "groundItemClick2(57)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(57,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot58"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(58)"	area 292 491 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(58,'name')"	tint lua	"getGroundItemProperty(58,'tint')"
+		name "quicklootSlot58"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(58)"	area 292 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(58,'name')"	tint lua	"getGroundItemProperty(58,'tint')"
 		icon lua	"getGroundItemProperty(58,'icon')"	count lua	"getGroundItemProperty(58,'count')"	usages lua	"getGroundItemProperty(58,'usages')"
 		action "groundItemClick2(58)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(58,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
 	button
 	{
-		name "quicklootSlot59"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(59)"	area 346 491 0 0	mosaic RGQSLOT	tooltip lua	"getGroundItemProperty(59,'name')"	tint lua	"getGroundItemProperty(59,'tint')"
+		name "quicklootSlot59"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(59)"	area 346 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(59,'name')"	tint lua	"getGroundItemProperty(59,'tint')"
 		icon lua	"getGroundItemProperty(59,'icon')"	count lua	"getGroundItemProperty(59,'count')"	usages lua	"getGroundItemProperty(59,'usages')"
 		action "groundItemClick2(59)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(59,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
 	}
