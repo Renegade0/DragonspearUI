@@ -7606,12 +7606,6 @@ function checkDoubleClickScheduled(slotName)
 		doubleClickEventScheduled = nil
 	end
 end
-function checkDoubleClickScheduled(slotName)
-	if(doubleClickEventScheduled == slotName) then
-		slotDoubleClick(doubleClickEventScheduled, true)
-		doubleClickEventScheduled = nil
-	end
-end
 function getTempHP()
 	local maxHP = getTempStat(characters[id].HP.max,'maxHP',1)
 	local currentHP = getTempStat(characters[id].HP.current, 'currentHP',1)
@@ -7664,224 +7658,149 @@ function getInventoryTHAC0Details()
 		return characters[id].THAC0.details.."\n\n"..characters[id].THAC0.detailsOffhand
 	end
 end
-function getItemSlot1(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group0
-end
-function getItemSlot2(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group1
-end
-function getItemSlot3(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group2
-end
-function getItemSlot4(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group3
-end
-function getItemSlot5(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group4
-end
-function getItemSlot6(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group5
-end
-function getItemSlot7(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group6
-end
-function getItemSlot8(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group7
-end
-function getItemSlot9(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group8
-end
-function getItemSlot10(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group9
-end
-function getItemSlot11(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group10
-end
-function getItemSlot12(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group11
-end
-function getItemSlot13(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group12
-end
-function getItemSlot14(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group13
-end
-function getItemSlot15(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group14
-end
-function getItemSlot16(num)
-	local exactCharId = charTable[num]
-	return characters[exactCharId].equipment.group15
-end
 
-charTable = {}
-function updateSlots()
-	charTable = {}
-	local curCharId = id
-	--local charTable = {}
 
-	Infinity_OnPortraitLClick(0)
-	local CharId1 = id
-	Infinity_UpdateLuaStats()
-	table.insert(charTable, CharId1)
-	Infinity_OnPortraitLClick(1)
-	local CharId2 = id
-	Infinity_UpdateLuaStats()
-	if Infinity_GetNumCharacters() > 1 then
-	table.insert(charTable, CharId2)
-	end
-	Infinity_OnPortraitLClick(2)
-	local CharId3 = id
-	Infinity_UpdateLuaStats()
-	if Infinity_GetNumCharacters() > 2 then
-	table.insert(charTable, CharId3)
-	end
-	Infinity_OnPortraitLClick(3)
-	local CharId4 = id
-	Infinity_UpdateLuaStats()
-	if Infinity_GetNumCharacters() > 3 then
-	table.insert(charTable, CharId4)
-	end
-	Infinity_OnPortraitLClick(4)
-	local CharId5 = id
-	Infinity_UpdateLuaStats()
-	if Infinity_GetNumCharacters() > 4 then
-	table.insert(charTable, CharId5)
-	end
-	Infinity_OnPortraitLClick(5)
-	local CharId6 = id
-	Infinity_UpdateLuaStats()
-	if Infinity_GetNumCharacters() > 5 then
-	table.insert(charTable, CharId6)
+local function patchObject(object, keys, wrapper)
+	local store = {}
+
+	for _, name in pairs(keys) do
+		local value = object[name]
+		store[name] = value
+		object[name] = wrapper(value)
 	end
 
-	if curCharId == CharId1 then Infinity_OnPortraitLClick(0) getEncumberanceArea1()
-	elseif curCharId == CharId2 then Infinity_OnPortraitLClick(1) getEncumberanceArea2()
-	elseif curCharId == CharId3 then Infinity_OnPortraitLClick(2) getEncumberanceArea3()
-	elseif curCharId == CharId4 then Infinity_OnPortraitLClick(3) getEncumberanceArea4()
-	elseif curCharId == CharId5 then Infinity_OnPortraitLClick(4) getEncumberanceArea5()
-	elseif curCharId == CharId6 then Infinity_OnPortraitLClick(5) getEncumberanceArea6()
-	end
-
-	--return charTable
+	return store
 end
 
-function updateSlotsOnExit()
-	local curCharId = id
+Inventory = {
+	invalidSlot = { valid = 0 }
+}
 
-	Infinity_OnPortraitLClick(0)
-	Infinity_UpdateLuaStats()
-	Infinity_OnPortraitLClick(1)
-	Infinity_UpdateLuaStats()
-	Infinity_OnPortraitLClick(2)
-	Infinity_UpdateLuaStats()
-	Infinity_OnPortraitLClick(3)
-	Infinity_UpdateLuaStats()
-	Infinity_OnPortraitLClick(4)
-	Infinity_UpdateLuaStats()
-	Infinity_OnPortraitLClick(5)
-	Infinity_UpdateLuaStats()
 
-	if curCharId == charTable[1] then Infinity_OnPortraitLClick(0) --getEncumberanceArea1()
-	elseif curCharId == charTable[2] then Infinity_OnPortraitLClick(1) --getEncumberanceArea2()
-	elseif curCharId == charTable[3] then Infinity_OnPortraitLClick(2) --getEncumberanceArea3()
-	elseif curCharId == charTable[4] then Infinity_OnPortraitLClick(3) --getEncumberanceArea4()
-	elseif curCharId == charTable[5] then Infinity_OnPortraitLClick(4) --getEncumberanceArea5()
-	elseif curCharId == charTable[6] then Infinity_OnPortraitLClick(5) --getEncumberanceArea6()
+function Inventory:create()
+	self = deepcopy(self)
+
+	self.name_to_idx = {}
+	self.idx_to_id = {}
+	self.count = Infinity_GetNumCharacters()
+	local selected = Infinity_GetSelectedCharacterName()
+
+	for i = 1, self.count do
+		Infinity_SetArea('slotsArea' .. i, nil, nil, 392, 98)
+		Infinity_OnPortraitLClick(i - 1)
+		Infinity_UpdateLuaStats()
+		local char = characters[id]
+		self.name_to_idx[char.name] = i
+		self.idx_to_id[i] = id
 	end
+
+	for i = self.count + 1, 6 do
+		Infinity_SetArea('slotsArea' .. i, nil, nil, 0, 0)
+	end
+
+	-- auto updated
+	-- hovered: updated on slots area hover
+	-- selected: gets updated on every frame
+	-- this will set these variables to the synced state
+	self:onSlotsAreaEnter(self.name_to_idx[selected])
+
+	-- Inject updateSlotsHighlight to the functions listed below.
+	-- It's needed to update slots' highlighting on item drag start/stop.
+	local names = {
+		'Infinity_SwapSlot',
+		'Infinity_SwapWithPortrait',
+		'Infinity_SwapWithAppearance'
+	}
+
+	local function wrapper(f)
+		return function(...)
+			-- result = 1: item picked up, 2: put down
+			local result = f(...)
+			self:updateSlotsHighlight()
+			return result
+		end
+	end
+
+	self._patched = patchObject(_G, names, wrapper)
+
+	return self
 end
 
-function getEncumberanceArea1()
-	local screenWidth, screenHeight = Infinity_GetScreenSize()
-	Infinity_OnPortraitLClick(0)
-	if id == charTable[1] then
-	Infinity_SetArea('encumberanceButton', nil, 85, nil, nil)
-	Infinity_SetArea('slotsArea1', nil, nil, 0, 0)
-	Infinity_SetArea('slotsArea2', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea3', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea4', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea5', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea6', nil, nil, 392, 98)
+function Inventory:deinit()
+	-- restore patched swap slot functions
+	for name, original in pairs(self._patched) do
+		_G[name] = original
 	end
+	self._patched = {}
 end
-function getEncumberanceArea2()
-	local screenWidth, screenHeight = Infinity_GetScreenSize()
-	Infinity_OnPortraitLClick(1)
-	if id == charTable[2] then
-	Infinity_SetArea('encumberanceButton', nil, 191, nil, nil)
-	Infinity_SetArea('slotsArea1', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea2', nil, nil, 0, 0)
-	Infinity_SetArea('slotsArea3', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea4', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea5', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea6', nil, nil, 392, 98)
+
+function Inventory:slot(slot_idx, char_idx)
+	if char_idx > self.count then
+		return self.invalidSlot
 	end
-end
-function getEncumberanceArea3()
-	local screenWidth, screenHeight = Infinity_GetScreenSize()
-	Infinity_OnPortraitLClick(2)
-	if id == charTable[3] then
-	Infinity_SetArea('encumberanceButton', nil, 297, nil, nil)
-	Infinity_SetArea('slotsArea1', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea2', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea3', nil, nil, 0, 0)
-	Infinity_SetArea('slotsArea4', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea5', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea6', nil, nil, 392, 98)
+
+	local char = characters[self.idx_to_id[char_idx]]
+	if char then
+		return char.equipment['group' .. (slot_idx - 1)]
 	end
+
+	return self.invalidSlot
 end
-function getEncumberanceArea4()
-	local screenWidth, screenHeight = Infinity_GetScreenSize()
-	Infinity_OnPortraitLClick(3)
-	if id == charTable[4] then
-	Infinity_SetArea('encumberanceButton', nil, 403, nil, nil)
-	Infinity_SetArea('slotsArea1', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea2', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea3', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea4', nil, nil, 0, 0)
-	Infinity_SetArea('slotsArea5', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea6', nil, nil, 392, 98)
+
+function Inventory:update()
+	local selected = self.name_to_idx[Infinity_GetSelectedCharacterName()]
+
+	if self.selected ~= selected then
+		Infinity_SetArea('encumberanceButton', nil, 85 + (selected - 1) * 106, nil, nil)
+		self.selected = selected
+
+		-- we pressed a 1-6 key, we might be desynced
+		if self.hovered and selected ~= self.hovered then
+			Infinity_SetArea('slotsAreaCover', nil, 85 + 106 * (self.hovered - 1), 392, 98)
+		else
+			Infinity_SetArea('slotsAreaCover', nil, nil, 0, 0)
+		end
 	end
+
+	return true
 end
-function getEncumberanceArea5()
-	local screenWidth, screenHeight = Infinity_GetScreenSize()
-	Infinity_OnPortraitLClick(4)
-	if id == charTable[5] then
-	Infinity_SetArea('encumberanceButton', nil, 509, nil, nil)
-	Infinity_SetArea('slotsArea1', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea2', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea3', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea4', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea5', nil, nil, 0, 0)
-	Infinity_SetArea('slotsArea6', nil, nil, 392, 98)
+
+function Inventory:updateSlotsHighlight()
+	local n = self.selected
+	for i = 1, self.count do
+		if i ~= n then
+			self:select(i)
+		end
 	end
+	self:select(n)
 end
-function getEncumberanceArea6()
-	local screenWidth, screenHeight = Infinity_GetScreenSize()
-	Infinity_OnPortraitLClick(5)
-	if id == charTable[6] then
-	Infinity_SetArea('encumberanceButton', nil, 615, nil, nil)
-	Infinity_SetArea('slotsArea1', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea2', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea3', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea4', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea5', nil, nil, 392, 98)
-	Infinity_SetArea('slotsArea6', nil, nil, 0, 0)
+
+function Inventory:select(i)
+	Infinity_PressKeyboardButton(i)
+end
+
+function Inventory:onSlotsAreaEnter(n)
+	if self.hovered ~= n then
+		-- we are in sync, i.e. hovered == nil or hovered == selected
+		-- remove the cover
+		Infinity_SetArea('slotsAreaCover', nil, nil, 0, 0)
+
+		-- restore previously hovered area
+		if self.hovered then
+			Infinity_SetArea('slotsArea' .. self.hovered, nil, nil, 392, 98)
+		end
+
+		-- invalid area, we're done
+		if n == nil then
+			self.hovered = nil
+			return
+		end
+
+		-- valid area, hide it, select hovered char
+		-- NOTE: triggers actionExit for the slotsArea
+		Infinity_SetArea('slotsArea' .. n, nil, nil, 0, 0)
+		self.hovered = n
+		self:select(n)
 	end
 end
 `
@@ -7897,19 +7816,37 @@ menu
 		pushSidebars()
 		doubleClickEventScheduled = nil
 		Infinity_PopMenu('WORLD_QUICKLOOT')
-		updateSlots()
+		inventory = Inventory:create()
 	"
 	onClose
 	"
+		inventory:deinit()
+		inventory = nil
 		Infinity_PopMenu('CHARACTER_COLOR')
 		popSidebars()
-		charTable = {}
 	"
+
+	-- This is needed to keep track of the selected character after pressing keys 1-6.
+	-- Updates on every frame, so every ~33 ms for 30 fps.
+	text { enabled "inventory:update()" }
+
 	label
 	{
 		area 0 0 1364 756
 		mosaic INVENTOR
 	}
+
+	-- Since we can't use actionExit for slots areas, this is a hack to set hovered to nil.
+	-- This is needed to hide the area cover, we only want it when the mouse cursor is on
+	-- a slots area.
+	-- As a side effect it fixes an issue with portraits.
+	-- With the "portrait X" property dragged items can't move over the element,
+	-- staying just outside until the mouse leaves the area.
+	text {
+		area 0 0 788 756
+		actionEnter "inventory:onSlotsAreaEnter(nil)"
+	}
+
 	text
 	{
 		area		82 590 92 109
@@ -8003,39 +7940,40 @@ menu
 	label
 	{
 		area 712 85 73 98
-		enabled "Infinity_GetNumCharacters() > 0"
+		enabled "inventory.count > 0"
 		bam "contback"
 	}
 	label
 	{
 		area 712 191 73 98
-		enabled "Infinity_GetNumCharacters() > 1"
+		enabled "inventory.count > 1"
 		bam "contback"
 	}
 	label
 	{
 		area 712 297 73 98
-		enabled "Infinity_GetNumCharacters() > 2"
+		enabled "inventory.count > 2"
 		bam "contback"
 	}
 	label
 	{
 		area 712 403 73 98
-		enabled "Infinity_GetNumCharacters() > 3"
+		enabled "inventory.count > 3"
 		bam "contback"
 	}
 	label
 	{
 		area 712 509 73 98
-		enabled "Infinity_GetNumCharacters() > 4"
+		enabled "inventory.count > 4"
 		bam "contback"
 	}
 	label
 	{
 		area 712 615 73 98
-		enabled "Infinity_GetNumCharacters() > 5"
+		enabled "inventory.count > 5"
 		bam "contback"
 	}
+
 	button
 	{
 		name "encumberanceButton"
@@ -8092,7 +8030,7 @@ menu
 		area 82 532 80 38
 		text lua "characters[id].gold"
 		text style "label"
-		text color = '$'
+		text color '$'
 	}
 	label
 	{
@@ -8131,143 +8069,143 @@ menu
 	slot {name "slot_inv_25"		area 393 400 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.boots"		}
 	slot {name "slot_inv_26"		area 512 282 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.shield"		}
 
-	slot {name "slot_inv_30"		area 789 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"  slotinfo "getItemSlot1(1)" 	}
-	slot {name "slot_inv_31"		area 789 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot2(1)" 	}
-	slot {name "slot_inv_32"		area 838 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot3(1)" 	}
-	slot {name "slot_inv_33"		area 838 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot4(1)" 	}
-	slot {name "slot_inv_34"		area 887 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot5(1)" 	}
-	slot {name "slot_inv_35"		area 887 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot6(1)" 	}
-	slot {name "slot_inv_36"		area 936 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot7(1)" 	}
-	slot {name "slot_inv_37"		area 936 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot8(1)" 	}
-	slot {name "slot_inv_38"		area 985 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot9(1)" 	}
-	slot {name "slot_inv_39"		area 985 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot10(1)"		}
-	slot {name "slot_inv_40"		area 1034 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot11(1)"		}
-	slot {name "slot_inv_41"		area 1034 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot12(1)"		}
-	slot {name "slot_inv_42"		area 1083 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot13(1)"		}
-	slot {name "slot_inv_43"		area 1083 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot14(1)"		}
-	slot {name "slot_inv_44"		area 1132 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot15(1)"		}
-	slot {name "slot_inv_45"		area 1132 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot16(1)"		}
+	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 1)"   area 789 85 49 49 }
+	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 1)"   area 789 134 49 49 }
+	slot { name  "slot_inv_32"  bam "RGSTONSL"  slotinfo "inventory:slot(3, 1)"   area 838 85 49 49 }
+	slot { name  "slot_inv_33"  bam "RGSTONSL"  slotinfo "inventory:slot(4, 1)"   area 838 134 49 49 }
+	slot { name  "slot_inv_34"  bam "RGSTONSL"  slotinfo "inventory:slot(5, 1)"   area 887 85 49 49 }
+	slot { name  "slot_inv_35"  bam "RGSTONSL"  slotinfo "inventory:slot(6, 1)"   area 887 134 49 49 }
+	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 1)"   area 936 85 49 49 }
+	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 1)"   area 936 134 49 49 }
+	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 1)"   area 985 85 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 1)"  area 985 134 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 1)"  area 1034 85 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 1)"  area 1034 134 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 1)"  area 1083 85 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 1)"  area 1083 134 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 1)"  area 1132 85 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 1)"  area 1132 134 49 49 }
 
-	slot {name "slot_inv_30"		area 789 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"  slotinfo "getItemSlot1(2)" }
-	slot {name "slot_inv_31"		area 789 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot2(2)" 	}
-	slot {name "slot_inv_32"		area 838 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot3(2)" 	}
-	slot {name "slot_inv_33"		area 838 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot4(2)" 	}
-	slot {name "slot_inv_34"		area 887 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot5(2)" 	}
-	slot {name "slot_inv_35"		area 887 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot6(2)" 	}
-	slot {name "slot_inv_36"		area 936 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot7(2)" 	}
-	slot {name "slot_inv_37"		area 936 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot8(2)" 	}
-	slot {name "slot_inv_38"		area 985 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot9(2)" 	}
-	slot {name "slot_inv_39"		area 985 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot10(2)"		}
-	slot {name "slot_inv_40"		area 1034 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot11(2)"		}
-	slot {name "slot_inv_41"		area 1034 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot12(2)"		}
-	slot {name "slot_inv_42"		area 1083 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot13(2)"		}
-	slot {name "slot_inv_43"		area 1083 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot14(2)"		}
-	slot {name "slot_inv_44"		area 1132 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot15(2)"		}
-	slot {name "slot_inv_45"		area 1132 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot16(2)"		}
+	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 2)"   area 789 191 49 49 }
+	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 2)"   area 789 240 49 49 }
+	slot { name  "slot_inv_32"  bam "RGSTONSL"  slotinfo "inventory:slot(3, 2)"   area 838 191 49 49 }
+	slot { name  "slot_inv_33"  bam "RGSTONSL"  slotinfo "inventory:slot(4, 2)"   area 838 240 49 49 }
+	slot { name  "slot_inv_34"  bam "RGSTONSL"  slotinfo "inventory:slot(5, 2)"   area 887 191 49 49 }
+	slot { name  "slot_inv_35"  bam "RGSTONSL"  slotinfo "inventory:slot(6, 2)"   area 887 240 49 49 }
+	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 2)"   area 936 191 49 49 }
+	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 2)"   area 936 240 49 49 }
+	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 2)"   area 985 191 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 2)"  area 985 240 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 2)"  area 1034 191 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 2)"  area 1034 240 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 2)"  area 1083 191 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 2)"  area 1083 240 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 2)"  area 1132 191 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 2)"  area 1132 240 49 49 }
 
-	slot {name "slot_inv_30"		area 789 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"  slotinfo "getItemSlot1(3)" 	}
-	slot {name "slot_inv_31"		area 789 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot2(3)" 	}
-	slot {name "slot_inv_32"		area 838 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot3(3)" 	}
-	slot {name "slot_inv_33"		area 838 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot4(3)" 	}
-	slot {name "slot_inv_34"		area 887 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot5(3)" 	}
-	slot {name "slot_inv_35"		area 887 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot6(3)" 	}
-	slot {name "slot_inv_36"		area 936 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot7(3)" 	}
-	slot {name "slot_inv_37"		area 936 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot8(3)" 	}
-	slot {name "slot_inv_38"		area 985 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot9(3)" 	}
-	slot {name "slot_inv_39"		area 985 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot10(3)"		}
-	slot {name "slot_inv_40"		area 1034 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot11(3)"		}
-	slot {name "slot_inv_41"		area 1034 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot12(3)"		}
-	slot {name "slot_inv_42"		area 1083 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot13(3)"		}
-	slot {name "slot_inv_43"		area 1083 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot14(3)"		}
-	slot {name "slot_inv_44"		area 1132 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot15(3)"		}
-	slot {name "slot_inv_45"		area 1132 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot16(3)"		}
+	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 3)"   area 789 297 49 49 }
+	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 3)"   area 789 346 49 49 }
+	slot { name  "slot_inv_32"  bam "RGSTONSL"  slotinfo "inventory:slot(3, 3)"   area 838 297 49 49 }
+	slot { name  "slot_inv_33"  bam "RGSTONSL"  slotinfo "inventory:slot(4, 3)"   area 838 346 49 49 }
+	slot { name  "slot_inv_34"  bam "RGSTONSL"  slotinfo "inventory:slot(5, 3)"   area 887 297 49 49 }
+	slot { name  "slot_inv_35"  bam "RGSTONSL"  slotinfo "inventory:slot(6, 3)"   area 887 346 49 49 }
+	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 3)"   area 936 297 49 49 }
+	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 3)"   area 936 346 49 49 }
+	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 3)"   area 985 297 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 3)"  area 985 346 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 3)"  area 1034 297 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 3)"  area 1034 346 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 3)"  area 1083 297 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 3)"  area 1083 346 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 3)"  area 1132 297 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 3)"  area 1132 346 49 49 }
 
-	slot {name "slot_inv_30"		area 789 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"  slotinfo "getItemSlot1(4)" 	}
-	slot {name "slot_inv_31"		area 789 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot2(4)" 	}
-	slot {name "slot_inv_32"		area 838 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot3(4)" 	}
-	slot {name "slot_inv_33"		area 838 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot4(4)" 	}
-	slot {name "slot_inv_34"		area 887 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot5(4)" 	}
-	slot {name "slot_inv_35"		area 887 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot6(4)" 	}
-	slot {name "slot_inv_36"		area 936 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot7(4)" 	}
-	slot {name "slot_inv_37"		area 936 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot8(4)" 	}
-	slot {name "slot_inv_38"		area 985 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot9(4)" 	}
-	slot {name "slot_inv_39"		area 985 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot10(4)"		}
-	slot {name "slot_inv_40"		area 1034 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot11(4)"		}
-	slot {name "slot_inv_41"		area 1034 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot12(4)"		}
-	slot {name "slot_inv_42"		area 1083 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot13(4)"		}
-	slot {name "slot_inv_43"		area 1083 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot14(4)"		}
-	slot {name "slot_inv_44"		area 1132 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot15(4)"		}
-	slot {name "slot_inv_45"		area 1132 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot16(4)"		}
+	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 4)"   area 789 403 49 49 }
+	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 4)"   area 789 452 49 49 }
+	slot { name  "slot_inv_32"  bam "RGSTONSL"  slotinfo "inventory:slot(3, 4)"   area 838 403 49 49 }
+	slot { name  "slot_inv_33"  bam "RGSTONSL"  slotinfo "inventory:slot(4, 4)"   area 838 452 49 49 }
+	slot { name  "slot_inv_34"  bam "RGSTONSL"  slotinfo "inventory:slot(5, 4)"   area 887 403 49 49 }
+	slot { name  "slot_inv_35"  bam "RGSTONSL"  slotinfo "inventory:slot(6, 4)"   area 887 452 49 49 }
+	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 4)"   area 936 403 49 49 }
+	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 4)"   area 936 452 49 49 }
+	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 4)"   area 985 403 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 4)"  area 985 452 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 4)"  area 1034 403 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 4)"  area 1034 452 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 4)"  area 1083 403 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 4)"  area 1083 452 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 4)"  area 1132 403 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 4)"  area 1132 452 49 49 }
 
-	slot {name "slot_inv_30"		area 789 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"  slotinfo "getItemSlot1(5)" 	}
-	slot {name "slot_inv_31"		area 789 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot2(5)" 	}
-	slot {name "slot_inv_32"		area 838 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot3(5)" 	}
-	slot {name "slot_inv_33"		area 838 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot4(5)" 	}
-	slot {name "slot_inv_34"		area 887 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot5(5)" 	}
-	slot {name "slot_inv_35"		area 887 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot6(5)" 	}
-	slot {name "slot_inv_36"		area 936 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot7(5)" 	}
-	slot {name "slot_inv_37"		area 936 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot8(5)" 	}
-	slot {name "slot_inv_38"		area 985 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot9(5)" 	}
-	slot {name "slot_inv_39"		area 985 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot10(5)"		}
-	slot {name "slot_inv_40"		area 1034 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot11(5)"		}
-	slot {name "slot_inv_41"		area 1034 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot12(5)"		}
-	slot {name "slot_inv_42"		area 1083 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot13(5)"		}
-	slot {name "slot_inv_43"		area 1083 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot14(5)"		}
-	slot {name "slot_inv_44"		area 1132 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot15(5)"		}
-	slot {name "slot_inv_45"		area 1132 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot16(5)"		}
+	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 5)"   area 789 509 49 49 }
+	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 5)"   area 789 558 49 49 }
+	slot { name  "slot_inv_32"  bam "RGSTONSL"  slotinfo "inventory:slot(3, 5)"   area 838 509 49 49 }
+	slot { name  "slot_inv_33"  bam "RGSTONSL"  slotinfo "inventory:slot(4, 5)"   area 838 558 49 49 }
+	slot { name  "slot_inv_34"  bam "RGSTONSL"  slotinfo "inventory:slot(5, 5)"   area 887 509 49 49 }
+	slot { name  "slot_inv_35"  bam "RGSTONSL"  slotinfo "inventory:slot(6, 5)"   area 887 558 49 49 }
+	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 5)"   area 936 509 49 49 }
+	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 5)"   area 936 558 49 49 }
+	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 5)"   area 985 509 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 5)"  area 985 558 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 5)"  area 1034 509 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 5)"  area 1034 558 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 5)"  area 1083 509 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 5)"  area 1083 558 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 5)"  area 1132 509 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 5)"  area 1132 558 49 49 }
 
-	slot {name "slot_inv_30"		area 789 615 49 49	bam "RGSTONSL"  enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot1(6)" 		}
-	slot {name "slot_inv_31"		area 789 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot2(6)" 		}
-	slot {name "slot_inv_32"		area 838 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot3(6)" 		}
-	slot {name "slot_inv_33"		area 838 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot4(6)" 		}
-	slot {name "slot_inv_34"		area 887 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot5(6)" 		}
-	slot {name "slot_inv_35"		area 887 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot6(6)" 		}
-	slot {name "slot_inv_36"		area 936 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot7(6)" 		}
-	slot {name "slot_inv_37"		area 936 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot8(6)" 		}
-	slot {name "slot_inv_38"		area 985 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot9(6)" 		}
-	slot {name "slot_inv_39"		area 985 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot10(6)"		}
-	slot {name "slot_inv_40"		area 1034 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot11(6)"		}
-	slot {name "slot_inv_41"		area 1034 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot12(6)"		}
-	slot {name "slot_inv_42"		area 1083 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot13(6)"		}
-	slot {name "slot_inv_43"		area 1083 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot14(6)"		}
-	slot {name "slot_inv_44"		area 1132 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot15(6)"		}
-	slot {name "slot_inv_45"		area 1132 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot16(6)"		}
+	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 6)"   area 789 615 49 49 }
+	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 6)"   area 789 664 49 49 }
+	slot { name  "slot_inv_32"  bam "RGSTONSL"  slotinfo "inventory:slot(3, 6)"   area 838 615 49 49 }
+	slot { name  "slot_inv_33"  bam "RGSTONSL"  slotinfo "inventory:slot(4, 6)"   area 838 664 49 49 }
+	slot { name  "slot_inv_34"  bam "RGSTONSL"  slotinfo "inventory:slot(5, 6)"   area 887 615 49 49 }
+	slot { name  "slot_inv_35"  bam "RGSTONSL"  slotinfo "inventory:slot(6, 6)"   area 887 664 49 49 }
+	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 6)"   area 936 615 49 49 }
+	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 6)"   area 936 664 49 49 }
+	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 6)"   area 985 615 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 6)"  area 985 664 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 6)"  area 1034 615 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 6)"  area 1034 664 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 6)"  area 1083 615 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 6)"  area 1083 664 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 6)"  area 1132 615 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 6)"  area 1132 664 49 49 }
 
 	text
 	{
 		name "slotsArea1"
 		area		789 85 392 98
-		action "getEncumberanceArea1()"
+		actionEnter "inventory:onSlotsAreaEnter(1)"
 	}
 	text
 	{
 		name "slotsArea2"
 		area		789 191 392 98
-		action "getEncumberanceArea2()"
+		actionEnter "inventory:onSlotsAreaEnter(2)"
 	}
 	text
 	{
 		name "slotsArea3"
 		area		789 297 392 98
-		action "getEncumberanceArea3()"
+		actionEnter "inventory:onSlotsAreaEnter(3)"
 	}
 	text
 	{
 		name "slotsArea4"
 		area		789 403 392 98
-		action "getEncumberanceArea4()"
+		actionEnter "inventory:onSlotsAreaEnter(4)"
 	}
 	text
 	{
 		name "slotsArea5"
-		area		789 509 0 0
-		action "getEncumberanceArea5()"
+		area		789 509 392 98
+		actionEnter "inventory:onSlotsAreaEnter(5)"
 	}
 	text
 	{
 		name "slotsArea6"
 		area		789 615 392 98
-		action "getEncumberanceArea6()"
+		actionEnter "inventory:onSlotsAreaEnter(6)"
 	}
 
 	button
@@ -8276,30 +8214,23 @@ menu
 		area 642 90 64 90
 		portrait 0
 		bam GUIRSP10
-		enabled "Infinity_GetNumCharacters() > 0"
-		action "Infinity_OnPortraitLClick(0); updateSlots()"
+		enabled "inventory.count > 0"
+		action "inventory:select(1)"
 		actionAlt "Infinity_OnPortraitRClick(0)"
-		actionDbl "Infinity_OnPortraitDblClick(0)"
 		actiondrag "Infinity_SwapWithPortrait(0)"
-		actionEnter "mouseOverPortrait = 0"
-		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
-		tooltip lua "Infinity_GetPortraitTooltip(0)"
 		clickable lua "sidebarsGreyed ~= 1"
 	}
+
 	button
 	{
 		name "invPortrait1"
 		area 642 196 64 90
 		portrait 1
 		bam GUIRSP10
-		enabled "Infinity_GetNumCharacters() > 1"
-		action "Infinity_OnPortraitLClick(1); updateSlots()"
+		enabled "inventory.count > 1"
+		action "inventory:select(2)"
 		actionAlt "Infinity_OnPortraitRClick(1)"
-		actionDbl "Infinity_OnPortraitDblClick(1)"
 		actiondrag "Infinity_SwapWithPortrait(1)"
-		actionEnter "mouseOverPortrait = 1"
-		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
-		tooltip lua "Infinity_GetPortraitTooltip(1)"
 		clickable lua "sidebarsGreyed ~= 1"
 	}
 	button
@@ -8308,14 +8239,10 @@ menu
 		area 642 302 64 90
 		portrait 2
 		bam GUIRSP10
-		enabled "Infinity_GetNumCharacters() > 2"
-		action "Infinity_OnPortraitLClick(2); updateSlots()"
+		enabled "inventory.count > 2"
+		action "inventory:select(3)"
 		actionAlt "Infinity_OnPortraitRClick(2)"
-		actionDbl "Infinity_OnPortraitDblClick(2)"
 		actiondrag "Infinity_SwapWithPortrait(2)"
-		actionEnter "mouseOverPortrait = 2"
-		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
-		tooltip lua "Infinity_GetPortraitTooltip(2)"
 		clickable lua "sidebarsGreyed ~= 1"
 	}
 	button
@@ -8324,14 +8251,10 @@ menu
 		area 642 408 64 90
 		portrait 3
 		bam GUIRSP10
-		enabled "Infinity_GetNumCharacters() > 3"
-		action "Infinity_OnPortraitLClick(3); updateSlots()"
+		enabled "inventory.count > 3"
+		action "inventory:select(4)"
 		actionAlt "Infinity_OnPortraitRClick(3)"
-		actionDbl "Infinity_OnPortraitDblClick(3)"
 		actiondrag "Infinity_SwapWithPortrait(3)"
-		actionEnter "mouseOverPortrait = 3"
-		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
-		tooltip lua "Infinity_GetPortraitTooltip(3)"
 		clickable lua "sidebarsGreyed ~= 1"
 	}
 	button
@@ -8340,14 +8263,10 @@ menu
 		area 642 514 64 90
 		portrait 4
 		bam GUIRSP10
-		enabled "Infinity_GetNumCharacters() > 4"
-		action "Infinity_OnPortraitLClick(4); updateSlots()"
+		enabled "inventory.count > 4"
+		action "inventory:select(5)"
 		actionAlt "Infinity_OnPortraitRClick(4)"
-		actionDbl "Infinity_OnPortraitDblClick(4)"
 		actiondrag "Infinity_SwapWithPortrait(4)"
-		actionEnter "mouseOverPortrait = 4"
-		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
-		tooltip lua "Infinity_GetPortraitTooltip(4)"
 		clickable lua "sidebarsGreyed ~= 1"
 	}
 	button
@@ -8356,14 +8275,10 @@ menu
 		area 642 620 64 90
 		portrait 5
 		bam GUIRSP10
-		enabled "Infinity_GetNumCharacters() > 5"
-		action "Infinity_OnPortraitLClick(5); updateSlots()"
+		enabled "inventory.count > 5"
+		action "inventory:select(6)"
 		actionAlt "Infinity_OnPortraitRClick(5)"
-		actionDbl "Infinity_OnPortraitDblClick(5)"
 		actiondrag "Infinity_SwapWithPortrait(5)"
-		actionEnter "mouseOverPortrait = 5"
-		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
-		tooltip lua "Infinity_GetPortraitTooltip(5)"
 		clickable lua "sidebarsGreyed ~= 1"
 	}
 
@@ -8411,6 +8326,32 @@ menu
 		area 0 0 630 756
 		enabled "shouldGreyOutInventory()"
 		mosaic RGINVDE2
+	}
+
+	-- When mouse enters a slots area the character it belongs to gets selected,
+	-- but then the player can press 1-6 keys to select someone else, now we if
+	-- we click on a slot in the current area of the unselected character, we
+	-- will get an item from the corresponding slot of the selected character.
+	--
+	-- This add an overlay on top of the hovered slots, you can no longer click on
+	-- the slots. Although double clicking still sends the dragged item to the
+	-- currently selected character, doesn't always work for whatever reason.
+	text
+	{
+		name "slotsAreaCover"
+		mosaic "RGJBACK"
+		area 789 85 0 0
+		tooltip force lua "''"
+
+		-- actionExit doesn't work without actionEnter
+		actionEnter ""
+		actionExit "
+			if inventory.hovered and inventory.hovered ~= inventory.selected then
+				Infinity_SetArea('slotsArea' .. inventory.hovered, nil, nil, 392, 98)
+				inventory.hovered = nil
+			end
+			Infinity_SetArea('slotsAreaCover', nil, nil, 0, 0)
+		"
 	}
 }
 `
