@@ -1589,7 +1589,7 @@ menu
 		on escape
 		bam 'GUIBUTMT'
 		sequence 0
-		area 196 653 230 44
+		area 196 653 230 40
 		text style "button"
 		text	"CANCEL_BUTTON"
 		action
@@ -1603,7 +1603,7 @@ menu
 	{
 		bam 'GUIBUTMT'
 		sequence 0
-		area  438 653 230 44
+		area  438 653 230 40
 		text style "button"
 		text "DONE_BUTTON"
 		action
@@ -1682,7 +1682,7 @@ menu
 		on escape
 		bam 'GUIBUTMT'
 		sequence 0
-		area 196 653 230 44
+		area 196 653 230 40
 		text style "button"
 		text	"CANCEL_BUTTON"
 		action
@@ -1696,7 +1696,7 @@ menu
 	{
 		bam 'GUIBUTMT'
 		sequence 0
-		area  438 653 230 44
+		area  438 653 230 40
 		text style "button"
 		text "DONE_BUTTON"
 		action
@@ -1943,9 +1943,9 @@ menu
 			width 20
 			label
 			{
-				area		10 8 -1 -1
+				area		10 12 32 32
 				bam			ROUNDBUT
-				align 		left center
+				scaleToClip
 				frame		lua "scriptOptions[rowNumber][4]"
 			}
 		}
@@ -1976,7 +1976,7 @@ menu
 		on escape
 		bam 'GUIBUTMT'
 		sequence 0
-		area 196 653 230 44
+		area 196 653 230 40
 		text style "button"
 		text	"CANCEL_BUTTON"
 		action
@@ -1991,7 +1991,7 @@ menu
 		clickable lua "doneEnabled"
 		bam 'GUIBUTMT'
 		sequence 0
-		area  438 653 230 44
+		area  438 653 230 40
 		text style "button"
 		text "DONE_BUTTON"
 		action
@@ -2021,7 +2021,8 @@ menu
 	ignoreEsc
 	onOpen
 	"
-		currentPanelID = const.EXPORT_ID
+		currentPanelID = const.EXPORT_ID;
+		Infinity_FocusTextEdit('characterExportCharacterEditArea');
 	"
 	label
 	{
@@ -2096,7 +2097,7 @@ menu
 		bam 'GUIBUTMT'
 		on escape
 		sequence 0
-		area 196 653 230 44
+		area 196 653 230 40
 		text style "button"
 		text	"CANCEL_BUTTON"
 		action
@@ -2111,7 +2112,7 @@ menu
 		clickable	lua "characterScreen:IsDoneButtonClickable(currentID)"
 		bam 'GUIBUTMT'
 		sequence 0
-		area  438 653 230 44
+		area  438 653 230 40
 		text style "button"
 		text "DONE_BUTTON"
 		action
@@ -2176,9 +2177,9 @@ menu
 		clickable lua "list_GUIREC_20_5_idx"
 		bam 'GUIBUTWT'
 		sequence 0
-		area 45 462 300 44
+		area 45 462 300 40
 		text style "button"
-		text	"PLAY_IMPORT_BUTTON"
+		text	"PLAY_SOUND_BUTTON"
 		action
 		"
 			characterScreen:OnPlayButtonClick();
@@ -2189,7 +2190,7 @@ menu
 		on escape
 		bam 'GUIBUTMT'
 		sequence 0
-		area 196 653 230 44
+		area 196 653 230 40
 		text style "button"
 		text	"CANCEL_BUTTON"
 		action
@@ -2204,7 +2205,7 @@ menu
 		clickable lua "doneEnabled"
 		bam 'GUIBUTMT'
 		sequence 0
-		area  438 653 230 44
+		area  438 653 230 40
 		text style "button"
 		text "DONE_BUTTON"
 		action
@@ -2241,6 +2242,24 @@ function addStoryModeOption()
 		toggleTitles[index+1] = toggleTitles[index]
 	end
 	toggleTitles[1] = {'DIFFICULTY_LABEL_STORYMODE',	'DIFFICULTY_DESCRIPTION_STORYMODE',	65, 0, 0}
+end
+
+function removeOptionFromList(list, option)
+	local startingPoint = 1
+	local found = false
+	for index = 1, #list-1, 1 do
+		if list[index][3] == option then
+			startingPoint = index
+			found = true
+			break
+		end
+	end
+	if found == true then
+		for index = startingPoint, #list-1, 1 do
+			list[index] = list[index+1]
+		end
+		list[#list] = nil
+	end
 end
 
 toggleTitles = {
@@ -3284,7 +3303,7 @@ menu
 
 		column
 		{
-			width 90
+			width 85
 			label
 			{
 				area 10 0 -1 -1
@@ -3295,12 +3314,12 @@ menu
 		}
 		column
 		{
-			width 10
+			width 15
 			label
 			{
-				area		10 8 -1 -1
+				area		20 12 32 32
 				bam			ROUNDBUT
-				align 		center center
+				scaleToClip
 				frame		lua "autoPauseToggles[rowNumber][4]"
 			}
 		}
@@ -3335,7 +3354,7 @@ menu
 
 		column
 		{
-			width 90
+			width 85
 			label
 			{
 				area 10 0 -1 -1
@@ -3346,12 +3365,12 @@ menu
 		}
 		column
 		{
-			width 10
+			width 15
 			label
 			{
-				area		10 8 -1 -1
+				area		20 12 32 32
 				bam			ROUNDBUT
-				align 		center center
+				scaleToClip
 				frame		lua "characterPauseToggles[rowNumber][4]"
 			}
 		}
@@ -3395,7 +3414,8 @@ menu
 
 	button
 	{
-		area		102 634 230 44
+		on escape
+		area		102 634 230 40
 		bam			GUIBUTMT
 		sequence	2
 		text 		"CANCEL_BUTTON"
@@ -3409,7 +3429,7 @@ menu
 	}
 	button
 	{
-		area		514 634 230 44
+		area		514 634 230 40
 		bam			GUIBUTMT
 		sequence	2
 		text 		"DONE_BUTTON" --Done
@@ -4586,10 +4606,24 @@ function displayHelp()
 	return 0
 end
 
+function formatKeyCode(number)
+	local ret = ""
+
+	if number < 127 and number > 32 then
+		return string.format('%c', keybindings[keyCategory][rowNumber][6])
+	end
+	ret = t("SDL_" .. string.format('%d', keybindings[keyCategory][rowNumber][6]))
+
+	return ret
+end
+
 function getHotkeyName(category,number)
 	local ret = ""
 	if category < 5 then
 		ret = t(keybindings[category][number][4])
+		if ret == keybindings[category][number][4] then
+			ret = Infinity_FetchString(keybindings[category][number][4])
+		end
 	else
 		ret = Infinity_FetchString(keybindings[category][number][4])
 	end
@@ -4674,7 +4708,7 @@ menu
 			label
 			{
 				area 0 0 -1 -1
-				text lua "string.format('%c', keybindings[keyCategory][rowNumber][6])"
+				text lua "formatKeyCode(keybindings[keyCategory][rowNumber][6])"
 				text style	"normal"
 				text upper
 				text align right center
@@ -4697,7 +4731,7 @@ menu
 
 	button
 	{
-		area		514 634 230 44
+		area		514 634 230 40
 		bam			GUIBUTMT
 		sequence	6
 		text		"DONE_BUTTON"
@@ -4711,7 +4745,7 @@ menu
 	}
 	button
 	{
-		area		102 634 230 44
+		area		102 634 230 40
 		bam			GUIBUTMT
 		sequence	6
 		text		"REVERT_BUTTON"
@@ -4731,6 +4765,88 @@ function generateMegaCredits()
 	end
 end
 `
+menu
+{
+	name 'SODCREDIT'
+	align center center
+	onOpen
+	"
+		generateMegaCredits()
+		chapterScreen:OnReplayButtonClick()
+	"
+	label
+	{
+		area 0 0 1024 768
+		mosaic "NPCCHAP"
+	}
+	text
+	{
+		area 100 50 828 36
+		text style "title"
+		text "MAIN_GAME_LABEL"
+		enabled "not e:IsTouchUI()"
+	}
+	text
+	{
+		area 100 86 828 34
+		text style "title"
+		text "EXPANSION_LABEL"
+		enabled "not e:IsTouchUI()"
+	}
+	text
+	{
+		area 100 50 828 78
+		text style "title"
+		text "EXPANSION_LABEL"
+		enabled "e:IsTouchUI()"
+	}
+	label
+	{
+		area 110 176 274 430
+		mosaic "credi_02"
+	}
+	text
+	{
+		name "text_CHAPTERSCROLL_item"
+		area 440 148 492 482
+		text lua "megacredits"
+		text style normal
+		text align center top
+		scrollbar 'GUISCRC'
+		scrollbar func 'UpdateChapterScroll'
+		scrollbar hide lua 'text_CHAPTERSCROLL_auto == 1'
+		action
+		"
+			text_CHAPTERSCROLL_auto = 0
+		"
+	}
+	button
+	{
+		area 526 662 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		on escape
+		clickable lua "chapterScreen:IsDoneButtonClickable()"
+		action
+		"
+			megacredits = ''
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		area 284 662 230 40
+		bam GUIBUTMT
+		text "REPLAY_BUTTON"
+		text style "button"
+		clickable lua "chapterScreen:IsReplayButtonClickable()"
+		action
+		"
+			chapterScreen:OnReplayButtonClick()
+		"
+	}
+}
 menu
 {
 	name	'CREDITS'
@@ -4784,16 +4900,17 @@ menu
 `
 language = 0
 showsubtitles = 0
+displayLanguages = {}
 function languageDetails()
-	if languages[language] ~= nil then
-		return Infinity_FetchString(languages[language][2]) .. '\n'  .. Infinity_FetchString(languages[language][3])
+	if displayLanguages[language] ~= nil then
+		return Infinity_FetchString(displayLanguages[language][2]) .. '\n'  .. Infinity_FetchString(displayLanguages[language][3])
 	else
 		return ""
 	end
 end
 function findCurrentLanguage()
 	local lang = Infinity_GetINIString('Language', 'Text', '')
-	for k,v in pairs(languages) do
+	for k,v in pairs(displayLanguages) do
 		if v[1] == lang then
 			language = k
   		end
@@ -4953,12 +5070,13 @@ menu
 	}
 	button
 	{
-		area		370 170 230 44
+		area		370 170 230 40
 		bam			GUIBUTMT
 		sequence	0
 		text  "QUIT_GAME_BUTTON"
 		text style	"button"
 		on 			return
+		enabled "not e:IsAndroid()"
 		action
 		"
 			restoreOverlayFromQuit()
@@ -4967,7 +5085,22 @@ menu
 	}
 	button
 	{
-		area		88 170 230 44
+		area		370 170 230 40
+		bam			GUIBUTMT
+		sequence	0
+		text  "QUIT_GAME_BUTTON"
+		text style	"button"
+		on 			escape
+		enabled "e:IsAndroid()"
+		action
+		"
+			restoreOverlayFromQuit()
+			Infinity_ShutdownGame()
+		"
+	}
+	button
+	{
+		area		88 170 230 40
 		bam			GUIBUTMT
 		sequence	0
 		text  "CANCEL_BUTTON"
@@ -4976,6 +5109,7 @@ menu
 		action
 		"
 			restoreOverlayFromQuit()
+			Infinity_PopMenu('QuitMenu')
 		"
 	}
 }
@@ -5523,7 +5657,7 @@ menu
 	}
 	button
 	{
-		area 440 170 200 44
+		area 440 170 200 40
 		bam GUIBUTNT
 		text style "button"
 		text "SPELL_BUTTON"
@@ -5538,18 +5672,25 @@ menu
 	}
 	button
 	{
-		area 228 170 200 44
+		on escape
+		area 228 170 200 40
 		bam GUIBUTNT
 		text style "button"
 		text "CANCEL_BUTTON"
 		action
 		"
 			Infinity_PopMenu()
+			-- TODO: review, present in BG2 v2.5.16.2 but not in SOD v2.5.17.0
+			if false and createCharScreen:GetEngineState() == 7 then
+				--If we're in import character mode, go back to the import screen.
+				e:SelectEngine(startEngine)
+				startEngine:OnImportCharacterButtonClick()
+			end
 		"
 	}
 	button
 	{
-		area 18 170 200 44
+		area 18 170 200 40
 		bam GUIBUTNT
 		text style "button"
 		text "SCROLL_BUTTON"
@@ -5587,7 +5728,7 @@ end
 function itemDescLeftButtonEnabled()
 	if(itemDesc.mode == 0) then
 		return GetAbilityIdentifyString() ~= ""
-	else
+	elseif(itemDesc.mode == 1) then
 		return itemDesc.item.isBag
 	end
 	return 0
@@ -5595,7 +5736,7 @@ end
 function itemDescLeftButtonText()
 	if(itemDesc.mode == 0) then
 		return GetAbilityIdentifyString()
-	else
+	elseif(itemDesc.mode == 1) then
 		return t('OPEN_CONTAINER_BUTTON')
 	end
 	return ""
@@ -5607,7 +5748,7 @@ function itemDescLeftButtonAction()
 		else
 			Infinity_PushMenu('ITEM_ABILITIES',0,0)
 		end
-	else
+	elseif(itemDesc.mode == 1) then
 		storeScreen:OpenBag(itemDesc.item.res)
 		Infinity_PopMenu()
 	end
@@ -8815,6 +8956,19 @@ menu
 	name 'cheatMenu'
 	ignoreEsc
 
+	onOpen
+	"
+		if game:GetMissionPackInfo() then
+			cheatAreaDisplayList = cheatAreasTutorial
+		elseif game:GetMissionPackInfoTBP() then
+			cheatAreaDisplayList = cheatAreasArena
+		elseif startEngine:GetCampaign() == 3 then
+			cheatAreaDisplayList = cheatAreasExpansion
+		else
+			cheatAreaDisplayList = cheatAreas
+		end
+	"
+
 	label
 	{
 		area 100 0 809 298
@@ -8828,7 +8982,7 @@ menu
 			label
 			{
 				area 0 0 -1 -1
-				text lua "cheatAreas[rowNumber][1]"
+				text lua "cheatAreaDisplayList[rowNumber][1]"
 				text style "list"
 			}
 		}
@@ -8838,7 +8992,7 @@ menu
 			label
 			{
 				area 0 0 -1 -1
-				text lua "cheatAreas[rowNumber][2]"
+				text lua "cheatAreaDisplayList[rowNumber][2]"
 				text style "list"
 			}
 		}
@@ -8846,7 +9000,7 @@ menu
 		area 122 6 492 240
 
 		rowheight	18
-		table		"cheatAreas"
+		table		"cheatAreaDisplayList"
 		var		cheatTeleportArea
 		scrollbar	'GUISCRC'
 	}
@@ -8857,7 +9011,7 @@ menu
 		sequence	6
 		text		"TRAVEL_BUTTON"
 		text style	"button"
-		action 		"C:MoveToArea(cheatAreas[cheatTeleportArea][1])"
+		action 		"C:MoveToArea(cheatAreaDisplayList[cheatTeleportArea][1])"
 	}
 	button
 	{
@@ -9001,6 +9155,7 @@ menu
 	{
 		area		816 6 32 32
 		bam			ROUNDBUT
+		scaleToClip
 		toggle		luaEditShowHistoryList
 		action
 		"
@@ -9124,7 +9279,7 @@ menu
 	}
 	button
 	{
-		area 213 170 230 44
+		area 213 170 230 40
 		bam GUIBUTNT
 		text "DONE_BUTTON"
 		text style	"button"
@@ -9265,7 +9420,7 @@ menu
 
 	button
 	{
-		area 527 710 200 44
+		area 527 710 200 40
 		bam 'GUIBUTNT'
 		sequence 1
 		text "PLAY_IMPORT_BUTTON" -- Play
@@ -9279,7 +9434,7 @@ menu
 	button
 	{
 		on escape
-		area 305 710 200 44
+		area 305 710 200 40
 		bam 'GUIBUTNT'
 		sequence 0
 		text "BACK_BUTTON" -- Back
@@ -9293,7 +9448,7 @@ menu
 	--delete/create buttons
 	button
 	{
-		area 155 180 300 44
+		area 155 180 300 40
 		bam 'GUIBUTWT'
 		sequence 0
 		text lua "partyImport.character[1].createdelete"
@@ -9305,7 +9460,7 @@ menu
 	}
 	button
 	{
-		area 155 317 300 44
+		area 155 317 300 40
 		bam 'GUIBUTWT'
 		sequence 2
 		text lua "partyImport.character[2].createdelete"
@@ -9317,7 +9472,7 @@ menu
 	}
 	button
 	{
-		area 155 452 300 44
+		area 155 452 300 40
 		bam 'GUIBUTWT'
 		sequence 1
 		text lua "partyImport.character[3].createdelete"
@@ -9329,7 +9484,7 @@ menu
 	}
 	button
 	{
-		area 645 180 300 44
+		area 645 180 300 40
 		bam 'GUIBUTWT'
 		sequence 0
 		text lua "partyImport.character[4].createdelete"
@@ -9341,7 +9496,7 @@ menu
 	}
 	button
 	{
-		area 645 317 300 44
+		area 645 317 300 40
 		bam 'GUIBUTWT'
 		sequence 2
 		text lua "partyImport.character[5].createdelete"
@@ -9353,7 +9508,7 @@ menu
 	}
 	button
 	{
-		area 645 452 300 44
+		area 645 452 300 40
 		bam 'GUIBUTWT'
 		sequence 1
 		text lua "partyImport.character[6].createdelete"
@@ -9408,30 +9563,40 @@ menu
 	align center center
 	ignoreEsc
 	modal
+	onOpen
+	"
+		if e:IsTouchUI() then
+			startEngine:DismissChooseCampaignPopup()
+		end
+	"
 
 	label
 	{
 		area 0 0 672 672
 		mosaic "RECENTEV"
+		enabled "not e:IsTouchUI()"
 	}
 	label
 	{
 		area 158 52 354 46
 		text style "title"
 		text "SELECT_CAMPAIGN_TITLE"
+		enabled "not e:IsTouchUI()"
 	}
 	label
 	{
 		area 136 120 406 258
 		text style "normal"
 		text "WELCOME_NORMAL"
+		enabled "not e:IsTouchUI()"
 	}
 	button
 	{
-		area 198 408 300 45
+		area 198 408 300 40
 		bam GUIBUTWT
 		text style "button"
 		text "SIEGE_OF_DRAGONSPEAR_BUTTON"
+		enabled "not e:IsTouchUI()"
 		action
 		"
 			startEngine:DismissChooseCampaignPopup()
@@ -9440,10 +9605,11 @@ menu
 	}
 		button
 	{
-		area 198 458 300 45
+		area 198 458 300 40
 		bam GUIBUTWT
 		text style "button"
 		text "BALDURS_GATE_BUTTON"
+		enabled "not e:IsTouchUI()"
 		action
 		"
 			--selected by default, just close this menu.
@@ -9452,10 +9618,11 @@ menu
 	}
 	button
 	{
-		area 198 508 300 45
+		area 198 508 300 40
 		bam GUIBUTWT
 		text style "button"
 		text "BLACK_PITS_BUTTON"
+		enabled "not e:IsTouchUI()"
 		action
 		"
 			startEngine:DismissChooseCampaignPopup()
@@ -11090,10 +11257,11 @@ OptionsButtons =
 function onStartOptionClick()
 	Infinity_PlaySound('GAM_09')
 	if(selectedMenuOpt == 1 and startEngine:GetCampaign() == const.START_CAMPAIGN_SOD) then
+		Infinity_PushMenu( 'SODCREDIT' )
 		--If in SOD, display the end credits
-		Infinity_PopMenu('START_OPTIONS')
-		chapterScreen:StartTextScreen( "25ecred" )
-		e:SelectEngine(chapterScreen)
+		--Infinity_PopMenu('START_OPTIONS')
+		--chapterScreen:StartTextScreen( "25ecred" )
+		--e:SelectEngine(chapterScreen)
 		selectedMenuOpt = NIL
 		return
 	end
@@ -12766,7 +12934,7 @@ menu
 
 	button
 	{
-		area 316 650 230 44
+		area 316 650 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -13769,7 +13937,7 @@ menu
 
 	button
 	{
-		area 478 24 230 44
+		area 478 24 230 40
 		bam GUIBUTMT
 		sequence 0
 		text style "button"
@@ -13836,7 +14004,16 @@ menu
 {
 	name 'NOTE_ADD'
 	align center center
-	onOpen "colorChoice = mapScreen:GetColorChoice()"
+	onOpen
+	"
+		if colorChoice == nil then
+			colorChoice = Infinity_FindUIItemByName('BUTTON_mapNoteColor_' .. mapScreen:GetColorChoice())
+		end
+	"
+	onClose
+	"
+		colorChoice = nil
+	"
 	modal
 	label
 	{
@@ -13859,7 +14036,7 @@ menu
 	}
 	button
 	{
-		area 440 170 200 44
+		area 440 170 200 40
 		bam GUIBUTNT
 		text style "button"
 		text "DONE_BUTTON"
@@ -13871,7 +14048,8 @@ menu
 	}
 	button
 	{
-		area 228 170 200 44
+		on escape
+		area 228 170 200 40
 		bam GUIBUTNT
 		text style "button"
 		text "CANCEL_BUTTON"
@@ -13882,7 +14060,7 @@ menu
 	}
 	button
 	{
-		area 18 170 200 44
+		area 18 170 200 40
 		bam GUIBUTNT
 		text style "button"
 		text "DELETE_BUTTON"
@@ -13895,6 +14073,7 @@ menu
 
 	button
 	{
+		name "BUTTON_mapNoteColor_0"
 		area 29 98 45 42
 		bam "FLAG1"
 		highlightgroup colorChoice
@@ -13906,6 +14085,7 @@ menu
 	}
 	button
 	{
+		name "BUTTON_mapNoteColor_1"
 		area 108 98 45 42
 		bam "FLAG1"
 		highlightgroup colorChoice
@@ -13917,6 +14097,7 @@ menu
 	}
 	button
 	{
+		name "BUTTON_mapNoteColor_2"
 		area 187 98 45 42
 		bam "FLAG1"
 		highlightgroup colorChoice
@@ -13928,6 +14109,7 @@ menu
 	}
 	button
 	{
+		name "BUTTON_mapNoteColor_3"
 		area 266 98 45 42
 		bam "FLAG1"
 		highlightgroup colorChoice
@@ -13939,6 +14121,7 @@ menu
 	}
 	button
 	{
+		name "BUTTON_mapNoteColor_4"
 		area 345 98 45 42
 		bam "FLAG1"
 		highlightgroup colorChoice
@@ -13950,6 +14133,7 @@ menu
 	}
 	button
 	{
+		name "BUTTON_mapNoteColor_5"
 		area 424 98 45 42
 		bam "FLAG1"
 		highlightgroup colorChoice
@@ -13961,6 +14145,7 @@ menu
 	}
 	button
 	{
+		name "BUTTON_mapNoteColor_6"
 		area 503 98 45 42
 		bam "FLAG1"
 		highlightgroup colorChoice
@@ -13972,6 +14157,7 @@ menu
 	}
 	button
 	{
+		name "BUTTON_mapNoteColor_7"
 		area 582 98 45 42
 		bam "FLAG1"
 		highlightgroup colorChoice
@@ -14208,12 +14394,12 @@ menu
 
 	label
 	{
-		area 0 0 406 418
+		area 0 0 465 500
 		mosaic GUIERR
 	}
 	label --Title
 	{
-		area 74 82 254 80
+		area 124 134 224 112
 		text "WAITING_FOR_OTHER_PLAYERS"
 		text style	"label"
 	}
@@ -15621,7 +15807,7 @@ menu
 	}
 	button
 	{
-		area 79 170 230 44
+		area 79 170 230 40
 		bam GUIBUTMT
 		text "LOAD_BUTTON"
 		text style	"button"
@@ -15634,7 +15820,7 @@ menu
 	}
 	button
 	{
-		area 343 170 230 44
+		area 343 170 230 40
 		bam GUIBUTMT
 		text style	"button"
 		text lua "worldDeathQuitText()"
@@ -15827,6 +16013,22 @@ menu
 				worldScreen:OnGroupScroll(1)
 			end
 		end
+	end
+	function showContainerItemDescription(index)
+		local idxScrolled = index + worldScreen:GetTopContainerItem()
+		if(loot.containerItems[idxScrolled] == nil or loot.containerItems[idxScrolled].item == nil) then
+			return nil
+		end
+		Infinity_GetContainerItemDescription(idxScrolled)
+		showItemDescription(loot.containerItems[idxScrolled].item, 2)
+	end
+	function showGroupItemDescription(index)
+		local idxScrolled = index + worldScreen:GetTopGroupItem()
+		if(loot.groupItems[idxScrolled] == nil or loot.groupItems[idxScrolled].item == nil) then
+			return nil
+		end
+		Infinity_GetGroupItemDescription(idxScrolled)
+		showItemDescription(loot.groupItems[idxScrolled].item, 2)
 	end
 `
 menu
@@ -16815,7 +17017,7 @@ menu
 	}
 	button
 	{
-		area 638 54 200 44
+		area 638 54 200 40
 		bam guibutnt
 		text "REMOVE_BUTTON"
 		text style "button"
@@ -16827,7 +17029,7 @@ menu
 	}
 	button
 	{
-		area 638 101 200 44
+		area 638 101 200 40
 		bam guibutnt
 		text "DONE_BUTTON"
 		text style "button"
@@ -17636,6 +17838,7 @@ menu
 				else
 					completeSave()
 				end
+				Infinity_FocusTextEdit('')
 				return -1
 			end
 			return 1
@@ -17699,7 +17902,7 @@ menu
 	}
 	button
 	{
-		area	528 254 200 44
+		area	528 254 200 40
 		bam		GUIBUTNT
 		text	"SAVE_BUTTON"
 		text style "button"
@@ -17711,7 +17914,7 @@ menu
 	button
 	{
 		enabled	currentSave
-		area	528 254 200 44
+		area	528 254 200 40
 		bam		GUIBUTNT
 		text	"OVERWRITE_BUTTON"
 		text style "button"
@@ -17722,7 +17925,8 @@ menu
 	}
 	button
 	{
-		area	228 254 200 44
+		on escape
+		area	228 254 200 40
 		bam		GUIBUTNT
 		text	"CANCEL_BUTTON"
 		text style "button"
@@ -17794,10 +17998,12 @@ menu
 		text style "button"
 		bam GUIBUTST
 		clickable lua "selectedCharacter ~= 0"
-		action "
-			createCharScreen:OnPrerollCharacterPick(character_select[selectedCharacter].id)
+		action
+		"
+			Infinity_OnCharacterImportItemSelect(selectedCharacter - 1)
+			createCharScreen:OnDoneButtonClick()
 			Infinity_PopMenu('CHARACTER_SELECT')
-			"
+		"
 	}
 	button
 	{
@@ -17806,7 +18012,11 @@ menu
 		area 268 686 237 66
 		text "BACK_BUTTON"
 		text style "button"
-		action "Infinity_PopMenu('CHARACTER_SELECT');"
+		action
+		"
+			createCharScreen:OnCancelButtonClick()
+			Infinity_PopMenu('CHARACTER_SELECT')
+		"
 	}
 
 }
@@ -22172,7 +22382,7 @@ menu
 	button
 	{
 		on escape
-		area 196 650 230 44
+		area 196 650 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -22181,7 +22391,7 @@ menu
 	button
 	{
 		on return
-		area 438 650 230 44
+		area 438 650 230 40
 		bam GUIBUTMT
 		text lua "NextOrDone()"
 		text style "button"
@@ -22260,7 +22470,7 @@ menu
 	button
 	{
 		on escape
-		area 196 650 230 44
+		area 196 650 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -22269,7 +22479,7 @@ menu
 	button
 	{
 		on return
-		area 438 650 230 44
+		area 438 650 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -22535,7 +22745,7 @@ menu
 	}
 	button
 	{
-		area 317 634 230 44
+		area 317 634 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style	"button"
@@ -22692,6 +22902,10 @@ function connectionBuildGameList()
 			entryOK = false
 		end
 
+		if e:IsTouchUI() and mp_sessions[index]["version"] ~= "bgee-sod" then
+			entryOK = false
+		end
+
 		if entryOK == true then
 			count = count + 1
 			mp_shownSessions[count] = {}
@@ -22719,7 +22933,7 @@ function chooseNetworkProtocol(num)
 	connectionScreen:SelectServiceProvider(num)
 end
 function joinGameEnabled()
-	if selectedMp <= 0 then
+	if selectedMp <= 0 or mp_shownSessions[selectedMp]['actualIndex'] == nil then
 		return 0
 	else
 		return 1
@@ -23060,12 +23274,13 @@ menu
 	}
 	button
 	{
-		area		370 170 230 44
+		area		370 170 230 40
 		bam		GUIBUTMT
 		sequence	0
 		text  "DONE_BUTTON"
 		text style	"button"
 		on		return
+		clickable lua "connectionScreen:IsValidAddress(connectionTCPIPEdit)"
 		action
 		"
 			Infinity_PopMenu();
@@ -23074,7 +23289,7 @@ menu
 	}
 	button
 	{
-		area		88 170 230 44
+		area		88 170 230 40
 		bam		GUIBUTMT
 		sequence	1
 		text  "CANCEL_BUTTON"
@@ -23100,7 +23315,6 @@ menu
 		var		connectionTCPIPEdit
 		text style	"edit"
 		maxlines	1
-
 	}
 }
 `
@@ -23382,7 +23596,8 @@ menu
 
 	button
 	{
-		area 			236 572 200 44
+		on escape
+		area 			236 572 200 40
 		bam			'GUIBUTNT'
 		text style	"button"
 		text		"BACK_BUTTON"
@@ -23487,6 +23702,116 @@ menu
 		"
 	}
 }
+`
+connectionNameNameEdit = ""
+`
+menu
+{
+	name 'CONNECTION_NAME'
+	align center center
+	modal
+	onOpen
+	"
+		connectionNameNameEdit = ''
+		Infinity_FocusTextEdit('connectionNameNameEditArea')
+	"
+
+	label
+	{
+		area 0 0 658 240
+		mosaic "GUIERR6"
+	}
+	label
+	{
+		area		12 16 632 70
+		text		style 'title'
+		text  		"PLAYER_NAME_LABEL"
+	}
+
+	button
+	{
+		bam 		GUIOSW
+		on esc
+		area 		614 0 44 44
+		sequence 	2
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+
+	edit
+	{
+		name		"connectionNameNameEditArea"
+		area		22 92 606 50
+		var			connectionNameNameEdit
+		text style	"edit"
+		text align 	center center
+		maxlines	1
+		fill        112 111 111 64
+		action
+		"
+			--On return pressed
+			if (key_pressed == 13) then
+				local stringStart = string.find(connectionNameNameEdit, '%S')
+				if stringStart ~= nil then
+					connectionPlayerNameEdit = string.sub(connectionNameNameEdit, stringStart, string.len(connectionNameNameEdit) )
+					Infinity_PopMenu()
+
+					Infinity_GetPasswordRequired(mp_shownSessions[selectedMp]['actualIndex'])
+					if passwordReq == 0 then
+						Infinity_PopMenu();
+						Infinity_PopMenu();
+						mp_sessions[mp_shownSessions[selectedMp]['actualIndex']]['password'] = passwordMp
+						Infinity_JoinMultiplayerGame(mp_shownSessions[selectedMp]['actualIndex'])
+					else
+						Infinity_PushMenu('CONNECTION_PASSWORD')
+					end
+				end
+				return -1
+			end
+			return 1
+		"
+	}
+
+	button
+	{
+		area 		343 170 230 40
+		bam			'GUIBUTMT'
+		text style	"button"
+		text		"DONE_BUTTON"
+		clickable lua "connectionNameNameEdit ~='' and string.find(connectionNameNameEdit, '%S') ~= nil"
+		action
+		"
+			Infinity_PopMenu();
+			local stringStart = string.find(connectionNameNameEdit, '%S')
+			connectionPlayerNameEdit = string.sub(connectionNameNameEdit, stringStart, string.len(connectionNameNameEdit) )
+
+			Infinity_GetPasswordRequired(mp_shownSessions[selectedMp]['actualIndex'])
+			if passwordReq == 0 then
+				Infinity_PopMenu();
+				Infinity_PopMenu();
+				mp_sessions[mp_shownSessions[selectedMp]['actualIndex']]['password'] = passwordMp
+				Infinity_JoinMultiplayerGame(mp_shownSessions[selectedMp]['actualIndex'])
+			else
+				Infinity_PushMenu('CONNECTION_PASSWORD')
+			end
+		"
+	}
+
+	button
+	{
+		on escape
+		area 79 170 230 40
+		bam			'GUIBUTMT'
+		text style	"button"
+		text		"BACK_BUTTON"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}
 menu
 {
 	name 'CONNECTION_PLAYERNAME'
@@ -23555,7 +23880,7 @@ menu
 	button
 	{
 		clickable 	lua "connectionPlayerNameEdit ~= ''"
-		area		150 535 230 44
+		area		150 535 230 40
 		bam			GUIBUTMT
 		sequence	0
 		text  		"DONE_BUTTON"
@@ -23588,7 +23913,7 @@ menu
 	}
 	button
 	{
-		area		222 170 230 44
+		area		222 170 230 40
 		bam		GUIBUTMT
 		sequence	0
 		text  		"CANCEL_BUTTON"
@@ -23619,7 +23944,7 @@ menu
 	}
 	button
 	{
-		area		222 170 230 44
+		area		222 170 230 40
 		bam		GUIBUTMT
 		sequence	0
 		text  		"CANCEL_BUTTON"
@@ -23644,9 +23969,38 @@ menu
 	}
 	label --Title
 	{
-		area 30 20 600 64
+		area 30 20 600 122
 		text "CONNECTION_FINDING_DEVICES"
 		text style	"label"
+	}
+	button
+	{
+		area 		44 170 234 40
+		bam			GUIBUTMT
+		sequence	0
+		text  		"CANCEL_BUTTON"
+		text style	"button"
+		on			escape
+		action
+		"
+			Infinity_PopMenu('CONNECTION_WAITING_FOR_PROVIDER')
+			Infinity_PopMenu('CONNECTION');
+			connectionScreen:OnMainCancelButtonClick()
+		"
+	}
+	button
+	{
+		area 		404 170 230 40
+		bam			GUIBUTMT
+		sequence	0
+		text  		"CONNECTION_LOCAL_NETWORK_GAME"
+		text style	"button"
+		on			return
+		action
+		"
+			Infinity_PopMenu('CONNECTION_WAITING_FOR_PROVIDER')
+			connectionScreen:StopConnectingToProvider()
+		"
 	}
 }
 menu
@@ -23668,7 +24022,7 @@ menu
 	}
 	button
 	{
-		area		216 166 202 44
+		area		216 166 202 40
 		bam			GUIBUTNT
 		sequence	0
 		text  		"CANCEL_BUTTON"
@@ -23754,7 +24108,7 @@ multiplayerInPermissionForPlayer = 0
 
 multiplayerSessionName = ""
 multiplayerSaveName = ""
-multiplayerLocationName = ""
+multiplayerChapter = ""
 multiplayerTimePlayed = ""
 multiplayerDifficultyLabel = ""
 multiplayerDifficultyImage = 0
@@ -23876,6 +24230,32 @@ function getMultiplayerCharacterButtonText(slot)
 
 	return ret
 end
+function shouldGreyscaleEditButton(slot)
+	local ret = false
+	local storedString = t("MULTIPLAYER_VIEW_DETAILS_BUTTON")
+
+	if multiplayerFromInGame == true then
+		ret = true
+	end
+
+	if ret == true and getMultiplayerCharacterButtonText(slot) == storedString  then
+		ret = false
+	end
+
+	if ret == true and (multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[7] == true) then
+		ret = false
+	end
+
+	if ret == true and mpaCharacters[slot]["name"] == "" then
+		ret = false
+	end
+
+	if ret == false and mpaCharacters[slot]['ready'] == true and getMultiplayerCharacterButtonText(slot) ~= storedString and multiplayerFromInGame == false then
+		ret = true
+	end
+
+	return ret
+end
 function getMultiplayerCharacterReadyText(slot)
 	local ret = ""
 
@@ -23977,13 +24357,13 @@ function getStartGameButtonTooltip()
 	end
 end
 
-function updateMultiplayerSessionData(sessionName, saveName, areaName, timePlayed, difficulty)
+function updateMultiplayerSessionData(sessionName, saveName, chapter, timePlayed, difficulty)
 	local gold = "^0xffc7f8fb"
 	multiplayerSessionName = gold..sessionName.."^-"
 
 	if areaName ~= "" then
 		multiplayerSaveName = gold..t("MULTIPLAYER_SAVED_GAME_LABEL").."^- ^0xffffffff"..saveName.."^-"
-		multiplayerLocationName = gold..t("MULTIPLAYER_LOCATION_LABEL").."^- ^0xffffffff"..areaName.."^-"
+		multiplayerChapter = gold..t("MULTIPLAYER_CHAPTER_LABEL").."^- ^0xffffffff"..chapter.."^-"
 		multiplayerTimePlayed = gold..t("MULTIPLAYER_TIME_PLAYED_LABEL").."^- ^0xffffffff"..timePlayed.."^-"
 		if difficulty > 0 then
 			mulitplayerPreexistingDifficulty = difficulty
@@ -23992,7 +24372,7 @@ function updateMultiplayerSessionData(sessionName, saveName, areaName, timePlaye
 		end
 	else
 		multiplayerSaveName = gold..t("MULTIPLAYER_NEW_GAME_LABEL").."^- ^0xffffffff"..saveName.."^-"
-		multiplayerLocationName = gold..t("MULTIPLAYER_LOCATION_NEW_GAME").."^-"
+		multiplayerChapter = gold..t("MULTIPLAYER_CHAPTER_LABEL").."^- ^0xffffffff"..chapter.."^-"
 		multiplayerTimePlayed = gold..t("MULTIPLAYER_TIME_PLAYED_NEW_GAME").."^-"
 		if difficulty > 0 then
 			multiplayerDifficultyLabel = gold..t("MULTIPLAYER_DIFFICULTY_LABEL").."^-^0xffffffff"..t(difficulties[difficulty].name).."^-"
@@ -24092,6 +24472,9 @@ end
 function multiplayerStopSwapPortraits(player)
 	if multiplayerLocalPlayerID == 1 then
 		if player > 0 and player < 7 and mpaPlayers[player]["name"] ~= "" and currentMultiplayerSelectPlayer ~= nil then
+			if mpaCharacters[mpDraggedCharacter]['ready'] == true and mpaCharacters[mpDraggedCharacter]['player'] ~= player then
+				multiplayerScreen:OnReadyButtonClick(mpDraggedCharacter-1)
+			end
 			broadcastCharacterControlChange(mpDraggedCharacter, player)
 			multiplayerScreen:OnPlayerSelection(player-1)
 		end
@@ -24294,7 +24677,7 @@ menu
 			}
 			label
 			{
-				area		2 50 195 44
+				area		2 50 195 40
 				bam 		'GUIBUTNT'
 				sequence 	1
 				frame lua 	"currentCellCheck(3)"
@@ -24306,6 +24689,12 @@ menu
 				area		2 50 195 44
 				text lua 	"getMultiplayerCharacterButtonText(rowNumber)"
 				text style 	"button"
+			}
+			label
+			{
+				area		2 50 195 44
+				fill 		0 0 0 170
+				enabled 	"shouldGreyscaleEditButton(rowNumber)"
 			}
 
 		}
@@ -24337,7 +24726,7 @@ menu
 						multiplayerScreen:SetModifiedCharacterSlot(selectedCharacter - 1)
 						currentMultiplayerSelectPlayer = mpaCharacters[selectedCharacter]['player']
 						Infinity_PushMenu('MP_PICKPLAYER')
-					elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+					elseif shouldGreyscaleEditButton(selectedCharacter) == false then
 						multiplayerScreen:OnModifyButtonClick()
 					end
 				end
@@ -24345,32 +24734,32 @@ menu
 				cellNumber = nil
 			elseif cellNumber == 3 then
 				cellNumber = nil
-				print(getMultiplayerCharacterButtonText(selectedCharacter))
-				if getMultiplayerCharacterButtonText(selectedCharacter) == t('MULTIPLAYER_VIEW_DETAILS_BUTTON') then
-					print('1')
-					multiplayerScreen:OnPortraitButtonClick(selectedCharacter-1)
-				elseif getMultiplayerCharacterButtonText(selectedCharacter) == t('CREATE_CHAR_BUTTON') then
-					print('2')
-					if multiplayerFromInGame == false then
-					print('2a')
-						multiplayerScreen:SetModifiedCharacterSlot(selectedCharacter-1)
-						multiplayerScreen:UpdateModifyCharacterPanel()
-					elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
-					print('2b')
-						multiplayerScreen:OnModifyButtonClick()
-					end
-				elseif getMultiplayerCharacterButtonText(selectedCharacter) == t('MULTIPLAYER_EDIT_CHAR_BUTTON') then
-					print('3')
-					if multiplayerFromInGame == false then
-						mpModifyingCharacter = selectedCharacter - 1
-						Infinity_PushMenu('MP_MODIFYCHARACTER')
-					elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
-						multiplayerScreen:OnModifyButtonClick()
+				if shouldGreyscaleEditButton(selectedCharacter) == false then
+					if getMultiplayerCharacterButtonText(selectedCharacter) == t('MULTIPLAYER_VIEW_DETAILS_BUTTON') then
+						multiplayerScreen:OnPortraitButtonClick(selectedCharacter-1)
+					elseif getMultiplayerCharacterButtonText(selectedCharacter) == t('CREATE_CHAR_BUTTON') then
+						if multiplayerFromInGame == false then
+							multiplayerScreen:SetModifiedCharacterSlot(selectedCharacter-1)
+							multiplayerScreen:UpdateModifyCharacterPanel()
+						elseif shouldGreyscaleEditButton(selectedCharacter) == false then
+							multiplayerScreen:OnModifyButtonClick()
+						end
+					elseif getMultiplayerCharacterButtonText(selectedCharacter) == t('MULTIPLAYER_EDIT_CHAR_BUTTON') then
+						if multiplayerFromInGame == false then
+							mpModifyingCharacter = selectedCharacter - 1
+							Infinity_PushMenu('MP_MODIFYCHARACTER')
+						elseif shouldGreyscaleEditButton(selectedCharacter) == false then
+							multiplayerScreen:OnModifyButtonClick()
+						end
 					end
 				end
 			elseif cellNumber == 4 then
 				cellNumber = nil
 			end
+		"
+		actionAlt
+		"
+			cellNumber = nil
 		"
 	}
 
@@ -24680,7 +25069,7 @@ menu
 		area		446 395 46 45
 		bam 			GUMPBUTX
 		sequence 		3
-		clickable lua	"mpaPlayers[2]['name'] ~= ''"
+		clickable lua	"mpaPlayers[2]['name'] ~= '' and multiplayerLocalPlayerID == 1"
 		align 		center center
 		tooltip lua	"t('MULTIPALYER_PERMISSION_TOOLTIP')"
 		action
@@ -24697,7 +25086,7 @@ menu
 		area		446 446 46 45
 		bam 			GUMPBUTX
 		sequence 		3
-		clickable lua	"mpaPlayers[3]['name'] ~= ''"
+		clickable lua	"mpaPlayers[3]['name'] ~= '' and multiplayerLocalPlayerID == 1"
 		align 		center center
 		tooltip lua	"t('MULTIPALYER_PERMISSION_TOOLTIP')"
 		action
@@ -24714,7 +25103,7 @@ menu
 		area		446 497 46 45
 		bam 			GUMPBUTX
 		sequence 		3
-		clickable lua	"mpaPlayers[4]['name'] ~= ''"
+		clickable lua	"mpaPlayers[4]['name'] ~= '' and multiplayerLocalPlayerID == 1"
 		align 		center center
 		tooltip lua	"t('MULTIPALYER_PERMISSION_TOOLTIP')"
 		action
@@ -24731,7 +25120,7 @@ menu
 		area		446 548 46 45
 		bam 			GUMPBUTX
 		sequence 		3
-		clickable lua	"mpaPlayers[5]['name'] ~= ''"
+		clickable lua	"mpaPlayers[5]['name'] ~= '' and multiplayerLocalPlayerID == 1"
 		align 		center center
 		tooltip lua	"t('MULTIPALYER_PERMISSION_TOOLTIP')"
 		action
@@ -24748,7 +25137,7 @@ menu
 		area		446 599 46 45
 		bam 			GUMPBUTX
 		sequence 		3
-		clickable lua	"mpaPlayers[6]['name'] ~= ''"
+		clickable lua	"mpaPlayers[6]['name'] ~= '' and multiplayerLocalPlayerID == 1"
 		align 		center center
 		tooltip lua	"t('MULTIPALYER_PERMISSION_TOOLTIP')"
 		action
@@ -24787,8 +25176,12 @@ menu
 		align 				center center
 		actionSimpleDrag
 		"
-			local slot = getMultiplayerPlayerControlledCharacterSlot(1,2)
-			multiplayerStartSwapPortraits(1,slot)
+			if multiplayerFromInGame == false then
+				local slot = getMultiplayerPlayerControlledCharacterSlot(1,2)
+				multiplayerStartSwapPortraits(1,slot)
+			elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+				multiplayerScreen:OnModifyButtonClick()
+			end
 		"
 		actionSimpleDrop
 		"
@@ -24803,8 +25196,12 @@ menu
 		align 				center center
 		actionSimpleDrag
 		"
-			local slot = getMultiplayerPlayerControlledCharacterSlot(1,3)
-			multiplayerStartSwapPortraits(1,slot)
+			if multiplayerFromInGame == false then
+				local slot = getMultiplayerPlayerControlledCharacterSlot(1,3)
+				multiplayerStartSwapPortraits(1,slot)
+			elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+				multiplayerScreen:OnModifyButtonClick()
+			end
 		"
 		actionSimpleDrop
 		"
@@ -24819,8 +25216,12 @@ menu
 		align 				center center
 		actionSimpleDrag
 		"
-			local slot = getMultiplayerPlayerControlledCharacterSlot(1,4)
-			multiplayerStartSwapPortraits(1,slot)
+			if multiplayerFromInGame == false then
+				local slot = getMultiplayerPlayerControlledCharacterSlot(1,4)
+				multiplayerStartSwapPortraits(1,slot)
+			elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+				multiplayerScreen:OnModifyButtonClick()
+			end
 		"
 		actionSimpleDrop
 		"
@@ -24835,8 +25236,12 @@ menu
 		align 				center center
 		actionSimpleDrag
 		"
-			local slot = getMultiplayerPlayerControlledCharacterSlot(1,5)
-			multiplayerStartSwapPortraits(1,slot)
+			if multiplayerFromInGame == false then
+				local slot = getMultiplayerPlayerControlledCharacterSlot(1,5)
+				multiplayerStartSwapPortraits(1,slot)
+			elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+				multiplayerScreen:OnModifyButtonClick()
+			end
 		"
 		actionSimpleDrop
 		"
@@ -24851,8 +25256,12 @@ menu
 		align 				center center
 		actionSimpleDrag
 		"
-			local slot = getMultiplayerPlayerControlledCharacterSlot(1,6)
-			multiplayerStartSwapPortraits(1,slot)
+			if multiplayerFromInGame == false then
+				local slot = getMultiplayerPlayerControlledCharacterSlot(1,6)
+				multiplayerStartSwapPortraits(1,slot)
+			elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+				multiplayerScreen:OnModifyButtonClick()
+			end
 		"
 		actionSimpleDrop
 		"
@@ -25398,10 +25807,10 @@ menu
 		text style 	'label'
 		align 		left center
 	}
-	label -- location
+	label -- chapter
 	{
 		area 		206 180 288 44
-		text lua	"multiplayerLocationName"
+		text lua	"multiplayerChapter"
 		text style 	'label'
 		align 		left center
 	}
@@ -25430,7 +25839,7 @@ menu
 
 	button
 	{
-		area 740 706 200 44
+		area 740 706 200 40
 		bam 'GUIBUTNT'
 		sequence 1
 		text "START_GAME_BUTTON" -- Done
@@ -25446,7 +25855,7 @@ menu
 	button
 	{
 		on escape
-		area 740 706 200 44
+		area 740 706 200 40
 		bam 'GUIBUTNT'
 		sequence 1
 		text "DONE_BUTTON" -- Done
@@ -25461,7 +25870,7 @@ menu
 	}
 	button
 	{
-		area 82 706 200 44
+		area 82 706 200 40
 		bam 'GUIBUTNT'
 		sequence 0
 		text "LOGOUT_BUTTON" -- Logout
@@ -25473,7 +25882,7 @@ menu
 	}
 	button
 	{
-		area 298 652 200 42
+		area 298 652 200 40
 		bam 'GUIBUTNT'
 		sequence 0
 		text "MULTIPLAYER_GAME_OPTIONS_BUTTON"
@@ -25500,12 +25909,12 @@ menu
 `
 multiplayerPermissions =
 {
-	{'MULTIPLAYER_PERMISSIONS_MODIFY',	'MULTIPLAYER_PERMISSIONS_MODIFY_TOOLTIP',	false, false},
-	{'MULTIPLAYER_PERMISSIONS_GOLD',	'MULTIPLAYER_PERMISSIONS_GOLD_TOOLTIP',		false, false},
-	{'MULTIPLAYER_PERMISSIONS_TRAVEL',	'MULTIPLAYER_PERMISSIONS_TRAVEL_TOOLTIP',	false, false},
-	{'MULTIPLAYER_PERMISSIONS_VIEW',	'MULTIPLAYER_PERMISSIONS_VIEW_TOOLTIP',		false, false},
-	{'MULTIPLAYER_PERMISSIONS_DIALOGUE','MULTIPLAYER_PERMISSIONS_DIALOGUE_TOOLTIP',	false, false},
-	{'MULTIPLAYER_PERMISSIONS_PAUSE',	'MULTIPLAYER_PERMISSIONS_PAUSE_TOOLTIP',	false, false}
+	{'MULTIPLAYER_PERMISSIONS_MODIFY',	'MULTIPLAYER_PERMISSIONS_MODIFY_TOOLTIP',	false, false, 7},
+	{'MULTIPLAYER_PERMISSIONS_GOLD',	'MULTIPLAYER_PERMISSIONS_GOLD_TOOLTIP',		false, false, 0},
+	{'MULTIPLAYER_PERMISSIONS_TRAVEL',	'MULTIPLAYER_PERMISSIONS_TRAVEL_TOOLTIP',	false, false, 1},
+	{'MULTIPLAYER_PERMISSIONS_VIEW',	'MULTIPLAYER_PERMISSIONS_VIEW_TOOLTIP',		false, false, 3},
+	{'MULTIPLAYER_PERMISSIONS_DIALOGUE','MULTIPLAYER_PERMISSIONS_DIALOGUE_TOOLTIP',	false, false, 2},
+	{'MULTIPLAYER_PERMISSIONS_PAUSE',	'MULTIPLAYER_PERMISSIONS_PAUSE_TOOLTIP',	false, false, 4}
 }
 
 function broadcastPermissionChange(player,permission,setting)
@@ -25541,9 +25950,29 @@ menu
 	onOpen
 	"
 		local index = 1
-		for index = 1, #(multiplayerPermissions), 1 do
-			multiplayerPermissions[index][3] = multiplayer.player[multiplayerInPermissionForPlayer].permissions[index]
-			multiplayerPermissions[index][4] = multiplayerPermissions[index][3]
+		for index = 0, #(multiplayer.player[multiplayerInPermissionForPlayer].permissions), 1 do
+			local luaIndex = -1
+			local loopLuaIndex = -1
+
+			for loopLuaIndex = 1, #multiplayerPermissions, 1 do
+				if multiplayerPermissions[loopLuaIndex][5] == index then
+					luaIndex = loopLuaIndex
+					break
+				end
+			end
+
+			if luaIndex ~= -1 then
+				if multiplayer.player[multiplayerInPermissionForPlayer].permissions[index] == true then
+					multiplayerPermissions[luaIndex][3] = true
+					multiplayerPermissions[luaIndex][4] = true
+				elseif multiplayer.player[multiplayerInPermissionForPlayer].permissions[index] == false then
+					multiplayerPermissions[luaIndex][3] = false
+					multiplayerPermissions[luaIndex][4] = false
+				else
+					multiplayerPermissions[luaIndex][3] = false
+					multiplayerPermissions[luaIndex][4] = false
+				end
+			end
 		end
 	"
 
@@ -25582,7 +26011,8 @@ menu
 	--bottom buttons
 	button
 	{
-		area 236 528 200 44
+		on escape
+		area 236 528 200 40
 		bam 'GUIBUTNT'
 		sequence 0
 		text "CANCEL_BUTTON" -- Back
@@ -25596,7 +26026,7 @@ menu
 	button
 	{
 		on return
-		area 236 572 200 44
+		area 236 572 200 40
 		bam 'GUIBUTNT'
 		sequence 1
 		text "DONE_BUTTON" -- Done
@@ -25605,10 +26035,10 @@ menu
 		action
 		"
 			local index = 1
-			for index = 1, #(multiplayerPermissions), 1 do
+			for index = #(multiplayerPermissions), 1, -1 do
 				if multiplayerPermissions[index][3] ~= multiplayerPermissions[index][4] then
 					broadcastPermissionChange(multiplayerInPermissionForPlayer,index,multiplayerPermissions[index][3])
-					multiplayerScreen:OnPermissionButtonClick(multiplayerInPermissionForPlayer - 1, index)
+					multiplayerScreen:OnPermissionButtonClick(multiplayerInPermissionForPlayer - 1, multiplayerPermissions[index][5])
 				end
 			end
 
@@ -25621,12 +26051,12 @@ menu
 	--permissions
 	button
 	{
-		area 261 170 45 42
+		area 268 178 32 32
 		bam ROUNDBUT
 		sequence 0
 		glow lua "multiplayerPermissions[1][3] == true"
 		tooltip lua "t(multiplayerPermissions[1][2])"
-		align center center
+		scaleToClip
 		action
 		"
 			if multiplayerLocalPlayerID == 1 then
@@ -25644,12 +26074,12 @@ menu
 	}
 	button
 	{
-		area 261 226 45 42
+		area 268 233 32 32
 		bam ROUNDBUT
 		sequence 0
 		glow lua "multiplayerPermissions[2][3] == true"
 		tooltip lua "t(multiplayerPermissions[2][2])"
-		align center center
+		scaleToClip
 		action
 		"
 			if multiplayerLocalPlayerID == 1 then
@@ -25667,12 +26097,12 @@ menu
 	}
 	button
 	{
-		area 261 282 45 42
+		area 268 289 32 32
 		bam ROUNDBUT
 		sequence 0
 		glow lua "multiplayerPermissions[3][3] == true"
 		tooltip lua "t(multiplayerPermissions[3][2])"
-		align center center
+		scaleToClip
 		action
 		"
 			if multiplayerLocalPlayerID == 1 then
@@ -25690,12 +26120,12 @@ menu
 	}
 	button
 	{
-		area 261 340 45 42
+		area 268 347 32 32
 		bam ROUNDBUT
 		sequence 0
 		glow lua "multiplayerPermissions[4][3] == true"
 		tooltip lua "t(multiplayerPermissions[4][2])"
-		align center center
+		scaleToClip
 		action
 		"
 			if multiplayerLocalPlayerID == 1 then
@@ -25713,12 +26143,12 @@ menu
 	}
 	button
 	{
-		area 261 394 45 42
+		area 268 401 32 32
 		bam ROUNDBUT
 		sequence 0
 		glow lua "multiplayerPermissions[5][3] == true"
 		tooltip lua "t(multiplayerPermissions[5][2])"
-		align center center
+		scaleToClip
 		action
 		"
 			if multiplayerLocalPlayerID == 1 then
@@ -25736,12 +26166,12 @@ menu
 	}
 	button
 	{
-		area 261 452 45 42
+		area 268 459 32 32
 		bam ROUNDBUT
 		sequence 0
 		glow lua "multiplayerPermissions[6][3] == true"
 		tooltip lua "t(multiplayerPermissions[6][2])"
-		align center center
+		scaleToClip
 		action
 		"
 			if multiplayerLocalPlayerID == 1 then
@@ -25830,12 +26260,12 @@ menu
 
 	button
 	{
-		area 202 142 45 42
+		area 210 148 32 32
 		bam ROUNDBUT
 		sequence 0
 		glow lua "multiplayerGameOptions[1][3] == true"
 		tooltip lua "t(multiplayerGameOptions[1][2])"
-		align center center
+		scaleToClip
 		action
 		"
 			multiplayerGameOptions[1][3] = not multiplayerGameOptions[1][3]
@@ -25851,12 +26281,12 @@ menu
 	}
 	button
 	{
-		area 202 196 45 42
+		area 210 202 32 32
 		bam ROUNDBUT
 		sequence 0
 		glow lua "multiplayerGameOptions[2][3] == true"
 		tooltip lua "t(multiplayerGameOptions[2][2])"
-		align center center
+		scaleToClip
 		action
 		"
 			multiplayerGameOptions[2][3] = not multiplayerGameOptions[2][3]
@@ -25873,13 +26303,13 @@ menu
 
 	button
 	{
-		area 202 326 45 42
+		area 210 332 32 32
 		bam ROUNDBUT
 		frame lua "currentCellCheck(3)"
 		sequence 0
 		glow lua "multiplayerImportOption == 1"
 		tooltip lua "t('IMPORT_RULES_TOOLTIP')"
-		align center center
+		scaleToClip
 		action
 		"
 			multiplayerImportOption = 1
@@ -25895,13 +26325,13 @@ menu
 	}
 	button
 	{
-		area 202 374 45 42
+		area 210 380 32 32
 		bam ROUNDBUT
 		frame lua "currentCellCheck(3)"
 		sequence 0
 		glow lua "multiplayerImportOption == 2"
 		tooltip lua "t('IMPORT_RULES_TOOLTIP')"
-		align center center
+		scaleToClip
 		action
 		"
 			multiplayerImportOption = 2
@@ -25917,13 +26347,13 @@ menu
 	}
 	button
 	{
-		area 202 422 45 42
+		area 210 428 32 32
 		bam ROUNDBUT
 		frame lua "currentCellCheck(3)"
 		sequence 0
 		glow lua "multiplayerImportOption == 3"
 		tooltip lua "t('IMPORT_RULES_TOOLTIP')"
-		align center center
+		scaleToClip
 		action
 		"
 			multiplayerImportOption = 3
@@ -25955,7 +26385,7 @@ menu
 	button
 	{
 		on return
-		area 236 572 200 44
+		area 236 572 200 40
 		bam 'GUIBUTNT'
 		sequence 0
 		text "DONE_BUTTON" -- Done
@@ -25983,7 +26413,7 @@ menu
 	button
 	{
 		on escape
-		area 236 528 200 44
+		area 236 528 200 40
 		bam 'GUIBUTNT'
 		sequence 1
 		text "CANCEL_BUTTON" -- Cancel
@@ -25995,6 +26425,25 @@ menu
 		"
 	}
 }
+`
+	function getActivePlayerIndex(index)
+		local ret = -1
+		local count = 0
+		local slot = 0
+
+		for slot = 1, 6, 1 do
+			if mpaPlayers[slot]["name"] ~= '' then
+				count = count + 1
+			end
+			if count == index then
+				ret = slot
+				break
+			end
+		end
+
+		return ret
+	end
+`
 menu
 {
 	name 'MP_PICKPLAYER'
@@ -26027,7 +26476,7 @@ menu
 			label
 			{
 				area 0 0 340 32
-				text lua "getMultiplayerPlayerName(rowNumber, false, true)"
+				text lua "getMultiplayerPlayerName(getActivePlayerIndex(rowNumber), false, true)"
 				text style "normal"
 				align left center
 			}
@@ -26058,7 +26507,7 @@ menu
 	button
 	{
 		on escape
-		area 236 512 198 42
+		area 236 512 198 40
 		text "CANCEL_BUTTON"
 		text style "button"
 		align center center
@@ -26072,7 +26521,7 @@ menu
 	button
 	{
 		on escape
-		area 236 564 198 42
+		area 236 564 198 40
 		text "DONE_BUTTON"
 		text style "button"
 		align center center
@@ -26080,8 +26529,11 @@ menu
 		sequence 0
 		action
 		"
-			broadcastCharacterControlChange(selectedCharacter, currentMultiplayerSelectPlayer)
-			multiplayerScreen:OnPlayerSelection(currentMultiplayerSelectPlayer-1)
+			if mpaCharacters[selectedCharacter]['ready'] == true and mpaCharacters[selectedCharacter]['player'] ~= getActivePlayerIndex(currentMultiplayerSelectPlayer) then
+				multiplayerScreen:OnReadyButtonClick(selectedCharacter-1)
+			end
+			broadcastCharacterControlChange(selectedCharacter, getActivePlayerIndex(currentMultiplayerSelectPlayer))
+			multiplayerScreen:OnPlayerSelection(getActivePlayerIndex(currentMultiplayerSelectPlayer)-1)
 			Infinity_PopMenu()
 		"
 	}
@@ -26119,7 +26571,7 @@ menu
 	button
 	{
 		on escape
-		area 44 170 230 44
+		area 44 170 230 40
 		text "CANCEL_BUTTON" -- cancel
 		text style "button"
 		bam GUIBUTMT
@@ -26131,7 +26583,7 @@ menu
 	button
 	{
 		on return
-		area 404 170 230 44
+		area 404 170 230 40
 		text lua "multiplayerIsDelete()"
 		text style "button"
 		bam GUIBUTMT
@@ -26167,7 +26619,7 @@ menu
 	button
 	{
 		on return
-		area 213 170 230 44
+		area 213 170 230 40
 		text "DONE_BUTTON" -- done
 		text style "button"
 		align center center
@@ -26199,7 +26651,7 @@ menu
 	{
 		on return
 		enabled "mpErrorState == 2"
-		area 343 170 230 44
+		area 343 170 230 40
 		text "MODIFY_BUTTON" -- modify
 		text style "button"
 		align center center
@@ -26214,7 +26666,7 @@ menu
 	{
 		on return
 		enabled "mpErrorState == 3"
-		area 343 170 230 44
+		area 343 170 230 40
 		text "KICK_BUTTON" -- kick player
 		text style "button"
 		align center center
@@ -26229,7 +26681,7 @@ menu
 	{
 		on return
 		enabled "mpErrorState == 4"
-		area 343 170 230 44
+		area 343 170 230 40
 		text "LOGOUT_BUTTON" -- log out
 		text style "button"
 		align center center
@@ -26244,7 +26696,7 @@ menu
 	button
 	{
 		on escape
-		area 79 170 230 44
+		area 79 170 230 40
 		text "CANCEL_BUTTON" -- cancel
 		text style "button"
 		align center center
@@ -26329,6 +26781,42 @@ menu
 		Infinity_SetArea('mpChatEditBackground',nil,nil,nil,h + offset)
 		Infinity_SetArea('mpChatHandle',nil,y+h+(offset/2),nil,nil)
 	end
+
+	function mpChatboxScroll(top, height, contentHeight)
+		if(mpChatboxJumpToBottom and contentHeight > height) then
+			mpChatboxJumpToBottom = nil
+			return height-contentHeight
+		end
+		if(mpChatboxScrollToBottom == 0 and mpChatboxScrollLastHeight == contentHeight) then
+			--defer to default scrolling
+			return nil
+		elseif mpChatboxScrollToBottom == 0 then
+			mpChatboxScrollLastHeight = contentHeight
+			return height-contentHeight
+		end
+		if(contentHeight < height) then
+			--no scrolling required, content fits
+			mpChatboxScrollToBottom = nil
+			return nil
+		end
+		local dT = Infinity_GetClockTicks() - mpChatboxScrollTimeLast
+		mpChatboxScrollTimeLast = Infinity_GetClockTicks()
+		top = top + lastTrimmedContentHeight
+		lastTrimmedContentHeight = 0
+		local newTop = (dT * -0.25) + top
+		if (newTop + contentHeight > height + 200) then
+			return (height - contentHeight + 200)
+		end
+		if(newTop + contentHeight < height) then
+			mpChatboxScrollToBottom = 0
+			return height - contentHeight
+		end
+		return newTop
+	end
+
+	mpChatboxScrollLastHeight = 0
+	mpChatboxScrollToBottom = nil
+	mpChatboxScrollTimeLast = 0
 	mpChatEditOverlay = ""
 `
 menu
@@ -29617,11 +30105,27 @@ menu
 		"
 	}
 }
+menu
+{
+	name 'WORLD_DIALOG_CONFIRM'
+	offset 0 -5
+	align center bottom
+	ignoreEsc
+	button
+	{
+		area 0 0 300 45
+		--bam GUIBUTWT
+		text lua "dialogButtonText"
+		enabled "#worldPlayerDialogChoices == 0 and ClassicDialog == 1"
+		text style "button"
+		action
+		"
+			worldScreen:StepDialog()
+		"
+	}
+}
 `
-function getDialogButtonEnabled()
-	return (#worldPlayerDialogChoices == 0)
-end
-dialogTable = {}
+	dialogTable = {}
 	dialogOverflowTable = {}
 	hasDialogResponse = nil
 
@@ -29843,20 +30347,387 @@ dialogTable = {}
 `
 menu
 {
-	name 'WORLD_DIALOG_CONFIRM'
-	offset 0 -5
-	align center bottom
+	name 'WORLD_DIALOG_LEFT'
+	align left center
 	ignoreEsc
+	--ignoreFocus 1
+	onOpen
+	"
+		Infinity_PushMenu('WORLD_DIALOG_LEFT_BUTTONS')
+	"
+	onClose
+	"
+		Infinity_PopMenu('WORLD_DIALOG_LEFT_BUTTONS')
+	"
+	label
+	{
+		area 0 0 80 1536
+		mosaic GUIWLSP
+	}
+}
+menu
+{
+	name 'WORLD_DIALOG_LEFT_BUTTONS'
+	align left center
+	ignoreEsc
+	--ignoreFocus 1
+	label
+	{
+		area 0 0 85 780
+		rectangle 4
+	}
 	button
 	{
-		area 0 0 300 45
-		--bam GUIBUTWT
-		text lua "dialogButtonText"
-		enabled "getDialogButtonEnabled() and ClassicDialog == 1"
+		area 15 25 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'...'"
 		text style "button"
+		pad -3 -6 0 0
+		enabled "not showDialogButtonChoices()"
+		clickable lua "not dialogEntryGreyed()"
 		action
 		"
-			worldScreen:StepDialog()
+			onDialogButtonClick()
+		"
+	}
+
+	button
+	{
+		area 15 25 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'1'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(1)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[1].marker)
+		"
+	}
+	button
+	{
+		area 15 100 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'2'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(2)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[2].marker)
+		"
+	}
+	button
+	{
+		area 15 175 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'3'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(3)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[3].marker)
+		"
+	}
+	button
+	{
+		area 15 250 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'4'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(4)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[4].marker)
+		"
+	}
+	button
+	{
+		area 15 325 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'5'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(5)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[5].marker)
+		"
+	}
+	button
+	{
+		area 15 400 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'6'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(6)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[6].marker)
+		"
+	}
+	button
+	{
+		area 15 475 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'7'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(7)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[7].marker)
+		"
+	}
+
+	button
+	{
+		area 15 550 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'8'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(8)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[8].marker)
+		"
+	}
+
+	button
+	{
+		area 15 625 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'9'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(9)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[9].marker)
+		"
+	}
+	button
+	{
+		area 15 700 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'10'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(10)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[10].marker)
+		"
+	}
+}
+menu
+{
+	name 'WORLD_DIALOG_RIGHT'
+	align right center
+	ignoreEsc
+	--ignoreFocus 1
+	enabled "canShowDialogButton(11)"
+	onOpen
+	"
+		Infinity_PushMenu('WORLD_DIALOG_RIGHT_BUTTONS')
+	"
+	onClose
+	"
+		Infinity_PopMenu('WORLD_DIALOG_RIGHT_BUTTONS')
+	"
+	label
+	{
+		area 0 0 80 1536
+		mosaic GUIWRSP
+	}
+}
+menu
+{
+	name 'WORLD_DIALOG_RIGHT_BUTTONS'
+	align right center
+	ignoreEsc
+	--ignoreFocus 1
+	enabled "canShowDialogButton(11)"
+	label
+	{
+		area 0 0 85 780
+		rectangle 4
+	}
+	button
+	{
+		area 15 25 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'11'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(11)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[11].marker)
+		"
+	}
+	button
+	{
+		area 15 100 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'12'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(12)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[12].marker)
+		"
+	}
+	button
+	{
+		area 15 175 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'13'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(13)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[13].marker)
+		"
+	}
+	button
+	{
+		area 15 250 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'14'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(14)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[14].marker)
+		"
+	}
+	button
+	{
+		area 15 325 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'15'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(15)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[15].marker)
+		"
+	}
+	button
+	{
+		area 15 400 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'16'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(16)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[16].marker)
+		"
+	}
+	button
+	{
+		area 15 475 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'17'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(17)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[17].marker)
+		"
+	}
+
+	button
+	{
+		area 15 550 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'18'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(18)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[18].marker)
+		"
+	}
+
+	button
+	{
+		area 15 625 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'19'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(19)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[19].marker)
+		"
+	}
+	button
+	{
+		area 15 700 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'20'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(20)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[20].marker)
 		"
 	}
 }
