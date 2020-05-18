@@ -6,6 +6,7 @@ else
 	Infinity_DoFile("L_en_us")
 end
 listMetaInfo = {}
+combatLog = {}
 
 currentPanelID = 0
 
@@ -418,6 +419,20 @@ function updateAttrTable()
 		table.insert(listItems, {nil, v.current})
 	end
 
+	characterViewable = characterScreen:IsCharacterViewable()
+
+	-- From patch 2.5, but unused by DUI:
+	-- showClassInfo = showClassInfo == 1 and characterViewable == true
+	-- showJustText = showJustText == 1 and characterViewable == true
+	-- showMemorized = showMemorized == 1 and characterViewable == true
+	-- showBothLists = showBothLists == 1 and characterViewable == true
+	-- showStats = showStats == 1 and characterViewable == true
+	-- showAbilityBonuses = showAbilityBonuses == 1 and characterViewable == true
+
+	showOverview = showOverview == 1 and characterViewable == true
+	showClass = showClass == 1 and characterViewable == true
+	showBiography = showBiography == 1 and characterViewable == true
+	showStatistics = showStatistics == 1 and characterViewable == true
 end
 
 characters = {}
@@ -694,12 +709,13 @@ end
 	showJustText = 0
 	showMemorized = 0
 	showBothLists = 0
+	characterViewable = true
 
 Record = {}
 
 function Record:create(id)
-	local character = characters[id]
-	if character == nil then
+	local character = characterViewable and characters[id]
+	if not character then
 		return { valid = false, classes = { {} } }
 	end
 
@@ -787,6 +803,7 @@ menu
 		showAbilityBonuses = 0
 		showMemorized = 0
 		showBothLists = 0
+		characterViewable = true
 		toggleCombatStats = 0
 		showOverview = 1
 		showClass = 0
@@ -815,6 +832,16 @@ menu
 	"
 	onclose
 	"
+		Infinity_PopMenu('CHARACTER_CUSTOMIZE')
+		Infinity_PopMenu('CHARACTER_BIOGRAPHY')
+		Infinity_PopMenu('CHARACTER_SHOW_BIOGRAPHY')
+		Infinity_PopMenu('CHARACTER_INFO')
+		Infinity_PopMenu('CHARACTER_SCRIPT')
+		Infinity_PopMenu('CHARACTER_EXPORT')
+		Infinity_PopMenu('CHARACTER_SOUND')
+		Infinity_PopMenu('CHARACTER_COLOR')
+		Infinity_PopMenu('CHARACTER_SHOW_CLASSINFO')
+		Infinity_PopMenu('CHARGEN_PORTRAIT')
 		record = nil
 		popSidebars()
 	"
@@ -847,6 +874,7 @@ menu
 		text		lua "characters[currentID].name"
 		text style  	'normal'
 		text align	center center
+		enabled "characterViewable"
 	}
 
 	label
@@ -871,6 +899,7 @@ menu
 		text style  'normal'
 		text align	left top
 		text shadow 1
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -936,6 +965,7 @@ menu
 		text lua 	"Infinity_FetchString(1048) .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -943,6 +973,7 @@ menu
 		text lua 	"Infinity_FetchString(1049) .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -950,6 +981,7 @@ menu
 		text lua 	"getClassTitle() .. ': '" --19721 multi, 19722 dual, inactive 24371
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -957,6 +989,7 @@ menu
 		text lua 	"getClassString1() .. ' ' .. Infinity_FetchString(7192) .. ' ' .. getLevelString1() .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -980,6 +1013,7 @@ menu
 		text lua "Infinity_FetchString(characters[currentID].gender) .. ' ' .. Infinity_FetchString(characters[currentID].race)"
 		text style 'normal'
 		text align left top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -987,6 +1021,7 @@ menu
 		text lua "Infinity_FetchString(characters[currentID].alignment)"
 		text style 'normal'
 		text align left top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -994,6 +1029,7 @@ menu
 		text lua "characters[currentID].class"
 		text style 'normal'
 		text align left top
+		enabled "characterViewable"
 	}
 	--label
 	--{
@@ -1022,6 +1058,7 @@ menu
 		text		lua "Infinity_FetchString( attributeItems[1][1].strRef) .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1029,6 +1066,7 @@ menu
 		text		lua "Infinity_FetchString( attributeItems[2][1].strRef) .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1036,6 +1074,7 @@ menu
 		text		lua "Infinity_FetchString( attributeItems[3][1].strRef) .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1043,6 +1082,7 @@ menu
 		text		lua "Infinity_FetchString( attributeItems[4][1].strRef) .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1050,6 +1090,7 @@ menu
 		text		lua "Infinity_FetchString( attributeItems[5][1].strRef) .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1057,6 +1098,7 @@ menu
 		text		lua "Infinity_FetchString( attributeItems[6][1].strRef) .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1064,7 +1106,7 @@ menu
 		text		lua  "displayAttr(1) .. '^X' .. '   (' .. getStrengthDetail() .. ')' .. '^B'"
 		text style  'normal'
 		text align left top
-
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1072,7 +1114,7 @@ menu
 		text		lua  "displayAttr(2) .. '^X' .. '   (' .. getDexDetail() .. ')' .. '^B'"
 		text style  'normal'
 		text align left top
-
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1080,7 +1122,7 @@ menu
 		text		lua  "displayAttr(3) .. '^X' .. '   (' .. getConDetail() .. ')' .. '^B'"
 		text style  'normal'
 		text align left top
-
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1088,7 +1130,7 @@ menu
 		text		lua  "displayAttr(4)"
 		text style  'normal'
 		text align left top
-
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1096,7 +1138,7 @@ menu
 		text		lua  "displayAttr(5)"
 		text style  'normal'
 		text align left top
-
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1104,7 +1146,7 @@ menu
 		text		lua  "displayAttr(6) .. '^X' .. '   (' .. getChaDetail() .. ')' .. '^B'"
 		text style  'normal'
 		text align left top
-
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1113,6 +1155,7 @@ menu
 		text style  'normal'
 		text align	left top
 		text color	X
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1121,6 +1164,7 @@ menu
 		text style  'normal'
 		text align	left top
 		text color	X
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1129,6 +1173,7 @@ menu
 		text style  'normal'
 		text align	left top
 		text color	X
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1137,6 +1182,14 @@ menu
 		text style  'normal'
 		text align	left top
 		text color	X
+		enabled "characterViewable"
+	}
+	-- cover up AC icons
+	label
+	{
+		area	312 512 190 30
+		fill	0 0 0 255
+		enabled "not characterViewable"
 	}
 	--70 305 194 30
 	label
@@ -1145,6 +1198,7 @@ menu
 		text lua 	"t('ARMOR_CLASS_LABEL') .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1152,6 +1206,7 @@ menu
 		text lua 	"t('HIT_POINTS_LABEL') .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1159,6 +1214,7 @@ menu
 		text lua 	"t('THAC0_LABEL') .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1166,6 +1222,7 @@ menu
 		text lua 	"t('DAMAGE_LABEL') .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1173,6 +1230,7 @@ menu
 		text lua 	"Infinity_FetchString(characters[currentID].proficiencies.numAttacks.strRef) .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1180,6 +1238,7 @@ menu
 		text lua 	"t('CURRENT_SCRIPT_LABEL') .. ': '"
 		text style  'normal'
 		text align	right top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1187,6 +1246,7 @@ menu
 		text lua 	"characters[currentID].AC.current"
 		text style  'normal'
 		text align	left top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1194,6 +1254,7 @@ menu
 		text lua 	"characters[currentID].HP.current .. '/' .. characters[currentID].HP.max"
 		text style  'normal'
 		text align	left top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1201,6 +1262,7 @@ menu
 		text lua 	"getTHAC()"
 		text style  'normal'
 		text align	left top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1208,6 +1270,7 @@ menu
 		text lua 	"getDmg()"
 		text style  'normal'
 		text align	left top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1215,6 +1278,7 @@ menu
 		text lua 	"characters[currentID].proficiencies.numAttacks.current"
 		text style  'normal'
 		text align	left top
+		enabled "characterViewable"
 	}
 	label
 	{
@@ -1222,6 +1286,7 @@ menu
 		text lua 	"characters[currentID].proficiencies.currentScript"
 		text style  'normal'
 		text align	left top
+		enabled "characterViewable"
 	}
 	button
 	{
@@ -1294,7 +1359,7 @@ menu
 			}
 		}
 
-		enabled "showOverview == 1"
+		enabled "showOverview"
 		area 830 102 454 558
 		rowheight	dynamic
 		table		"listItems"
@@ -1307,7 +1372,7 @@ menu
 
 	text
 	{
-		enabled		"showClass == 1"
+		enabled		"showClass"
 		area		830 102 454 558
 		text		lua "getClassString()"
 		text style  'normal'
@@ -1316,7 +1381,7 @@ menu
 
 	text
 	{
-		enabled		"showBiography == 1"
+		enabled		"showBiography"
 		area		830 102 454 558
 		text		lua "Infinity_FetchString(characters[currentID].biography)"
 		text style  'normal'
@@ -1327,7 +1392,7 @@ menu
 
 	label
 	{
-		enabled		"showStatistics == 1"
+		enabled		"showStatistics"
 		area		812 112 254 263
 		text		lua "getStatistics1()"
 		text style  'normal'
@@ -1336,7 +1401,7 @@ menu
 	}
 	label
 	{
-		enabled		"showStatistics == 1"
+		enabled		"showStatistics"
 		area		1078 112 212 263
 		text		lua "getStatistics2()"
 		text style  'normal'
@@ -1345,7 +1410,7 @@ menu
 	}
 	label
 	{
-		enabled		"showStatistics == 1"
+		enabled		"showStatistics"
 		area		806 386 290 270
 		text		lua "getStatistics3()"
 		text style  'normal'
@@ -1354,7 +1419,7 @@ menu
 	}
 	label
 	{
-		enabled		"showStatistics == 1"
+		enabled		"showStatistics"
 		area		1100 386 106 270
 		text		lua "getStatistics4()"
 		text style  'normal'
@@ -1363,7 +1428,7 @@ menu
 	}
 	label
 	{
-		enabled		"showStatistics == 1"
+		enabled		"showStatistics"
 		area		1206 386 98 270
 		text		lua "getStatistics5()"
 		text style  'normal'
@@ -1395,6 +1460,7 @@ menu
 		text style "button"
 		bam		RGRECBTW
 		sequence	2
+		clickable lua "characterScreen:IsMultiPlayerModifyable()"
 		pad 8 8 8 8
 		action
 		"
@@ -1410,6 +1476,7 @@ menu
 		text style "button"
 		bam		RGRECBTW
 		sequence	2
+		clickable lua "characterScreen:IsExportButtonClickable()"
 		pad 8 8 8 8
 		action
 		"
@@ -1441,7 +1508,10 @@ menu
 		sequence	2
 		pad 8 8 8 8
 		clickable	lua "characterScreen:IsDualClassButtonClickable()"
-		action 		"characterScreen:OnDualClassButtonClick();"
+		action
+		"
+			popup2Button('DUALCLASS_CONFIRMATION', 'YES_BUTTON', function() characterScreen:OnDualClassButtonClick() end, 'NO_BUTTON')
+		"
 	}
 	button
 	{
@@ -1471,7 +1541,7 @@ menu
 	button
 	{
 		enabled 	"not CurrentlyInGame()"
-		area		394 664 200 44
+		area		394 664 200 40
 		text		"DONE_BUTTON"
 		text style 	"button"
 		bam			GUIBUTNT
@@ -2335,6 +2405,10 @@ menu
 				var[4] = 2
  			end
 		end
+
+		if Infinity_CanCloudSave() == false and (toggleTitles[1][3] == 60 or toggleTitles[2][3] == 60) then
+			removeOptionFromList(toggleTitles,60)
+		end
 	"
 
 	button
@@ -2360,7 +2434,7 @@ menu
 
 		column
 		{
-			width 90
+			width 85
 			label
 			{
 				area 10 0 -1 -1
@@ -2371,12 +2445,12 @@ menu
 		}
 		column
 		{
-			width 10
+			width 15
 			label
 			{
-				area		10 8 -1 -1
+				area		20 8 32 32
 				bam			ROUNDBUT
-				align 		center center
+				scaleToClip
 				frame		lua "toggleTitles[rowNumber][4]"
 			}
 		}
@@ -2404,6 +2478,10 @@ menu
 				else
 					toggleTitles[selectedOpt][5] = 1
 				end
+			end
+			if selectedOpt == 1 and toggleTitles[1][5] == 1 then
+				groundItemsButtonToggle = 1
+				highlightButtonToggle = 1
 			end
 		"
 	}
@@ -2444,11 +2522,12 @@ menu
 		area 806 148 200 39
 		position "ttDelaySLDR"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	40
-		pad 8 0 10 0
+		pad 5 0 4 0
 		action
 		"
 			helpString = 'TOOLTIP_DELAY_DESCRIPTION'
@@ -2465,6 +2544,7 @@ menu
 		text align	right center
 		text upper
 		text highlight lua "getSelected(selectedSL, 2)"
+		enabled "not e:IsTouchUI()"
 		action
 		"
 			helpString = 'KEYBOARD_SCRLSPEED_DESCRIPTION'
@@ -2477,11 +2557,13 @@ menu
 		area 806 198 200 40
 		position "keyboardSLDR"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	40
-		pad 8 0 10 0
+		pad 5 0 4 0
+		enabled "not e:IsTouchUI()"
 		action
 		"
 			helpString = 'KEYBOARD_SCRLSPEED_DESCRIPTION'
@@ -2498,6 +2580,7 @@ menu
 		text align	right center
 		text upper
 		text highlight lua "getSelected(selectedSL, 3)"
+		enabled "not e:IsTouchUI()"
 		action
 		"
 			helpString = 'MOUSE_SCRLSPEED_DESCRIPTION'
@@ -2510,11 +2593,13 @@ menu
 		area 806 250 200 40
 		position "mouseSLDR"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	40
-		pad 8 0 10 0
+		pad 5 0 4 0
+		enabled "not e:IsTouchUI()"
 		action
 		"
 			helpString = 'MOUSE_SCRLSPEED_DESCRIPTION'
@@ -2544,11 +2629,12 @@ menu
 		area 806 345 200 39
 		position "difficultySLDR"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	5
-		pad 8 0 10 0
+		pad 5 0 4 0
 		enabled "Infinity_GetOption(59, 8) == 0 and toggleTitles[1][4] == 0"
 		action
 		"
@@ -2571,11 +2657,12 @@ menu
 		area 806 345 200 39
 		position "0"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	5
-		pad 8 0 10 0
+		pad 5 0 4 0
 		enabled "Infinity_GetOption(59, 8) == 0 and toggleTitles[1][4] ~= 0"
 		action
 		"
@@ -2604,9 +2691,10 @@ menu
 	{
 		bam			GUIBUTNT
 		sequence	0
-		area		712 492 200 44
+		area		712 492 200 40
 		text		"ASSIGN_KEYS_BUTTON"
 		text style	"button"
+		enabled "not e:IsTouchUI()"
 		action
 		"
 			Infinity_PushMenu( 'OPTIONS_KEYBINDINGS' );
@@ -2615,7 +2703,7 @@ menu
 	}
 	button
 	{
-		area		712 600 200 44
+		area		712 600 200 40
 		bam			GUIBUTNT
 		sequence	2
 		text 		"FEEDBACK_BUTTON"
@@ -2629,7 +2717,7 @@ menu
 	}
 	button
 	{
-		area		712 546 200 44
+		area		712 546 200 40
 		bam			GUIBUTNT
 		sequence	2
 		text 		"AUTO_PAUSE_BUTTON"
@@ -2642,7 +2730,7 @@ menu
 	}
 	button
 	{
-		area		712 654 200 44
+		area		712 654 200 40
 		bam			GUIBUTNT
 		text 		"RG_UI_SETTINGS"
 		text style	"button"
@@ -2654,7 +2742,8 @@ menu
 	}
 	button
 	{
-		area		304 734 200 44
+		on escape
+		area		304 734 200 40
 		bam			GUIBUTNT
 		sequence	2
 		text 		"CANCEL_BUTTON"
@@ -2666,7 +2755,7 @@ menu
 	}
 	button
 	{
-		area		968 734 200 44
+		area		968 734 200 40
 		bam			GUIBUTNT
 		sequence	2
 		text 		"DONE_BUTTON" -- Done
@@ -3509,6 +3598,11 @@ menu
 				var[4] = 2
 			end
 		end
+
+		if e:IsTouchUI() then
+			removeOptionFromList(graphicsToggles, 9)
+			removeOptionFromList(graphicsToggles, 13)
+		end
 	"
 
 
@@ -3571,9 +3665,9 @@ menu
 			width 10
 			label
 			{
-				area		10 4 -1 -1
+				area		2 5 32 32
 				bam			ROUNDBUT
-				align 		center center
+				scaleToClip
 				frame		lua "graphicsToggles[rowNumber][4]"
 			}
 		}
@@ -3614,7 +3708,7 @@ menu
 	text
 	{
 		area		1038 160 264 532
-		text		lua "Infinity_FetchString(helpString)"
+		text		lua "getStringFromAmbiguousSource(helpString)"
 		text style	normal
 		scrollbar	'GUISCRC'
 	}
@@ -3641,11 +3735,12 @@ menu
 		area 798 150 200 36
 		position "fontSizeSLDR"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	7
-		pad 8 0 10 0
+		pad 5 0 4 0
 		action
 		"
 			Infinity_ChangeOption( 22, fontSizeSLDR, 6)
@@ -3658,7 +3753,8 @@ menu
 
 	button
 	{
-		area		288 734 230 44
+		on escape
+		area		288 734 230 40
 		bam			GUIBUTMT
 		sequence	2
 		text 		"CANCEL_BUTTON"
@@ -3674,7 +3770,7 @@ menu
 	}
 	button
 	{
-		area		950 734 230 44
+		area		950 734 230 40
 		bam			GUIBUTMT
 		sequence	2
 		text 		"DONE_BUTTON" --Done
@@ -3798,7 +3894,7 @@ menu
 
 		column
 		{
-			width 90
+			width 85
 			label
 			{
 				area 0 0 -1 -1
@@ -3809,12 +3905,12 @@ menu
 		}
 		column
 		{
-			width 10
+			width 15
 			label
 			{
-				area		10 8 -1 -1
+				area		20 8 32 32
 				bam			ROUNDBUT
-				align 		center center
+				scaleToClip
 				frame		lua "soundsToggles[rowNumber][4]"
 			}
 		}
@@ -3866,7 +3962,7 @@ menu
 
 		column
 		{
-			width 90
+			width 85
 			label
 			{
 				area 10 0 -1 -1
@@ -3877,12 +3973,12 @@ menu
 		}
 		column
 		{
-			width 10
+			width 15
 			label
 			{
-				area		10 8 -1 -1
+				area		20 8 32 32
 				bam			ROUNDBUT
-				text align 	center center
+				scaleToClip
 				frame		lua "command[rowNumber][4]"
 			}
 		}
@@ -3931,7 +4027,7 @@ menu
 
 		column
 		{
-			width 90
+			width 85
 			label
 			{
 				area 10 0 -1 -1
@@ -3942,12 +4038,12 @@ menu
 		}
 		column
 		{
-			width 10
+			width 15
 			label
 			{
-				area		10 8 -1 -1
+				area		20 8 32 32
 				bam			ROUNDBUT
-				align 		center center
+				scaleToClip
 				frame		lua "selectOpt[rowNumber][4]"
 			}
 		}
@@ -4016,12 +4112,13 @@ menu
 	{
 		area 796 206 200 36
 		position "ambientSLDR"
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		bam	 'SLDRSTAR'
 		sequence 0
 		frame	 1
 		settings	40
-		pad 8 0 10 0
+		pad 5 0 4 0
 		action
 		"
 			helpString = 18008
@@ -4049,13 +4146,14 @@ menu
 	slider
 	{
 		area 796 276 200 36
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		position "sfxSLDR"
 		bam	 'SLDRSTAR'
 		sequence 0
 		frame	 1
 		settings	40
-		pad 8 0 10 0
+		pad 5 0 4 0
 		action
 		"
 			helpString = 18009
@@ -4084,11 +4182,12 @@ menu
 		area 796 344 200 36
 		position "voiceSLDR"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	40
-		pad 8 0 10 0
+		pad 5 0 4 0
 		action
 		"
 			helpString = 18010
@@ -4118,11 +4217,12 @@ menu
 		area 796 414 200 36
 		position "musicSLDR"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	40
-		pad 8 0 10 0
+		pad 5 0 4 0
 		action
 		"
 			helpString = 18011
@@ -4151,11 +4251,12 @@ menu
 		area 796 484 200 40
 		position "movieSLDR"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	40
-		pad 8 0 10 0
+		pad 5 0 4 0
 		action
 		"
 			helpString = 18012
@@ -4166,7 +4267,8 @@ menu
 
 	button
 	{
-		area		298 734 200 44
+		on escape
+		area		298 734 200 40
 		bam			GUIBUTNT
 		sequence	2
 		text 		"CANCEL_BUTTON"
@@ -4180,7 +4282,7 @@ menu
 	}
 	button
 	{
-		area		972 734 200 44
+		area		972 734 200 40
 		bam			GUIBUTNT
 		sequence	2
 		text 		"DONE_BUTTON"
@@ -4336,7 +4438,7 @@ menu
 
 		column
 		{
-			width 90
+			width 85
 			label
 			{
 				area 0 0 -1 -1
@@ -4347,12 +4449,12 @@ menu
 		}
 		column
 		{
-			width 10
+			width 15
 			label
 			{
-				area		10 8 -1 -1
+				area		20 8 32 32
 				bam			ROUNDBUT
-				align 		center center
+				scaleToClip
 				frame		lua "feedbackToggles[rowNumber][4]"
 			}
 		}
@@ -4396,7 +4498,7 @@ menu
 
 		column
 		{
-			width 90
+			width 85
 			label
 			{
 				area 10 0 -1 -1
@@ -4407,12 +4509,12 @@ menu
 		}
 		column
 		{
-			width 10
+			width 15
 			label
 			{
-				area		10 8 -1 -1
+				area		20 8 32 32
 				bam			ROUNDBUT
-				align 		center center
+				scaleToClip
 				frame		lua "messagesToggles[rowNumber][4]"
 			}
 		}
@@ -4480,10 +4582,12 @@ menu
 		area		300 142 200 36
 		position "markerFeedSLDR"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	6
+		pad 5 0 5 0
 		action
 		"
 			helpString = 'MARKER_FEEDBACK_HELP'
@@ -4521,10 +4625,12 @@ menu
 		area 300 242 200 36
 		position "locatorFeedSLDR"
 		bam	 'SLDRSTAR'
-		mosaic GUISLDR
+		sliderBackground 'SLDRBACK'
+		scaleToClip
 		sequence 0
 		frame	 1
 		settings	5
+		pad 5 0 5 0
 		action
 		"
 			helpString = 'LOCATOR_FEEDBACK_HELP'
@@ -4542,7 +4648,8 @@ menu
 	}
 	button
 	{
-		area		188 700 200 44
+		on escape
+		area		188 700 200 40
 		bam			GUIBUTNT
 		sequence	2
 		text 		"CANCEL_BUTTON"
@@ -4557,7 +4664,7 @@ menu
 	}
 	button
 	{
-		area		638 700 200 44
+		area		638 700 200 40
 		bam			GUIBUTNT
 		sequence	2
 		text 		"DONE_BUTTON" --Done
@@ -4886,7 +4993,7 @@ menu
 
 	button
 	{
-		area		598 730 230 44
+		area		598 730 230 40
 		bam			GUIBUTMT
 		sequence	6
 		text  "DONE_BUTTON"
@@ -4924,6 +5031,11 @@ menu
 	align center center
 	onOpen
 	"
+		if e:IsTouchUI() then
+			displayLanguages = tabletLanguages
+		else
+			displayLanguages = languages
+		end
 		showsubtitles = Infinity_GetINIValue('Program Options', 'Display Subtitles', 1)
 		findCurrentLanguage()
 	"
@@ -4957,7 +5069,7 @@ menu
 			label
 			{
 				area 0 0 -1 -1
-				text lua "languages[rowNumber][4]"
+				text lua "displayLanguages[rowNumber][4]"
 				text style	"normal"
 				text align center center
 			}
@@ -4965,7 +5077,7 @@ menu
 
 		area		146 138 392 450
 		rowheight	28
-		table		"languages"
+		table		"displayLanguages"
 		var			language
 		scrollbar	'GUISCRC'
 	}
@@ -5007,12 +5119,14 @@ menu
 	{
 		area		412 596 36 34
 		bam			ROUNDBUT
+		scaleToClip
 		toggle		showsubtitles
 	}
 
 	button
 	{
-		area		304 732 230 44
+		on escape
+		area		304 732 230 40
 		bam			GUIBUTMT
 		text	"CANCEL_BUTTON"
 		text style	"button"
@@ -5020,7 +5134,7 @@ menu
 		action
 		"
 			-- cancel
-			for index, var in pairs(languages) do
+			for index, var in pairs(displayLanguages) do
 				Infinity_Log(var[3])
 			end
 			Infinity_PopMenu();
@@ -5029,14 +5143,14 @@ menu
 
 	button
 	{
-		area		936 732 230 44
+		area		936 732 230 40
 		bam			GUIBUTMT
 		text 		"DONE_BUTTON"
 		text style	"button"
 		action
 		"
 			-- done
-			Infinity_SetLanguage(languages[language][1],showsubtitles)
+			Infinity_SetLanguage(displayLanguages[language][1],showsubtitles)
 			Infinity_PopMenu()
 		"
 	}
@@ -5203,9 +5317,10 @@ menu
 	}
 	button
 	{
+		on escape
 		bam			GUIBUTNT
 		sequence	6
-		area		138 345 201 43
+		area		138 345 201 40
 		text  "CANCEL_BUTTON"
 		text style	"button"
 		action
@@ -5219,7 +5334,7 @@ menu
 	{
 		bam			GUIBUTNT
 		sequence	6
-		area		138 289 201 43
+		area		138 289 201 40
 		clickable	lua "itemRequestAmt > 0"
 		text  "DONE_BUTTON"
 		text style	"button"
@@ -5403,7 +5518,7 @@ menu
 
 	button
 	{
-		area 278 607 232 44
+		area 278 607 232 40
 		bam			GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -5417,7 +5532,8 @@ menu
 
 	button
 	{
-		area 50 607 232 44
+		on escape
+		area 50 607 232 40
 		bam			GUIBUTMT
 		text "CANCEL_BUTTON"
 		text style "button"
@@ -5449,7 +5565,7 @@ menu
 	}
 	button
 	{
-		area 213 170 200 44
+		area 213 170 200 40
 		bam GUIBUTNT
 		text "DONE_BUTTON"
 		text style	"button"
@@ -5478,7 +5594,8 @@ menu
 	}
 	button
 	{
-		area 79 170 230 44
+		on escape
+		area 79 170 230 40
 		bam GUIBUTMT
 		text lua "t(Popup2Button.cancelText or 'CANCEL_BUTTON')"
 		text style	"button"
@@ -5492,7 +5609,7 @@ menu
 	}
 	button
 	{
-		area 343 170 230 44
+		area 343 170 230 40
 		bam GUIBUTMT
 		text style	"button"
 		text lua "t(Popup2Button.okText or 'DONE_BUTTON')"
@@ -5524,7 +5641,7 @@ menu
 	}
 	button
 	{
-		area 440 170 200 44
+		area 440 170 200 40
 		bam GUIBUTNT
 		text lua "t(Popup3Button.rightText)"
 		text style	"button"
@@ -5538,7 +5655,7 @@ menu
 	}
 	button
 	{
-		area 228 170 200 44
+		area 228 170 200 40
 		bam GUIBUTNT
 		text style	"button"
 		text lua "t(Popup3Button.midText)"
@@ -5552,7 +5669,7 @@ menu
 	}
 	button
 	{
-		area 18 170 200 44
+		area 18 170 200 40
 		bam GUIBUTNT
 		text style	"button"
 		text lua "t(Popup3Button.leftText)"
@@ -5584,7 +5701,7 @@ menu
 	}
 	button
 	{
-		area 668 170 200 44
+		area 668 170 200 40
 		bam GUIBUTNT
 		text lua "t(Popup4Button.farRightText)"
 		text style	"button"
@@ -5598,7 +5715,7 @@ menu
 	}
 	button
 	{
-		area 458 170 200 44
+		area 458 170 200 40
 		bam GUIBUTNT
 		text style	"button"
 		text lua "t(Popup4Button.rightText)"
@@ -5612,7 +5729,7 @@ menu
 	}
 	button
 	{
-		area 248 170 200 44
+		area 248 170 200 40
 		bam GUIBUTNT
 		text style	"button"
 		text lua "t(Popup4Button.leftText)"
@@ -5626,7 +5743,7 @@ menu
 	}
 	button
 	{
-		area 38 170 200 44
+		area 38 170 200 40
 		bam GUIBUTNT
 		text style	"button"
 		text lua "t(Popup4Button.farLeftText)"
@@ -5681,7 +5798,7 @@ menu
 		"
 			Infinity_PopMenu()
 			-- TODO: review, present in BG2 v2.5.16.2 but not in SOD v2.5.17.0
-			if false and createCharScreen:GetEngineState() == 7 then
+			if createCharScreen:GetEngineState() == 7 then
 				--If we're in import character mode, go back to the import screen.
 				e:SelectEngine(startEngine)
 				startEngine:OnImportCharacterButtonClick()
@@ -5823,7 +5940,7 @@ menu
 	{
 		bam			GUIBUTMT
 		sequence	6
-		area		331 679 230 44
+		area		331 679 230 40
 		enabled "itemDescLeftButtonEnabled()"
 		text lua "itemDescLeftButtonText()"
 		text style "button"
@@ -5836,7 +5953,7 @@ menu
 	{
 		bam			GUIBUTMT
 		sequence	6
-		area		568 679 230 44
+		area		568 679 230 40
 		text  "DONE_BUTTON"
 		text style "button"
 		action
@@ -5848,7 +5965,7 @@ menu
 	{
 		bam			GUIBUTMT
 		sequence	6
-		area		805 679 230 44
+		area		805 679 230 40
 		enabled "itemDescRightButtonEnabled()"
 		text lua "itemDescRightButtonText()"
 		text style "button"
@@ -6293,18 +6410,14 @@ menu
 		area 0 48 64 68
 		bam "CGEAR"
 		frame lua "timer:GetCurrentTime()"
+		useOverlayTint "worldScreen:CheckIfPaused()"
+		overlayTint 180 180 180
 	}
 	label
 	{
 		enabled "showJournal ~= 1"
 		area 0 48 64 68
 		mosaic RGCLOCK
-	}
-	label
-	{
-		area 0 48 64 68
-		enabled "worldScreen == e:GetActiveEngine() and worldScreen:CheckIfPaused() and showJournal ~= 1"
-		mosaic RGCLOCK1
 	}
 	button
 	{
@@ -6325,18 +6438,14 @@ menu
 		area 0 48 64 68
 		bam "CGEAR"
 		frame lua "timer:GetCurrentTime()"
+		useOverlayTint "worldScreen:CheckIfPaused()"
+		overlayTint 180 180 180
 	}
 	label
 	{
 		enabled "JournalSize ~= UIStrings.UI_Large"
 		area 0 48 64 68
 		mosaic RGCLOCK
-	}
-	label
-	{
-		area 0 48 64 68
-		enabled "worldScreen == e:GetActiveEngine() and worldScreen:CheckIfPaused() and JournalSize ~= UIStrings.UI_Large"
-		mosaic RGCLOCK1
 	}
 	button
 	{
@@ -7228,13 +7337,17 @@ menu
 		bam RGGBUT
 		sequence 10
 		frame lua "rggbuttHighlight8()"
-		tooltip lua "getTooltipWithHotkey(15,31813)"
+		tooltip lua "getTooltipWithHotkey(28,31813)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		clickable lua "sidebarsGreyed ~= 1"
 		action
 		"
-			worldScreen:OnQuickSaveButtonClick()
+			worldScreen:OnQuickSaveButtonClick(false)
+		"
+		actionAlt
+		"
+			worldScreen:OnQuickSaveButtonClick(true)
 		"
 		actionEnter
 		"
@@ -7252,13 +7365,17 @@ menu
 		bam RGGBUT
 		sequence 10
 		frame lua "rggbuttHighlight8()"
-		tooltip lua "getTooltipWithHotkey(15,31813)"
+		tooltip lua "getTooltipWithHotkey(28,31813)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		clickable lua "sidebarsGreyed ~= 1"
 		action
 		"
-			worldScreen:OnQuickSaveButtonClick()
+			worldScreen:OnQuickSaveButtonClick(false)
+		"
+		actionAlt
+		"
+			worldScreen:OnQuickSaveButtonClick(true)
 		"
 		actionEnter
 		"
@@ -7354,11 +7471,14 @@ menu
 --		enabled "worldScreen == e:GetActiveEngine()"
 --		bam GUILS10
 --		sequence 16
---		tooltip lua "getTooltipWithHotkey(16,31827)"
+--		tooltip lua "Infinity_FetchString(31827)"
 --		tooltip force lua "sidebarForceTooltips == 1"
 --		tooltip force top
 --		clickable lua "sidebarsGreyed ~= 1"
---		toggle sidebarForceTooltips
+--		action
+--		"
+--			Infinity_PushMenu('HELP')
+--		"
 --	}
 	button
 	{
@@ -7367,7 +7487,7 @@ menu
 		bam RGGBUT
 		sequence 7
 		frame lua "rggbuttHighlight10()"
-		tooltip lua "getTooltipWithHotkey(9,11942)"
+		tooltip lua "getTooltipWithHotkey(31,11942)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		clickable lua "sidebarsGreyed ~= 1"
@@ -7391,7 +7511,7 @@ menu
 		bam RGGBUT
 		sequence 7
 		frame lua "rggbuttHighlight10()"
-		tooltip lua "getTooltipWithHotkey(9,11942)"
+		tooltip lua "getTooltipWithHotkey(31,11942)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		clickable lua "sidebarsGreyed ~= 1"
@@ -7800,6 +7920,13 @@ function getInventoryTHAC0Details()
 	end
 end
 
+function scrollGroundItems()
+	if scrollDirection > 0 then
+		Infinity_OnGroundPage(-1)
+	elseif scrollDirection < 0 then
+		Infinity_OnGroundPage(1)
+	end
+end
 
 local function patchObject(object, keys, wrapper)
 	local store = {}
@@ -7964,6 +8091,8 @@ menu
 		inventory:deinit()
 		inventory = nil
 		Infinity_PopMenu('CHARACTER_COLOR')
+		Infinity_PopMenu('ITEM_DESCRIPTION')
+		Infinity_PopMenu('ITEM_IDENTIFY')
 		popSidebars()
 	"
 
@@ -8423,14 +8552,20 @@ menu
 		clickable lua "sidebarsGreyed ~= 1"
 	}
 
-	slot {name "slot_inv_68"		area 1214 220 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground0"		}
-	slot {name "slot_inv_69"		area 1214 273 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground1"		}
-	slot {name "slot_inv_70"		area 1214 326 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground2"		}
-	slot {name "slot_inv_71"		area 1214 379 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground3"		}
-	slot {name "slot_inv_72"		area 1214 432 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground4"		}
-	slot {name "slot_inv_73"		area 1214 485 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground5"		}
-	slot {name "slot_inv_74"		area 1214 538 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground6"		}
-	slot {name "slot_inv_75"		area 1214 591 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground7"		}
+	button
+	{
+		area 1214 220 54 424
+		actionScroll "scrollGroundItems()"
+	}
+
+	slot {name "slot_inv_68"		area 1214 220 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground0"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_69"		area 1214 273 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground1"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_70"		area 1214 326 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground2"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_71"		area 1214 379 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground3"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_72"		area 1214 432 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground4"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_73"		area 1214 485 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground5"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_74"		area 1214 538 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground6"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_75"		area 1214 591 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground7"	actionScroll "scrollGroundItems()"	}
 
 	button
 	{
@@ -8621,6 +8756,7 @@ menu
 		enabled "characters[id].PC == 1"
 		area 368 370 662 44
 		bam	 'SLDRSTAR'
+		scaleToClip
 		position "SLIDER_color_hair"
 		sequence 0
 		frame	 1
@@ -8644,6 +8780,7 @@ menu
 		enabled "characters[id].PC == 1"
 		area 368 444 662 44
 		bam	 'SLDRSTAR'
+		scaleToClip
 		position "SLIDER_color_skin"
 		sequence 0
 		frame	 1
@@ -8673,6 +8810,7 @@ menu
 		palette 2
 		area 368 550 662 44
 		bam	 'SLDRSTAR'
+		scaleToClip
 		position "SLIDER_color_major"
 		sequence 0
 		frame	 1
@@ -8695,6 +8833,7 @@ menu
 		palette 1
 		area 368 624 662 44
 		bam	 'SLDRSTAR'
+		scaleToClip
 		position "SLIDER_color_minor"
 		sequence 0
 		frame	 1
@@ -8707,7 +8846,7 @@ menu
 	button
 	{
 		on escape
-		area 382 724 230 44
+		area 382 724 230 40
 		bam GUIBUTMT
 		sequence 2
 		text "CANCEL_BUTTON"
@@ -8720,7 +8859,7 @@ menu
 	button
 	{
 		on return
-		area 818 724 230 44
+		area 818 724 230 40
 		bam GUIBUTMT
 		sequence 2
 		text "DONE_BUTTON"
@@ -8950,6 +9089,8 @@ end
 
 cheatGoldAmt = 1000000
 cheatXpAmt = 500000
+
+cheatAreaDisplayList = {}
 `
 menu
 {
@@ -10752,6 +10893,11 @@ menu
 	size 1024 768
 	ignoreesc
 	onOpen "
+		if e:IsTouchUI() and startEngine:GetCampaign() ~= 3 then
+			-- startEngine:OnCampaignButtonClick('SOD',false) -- added by patch 2.5
+		end
+
+		versionString = CBaldurChitin:GetVersionString()
 		campaignsString = ''
 		PWSMod = Infinity_GetINIString('Game Options','PWSFirstLoad',1)
 		if PWSMod ~= CurrentVer then
@@ -10979,6 +11125,18 @@ menu
 		pad 10 8 10 8
 		text style "button"
 		text "QUIT_GAME_BUTTON"
+		enabled "not e:IsTouchUI()"
+		on escape
+		action
+		"
+			startEngine:OnQuitButtonClick()
+		"
+	}
+	button
+	{
+		area 0 0 1 1
+		enabled "e:IsTouchUI()"
+		on escape
 		action
 		"
 			startEngine:OnQuitButtonClick()
@@ -11225,6 +11383,19 @@ menu
 	}
 	button
 	{
+		-- TODO: not enough room for a new button, but this menu seems to unused anyway
+		-- name "MenuButton6SP"
+		enabled "false"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 500 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "PREGENERATE_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnPreGenerateButtonClick()"
+	}
+	button
+	{
 		name "MenuButton6SP"
 		bam 'STARTBUT'
 		sequence lua "getCampaignButtonSequence()"
@@ -11335,7 +11506,7 @@ menu
 			width 100
 			label
 			{
-				area 0 0 -1 40
+				area 0 0 -1 45
 				text lua "t( OptionsButtons[rowNumber].text )"
 				text style "button"
 				bam STARTBUT
@@ -11392,14 +11563,6 @@ function magePageInfo()
 	end
 	return ""
 end
-
-mageBookStrings = {
-	SPWI908 = {tip = 24615, title = 'CHAIN_CONTINGENCY_TITLE', action = "ADD_SPELLS_CONTINGENCY_LABEL"},
-	SPWI617 = {tip = 24615, title = 'CONTINGENCY_TITLE', action = "ADD_SPELLS_CONTINGENCY_LABEL"},
-	SPWI809 = {tip = 24617, title = 'SPELL_TRIGGER_TITLE', action = "ADD_SPELLS_TRIGGER_LABEL"},
-	SPWI710 = {tip = 24616, title = 'SPELL_SEQUENCER_TITLE', action = "ADD_SPELLS_SEQUENCER_LABEL"},
-	SPWI420 = {tip = 24616, title = 'MINOR_SEQUENCER_TITLE', action = "ADD_SPELLS_SEQUENCER_LABEL"},
-	}
 
 contingencyDescription = 0
 
@@ -11584,6 +11747,7 @@ function refreshMageBook()
 end
 
 function setMageBookLevel(num)
+	lastCurrentBookSpell = 0
 	currentBookSpell = 0
 	currentSpellLevel = num
 	mageScreen:SetSpellLevel(num-1)
@@ -11656,6 +11820,21 @@ function createMageMemorizationSparkle(x,y,w,h, fromList, listIndex)
 	end
 end
 
+function findMemorizedUncastable(resref)
+	local index = 1
+	local sparkle = -1
+	for index = 1, #(bottomSpells), 1 do
+		if bottomSpells[index].resref == resref then
+			if bottomSpells[index].castable == 0 then
+				sparkle = index
+				break
+			end
+		end
+	end
+
+	return sparkle
+end
+
 function unmemorizingMageSpell(resref)
 	local sparkle = -1
 	local level = ''
@@ -11671,6 +11850,14 @@ function unmemorizingMageSpell(resref)
 	end
 
 	createMageMemorizationSparkle(0, 0, 36, 36, 'memorizedListMage' .. level, sparkle)
+end
+
+function unmemorizeMageSpell(spell)
+	if spell then
+		showMageMemorizationFlash = false
+		mageScreen:UnmemorizeSpell( spell.level, spell.memorizedIndex )
+		Infinity_PlaySound('GAM_44')
+	end
 end
 
 function getSpellButtHighlight(num)
@@ -11703,9 +11890,11 @@ function Mage:unmemorizeSpell(level, spells, slot)
 	end
 	setMageBookLevel(level)
 
-	showMageMemorizationFlash = false
-	mageScreen:UnmemorizeSpell(spell.level, spell.memorizedIndex)
-	Infinity_PlaySound('GAM_44')
+	if findMemorizedUncastable(spell.resref) == -1 and Infinity_GetOption(41, 9) ~= 0 then
+		popup2Button(11824, 'REMOVE_BUTTON', function() unmemorizeMageSpell(spell) end, 'CANCEL_BUTTON')
+	else
+		unmemorizeMageSpell(spell)
+	end
 end
 
 function Mage:eraseSpell(index)
@@ -11723,7 +11912,6 @@ menu
 {
 	name 'MAGE'
 	align center center
-	greyscale lua "mageBookEnabled == false"
 	modal lua "bookMode == 1"
 
 	onopen "
@@ -11927,7 +12115,7 @@ menu
 		text '9'
 		text style "rg_trajan"
 		text align center center
-		enabled		"maxMagePage >= 8"
+		enabled		"maxMagePage > 8"
 		action		"setMageBookLevel(9)"
 	}
 	button
@@ -11990,8 +12178,10 @@ menu
 			end
 			if lastCurrentBookSpell == currentBookSpell and cellNumber == 2 then
 				currentBookSpell = 0
+				-- contingencyDescription = mageBookStrings[contingencyResRef].tip
+			else
+				lastCurrentBookSpell = currentBookSpell
 			end
-			lastCurrentBookSpell = currentBookSpell
 		"
 		actionalt
 		"
@@ -12758,19 +12948,19 @@ menu
 		var		currentBottomSpell
 		action
 		"
-			if bookMode == 0 then
-				showMageMemorizationFlash = false
-				mageScreen:UnmemorizeSpell( bottomSpells[currentBottomSpell].level, bottomSpells[currentBottomSpell].memorizedIndex )
-				Infinity_PlaySound('GAM_44')
-			elseif bookMode == 1 then
-				mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )
-				table.remove(sequencerSpells, currentBottomSpell)
-				bottomSpells = sequencerSpells
-				currentBottomSpell = 0
-			end
+			mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )
+			table.remove(sequencerSpells, currentBottomSpell)
+			bottomSpells = sequencerSpells
+			currentBottomSpell = 0
 		"
 	}
 
+	label
+	{
+		area 0 0 1364 756
+		fill        0 0 0 176
+		enabled "mageBookEnabled == false"
+	}
 }
 `
 function refreshMageContingency()
@@ -12980,7 +13170,7 @@ menu
 	}
 	button
 	{
-		area 561 676 230 44
+		area 561 676 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -13067,6 +13257,7 @@ function refreshPriestBook()
 end
 
 function setPriestBookLevel(num)
+	lastCurrentBookSpell = 0
 	currentBookSpell = 0
 	currentSpellLevel = num
 	refreshPriestBook()
@@ -13120,6 +13311,14 @@ function unmemorizingPriestSpell(resref)
 	createPriestMemorizationSparkle(0, 0, 36, 36, 'memorizedListPriest' .. level, sparkle)
 end
 
+function unmemorizePriestSpell(spell)
+	if spell then
+		showPriestMemorizationFlash = false
+		priestScreen:UnmemorizeSpell( spell.level, spell.memorizedIndex )
+		Infinity_PlaySound('GAM_44')
+	end
+end
+
 function getPrSpellButtHighlight(num)
 	if currentSpellLevel == num then
 		return 2
@@ -13136,16 +13335,17 @@ function Priest:unmemorizeSpell(level, spells, slot)
 	end
 	setPriestBookLevel(level)
 
-	showPriestMemorizationFlash = false
-	priestScreen:UnmemorizeSpell(spell.level, spell.memorizedIndex)
-	Infinity_PlaySound('GAM_44')
+	if findMemorizedUncastable(spell.resref) == -1 and Infinity_GetOption(41, 9) ~= 0 then
+		popup2Button(11824, 'REMOVE_BUTTON', function() unmemorizePriestSpell(spell) end, 'CANCEL_BUTTON')
+	else
+		unmemorizePriestSpell(spell)
+	end
 end
 `
 menu
 {
 	name 'PRIEST'
 	align center center
-	greyscale lua "priestBookEnabled == false"
 
 	onopen
 	"
@@ -13358,8 +13558,9 @@ menu
 			end
 			if lastCurrentBookSpell == currentBookSpell and cellNumber == 2 then
 				currentBookSpell = 0
+			else
+				lastCurrentBookSpell = currentBookSpell
 			end
-			lastCurrentBookSpell = currentBookSpell
 		"
 
 	}
@@ -13678,7 +13879,12 @@ menu
 		action "spellDescString = nil"
 	}
 
-
+	label
+	{
+		area 0 0 1364 756
+		fill        0 0 0 176
+		enabled "priestBookEnabled == false"
+	}
 }
 `
 	versionString = ""
@@ -13712,6 +13918,8 @@ menu
 	onOpen "
 		Infinity_PlayMovie('RGOPT1','RGOPT1')
 		getEscMenuArea()
+
+
 		versionString = CBaldurChitin:GetVersionString()
 		pushSidebars()
 		rgEscPortrait = 1
@@ -13806,7 +14014,7 @@ menu
 	}
 --	button
 --	{
---		area 284 615 300 45
+--		area 284 615 300 40
 --		bam GUIBUTWT
 --		text "RETURN_GAME_BUTTON"
 --		text style "button"
@@ -13837,12 +14045,20 @@ menu
 		text "QUIT_GAME_BUTTON"
 		action
 		"
-			popup4Button(16456,
-			'CANCEL_BUTTON', nil,
-			'MAIN_MENU_BUTTON', function() optionsScreen:QuitGame() end,
-			'QUIT_BUTTON', function() Infinity_ShutdownGame() end,
-			'SAVE_BUTTON', function() optionsScreen:SaveGame(0) end
-			)
+			if e:IsTouchUI() then
+				popup3Button(16456,
+				'CANCEL_BUTTON', nil,
+				'MAIN_MENU_BUTTON', function() optionsScreen:QuitGame() end,
+				'SAVE_BUTTON', function() optionsScreen:SaveGame(0) end
+				)
+			else
+				popup4Button(16456,
+				'CANCEL_BUTTON', nil,
+				'MAIN_MENU_BUTTON', function() optionsScreen:QuitGame() end,
+				'QUIT_BUTTON', function() Infinity_ShutdownGame() end,
+				'SAVE_BUTTON', function() optionsScreen:SaveGame(0) end
+				)
+			end
 		"
 	}
 	button
@@ -14213,7 +14429,7 @@ menu
 	}
 --	button
 --	{
---		area 783 715 230 44
+--		area 783 715 230 40
 --		enabled "worldMapScreen:IsTravelButtonVisible()"
 --		bam GUIBUTMT
 --		text "TRAVEL_BUTTON"
@@ -14589,7 +14805,7 @@ menu
 	label
 	{
 		area 28 122 386 34
-		text "STORE_LABEL"
+		text lua "checkContainerText('STORE_LABEL',Infinity_FetchString(storeScreen:GetStoreName()))"
 		text style "label"
 		align left center
 	}
@@ -14629,7 +14845,7 @@ menu
 			label
 			{
 				enabled	"StoreContainsSearchString(rowNumber) and not storeScreen:IsContainer()"
-				area 315 0 91 60
+				area 310 0 91 60
 				text lua "store.storeItems[rowNumber].value"
 				text style "gold"
 			}
@@ -14649,22 +14865,24 @@ menu
 		scrollbar 'GUISCRC'
 		action
 		"
-			if not storeScreen:IsContainer() then
-				if not storeScreen:IsCloseBagButtonClickable() or store.storeItems[storeItemsVar].valid == 1 then
-					local highlight = true
-					if(store.storeItems[storeItemsVar].highlight == 1) then highlight = false end
-					storeScreen:SelectStoreItem(storeItemsVar - 1,  highlight)
-				end
-			elseif (store.storeItems[storeItemsVar].highlight == 1) then
-				storeScreen:SelectStoreItem(storeItemsVar - 1,  false)
-			else
-				storeScreen:SelectStoreItem(storeItemsVar - 1,  true)
-				local count = store.storeItems[storeItemsVar].item.count or 0
-				local stock = store.storeItems[storeItemsVar].numInStock or 0
-				if (count > 1) then
-					storeScreen:SetStoreItemCount(storeItemsVar - 1, count)
-				elseif (stock > 1) then
-					storeScreen:SetStoreItemCount(storeItemsVar - 1, stock)
+			if store.storeItems[storeItemsVar].clickable == 1 then
+				if not storeScreen:IsContainer() then
+					if not storeScreen:IsCloseBagButtonClickable() or store.storeItems[storeItemsVar].valid == 1 then
+						local highlight = true
+						if(store.storeItems[storeItemsVar].highlight == 1) then highlight = false end
+						storeScreen:SelectStoreItem(storeItemsVar - 1,  highlight)
+					end
+				elseif (store.storeItems[storeItemsVar].highlight == 1) then
+					storeScreen:SelectStoreItem(storeItemsVar - 1,  false)
+				else
+					storeScreen:SelectStoreItem(storeItemsVar - 1,  true)
+					local count = store.storeItems[storeItemsVar].item.count or 0
+					local stock = store.storeItems[storeItemsVar].numInStock or 0
+					if (count > 1) then
+						storeScreen:SetStoreItemCount(storeItemsVar - 1, count)
+					elseif (stock > 1) then
+						storeScreen:SetStoreItemCount(storeItemsVar - 1, stock)
+					end
 				end
 			end
 		"
@@ -14674,11 +14892,13 @@ menu
 		"
 		actionDbl
 		"
-			if not storeScreen:IsCloseBagButtonClickable() or store.storeItems[storeItemsVar].valid == 1 then
-				local maxCount = store.storeItems[storeItemsVar].maxCount
-				if(maxCount > 1) then
-					popupRequester(maxCount, storeSplitStack, false)
-					storeScreen:SelectStoreItem(storeItemsVar - 1, false)
+			if store.storeItems[storeItemsVar].clickable == 1 then
+				if not storeScreen:IsCloseBagButtonClickable() or store.storeItems[storeItemsVar].valid == 1 then
+					local maxCount = store.storeItems[storeItemsVar].maxCount
+					if(maxCount > 1) then
+						popupRequester(maxCount, storeSplitStack, false)
+						storeScreen:SelectStoreItem(storeItemsVar - 1, false)
+					end
 				end
 			end
 		"
@@ -14687,7 +14907,7 @@ menu
 	label
 	{
 		area 455 122 385 34
-		text "INVENTORY_TITLE"
+		text  lua "Infinity_GetSelectedCharacterName()"
 		text style "label"
 		align left center
 	}
@@ -14882,7 +15102,7 @@ menu
 
 	button
 	{
-		area 118 676 201 43
+		area 118 676 201 40
 		bam GUIBUTNT
 		text lua "checkContainerText('BUY_BUTTON', 'TO_BACKPACK_BUTTON')"
 		text style "button"
@@ -14894,7 +15114,7 @@ menu
 	}
 	button
 	{
-		area 546 676 201 43
+		area 546 676 201 40
 		bam GUIBUTNT
 		text lua "checkContainerText('SELL_BUTTON','TO_CONTAINER_BUTTON')"
 		text style "button"
@@ -14906,7 +15126,7 @@ menu
 	}
 	button
 	{
-		area 332 676 201 43
+		area 332 676 201 40
 		enabled "(not storeScreen:IsContainer()) and storeScreen:IsStealEnabled()"
 		bam GUIBUTNT
 		text "STEAL_BUTTON"
@@ -14945,7 +15165,7 @@ menu
 	}
 	button
 	{
-		area 332 676 201 43
+		area 332 676 201 40
 		enabled "storeScreen:IsCloseBagButtonClickable()"
 		bam GUIBUTNT
 		text "CLOSE_CONTAINER_BUTTON"
@@ -14960,6 +15180,23 @@ menu
 --		area 16 629 68 90
 --		encumbrance
 --	}
+
+	-- Added by patch 2.5
+	label
+	{
+		area 15 157 407 480
+		enabled "storeScreen:IsSpriteOrderable() == false"
+		mosaic "RGJBACK"
+		ignoreEvents
+	}
+
+	label
+	{
+		area 442 157 407 480
+		enabled "storeScreen:IsSpriteOrderable() == false"
+		mosaic "RGJBACK"
+		ignoreEvents
+	}
 
 }
 `
@@ -15078,7 +15315,7 @@ menu
 	}
 	button
 	{
-		area 118 676 200 44
+		area 118 676 200 40
 		bam GUIBUTNT
 		text "IDENTIFY_BUTTON"
 		text style "button"
@@ -15122,8 +15359,12 @@ menu
 {
 	name 'STORE_DONATE'
 	align center center
-	onOpen "storeScreen:UpdateDonatePanel()"
 	ignoreEsc
+	onOpen
+	"
+		storeScreen:UpdateDonatePanel()
+		store.donateText = ''
+	"
 	label
 	{
 		area 0 0 864 756
@@ -15162,6 +15403,15 @@ menu
 		text align left center
 		maxlines	1
 		fill            112 111 111 64
+		action
+		"
+			-- only permit numbers as letters.
+			if(tonumber(letter_pressed) ~= nil or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
 	}
 	button
 	{
@@ -15194,7 +15444,7 @@ menu
 	}
 	button
 	{
-		area 118 676 200 44
+		area 118 676 200 40
 		bam GUIBUTNT
 		text "DONATE_BUTTON"
 		text style "button"
@@ -15273,7 +15523,7 @@ menu
 	button
 	{
 		name "BUTTON_room_peasant"
-		area 34 346 230 44
+		area 34 346 230 40
 		bam GUIBUTMT
 		text "PEASANT_BUTTON"
 		text style "button"
@@ -15300,7 +15550,7 @@ menu
 	button
 	{
 		name "BUTTON_room_merchant"
-		area 345 346 230 44
+		area 345 346 230 40
 		bam GUIBUTMT
 		text "MERCHANT_BUTTON"
 		text style "button"
@@ -15328,7 +15578,7 @@ menu
 	button
 	{
 		name "BUTTON_room_noble"
-		area 34 592 230 44
+		area 34 592 230 40
 		bam GUIBUTMT
 		text "NOBLE_BUTTON"
 		text style "button"
@@ -15355,7 +15605,7 @@ menu
 	button
 	{
 		name "BUTTON_room_royal"
-		area 345 592 230 44
+		area 345 592 230 40
 		bam GUIBUTMT
 		text "ROYAL_BUTTON"
 		text style "button"
@@ -15386,7 +15636,7 @@ menu
 	}
 	button
 	{
-		area 332 676 200 44
+		area 332 676 200 40
 		bam GUIBUTNT
 		text "RENT_BUTTON"
 		text style "button"
@@ -15495,7 +15745,7 @@ menu
 	}
 	button
 	{
-		area 118 676 200 44
+		area 118 676 200 40
 		bam GUIBUTNT
 		text "BUY_BUTTON"
 		text style "button"
@@ -15516,8 +15766,12 @@ menu
 {
 	name 'STORE_DRINKS'
 	align center center
-	onOpen "storeScreen:UpdateBuyDrinksPanel()"
 	ignoreEsc
+	onOpen
+	"
+		storeScreen:UpdateBuyDrinksPanel()
+		store.drinkText = ''
+	"
 
 	label
 	{
@@ -15594,7 +15848,7 @@ menu
 	}
 	button
 	{
-		area 118 676 201 43
+		area 118 676 201 40
 		bam GUIBUTNT
 		text "BUY_BUTTON"
 		text style "button"
@@ -15674,7 +15928,7 @@ menu
 	button
 	{
 		on escape
-		area 1132 674 140 44
+		area 1132 674 140 40
 		bam RGSTBT
 		text "DONE_BUTTON"
 		text style "button"
@@ -15785,6 +16039,8 @@ menu
 			return t('QUIT_BUTTON')
 		end
 	end
+
+	highlightButtonToggle = 0 -- TODO: review, added by SOD v2.5
 	worldChatEdit = ""
 `
 menu
@@ -15847,6 +16103,7 @@ menu
 		toolbarTop = 50
 		Infinity_PushMenu('WORLD_MESSAGES')
 --		Infinity_PushMenu('WORLD_QUICKLOOT')
+		worldScreen:SetHighlightEnabled(highlightButtonToggle == 1) -- TODO: review added by SOD v2.5
 	"
 	onClose
 	"
@@ -16068,6 +16325,7 @@ menu
 		count lua	"getContainerItemProperty(0,'count')"
 		usages lua	"getContainerItemProperty(0,'usages')"
 		action		"worldScreen:OnContainerButtonClick(0)"
+		actionAlt	"showContainerItemDescription(0)"
 		actionScroll "scrollContainerItems()"
 	}
 	button
@@ -16080,6 +16338,7 @@ menu
 		count lua	"getContainerItemProperty(1,'count')"
 		usages lua	"getContainerItemProperty(1,'usages')"
 		action		"worldScreen:OnContainerButtonClick(1)"
+		actionAlt	"showContainerItemDescription(1)"
 		actionScroll "scrollContainerItems()"
 	}
 	button
@@ -16092,6 +16351,7 @@ menu
 		count lua	"getContainerItemProperty(2,'count')"
 		usages lua	"getContainerItemProperty(2,'usages')"
 		action		"worldScreen:OnContainerButtonClick(2)"
+		actionAlt	"showContainerItemDescription(2)"
 		actionScroll "scrollContainerItems()"
 	}
 	button
@@ -16104,6 +16364,7 @@ menu
 		count lua	"getContainerItemProperty(3,'count')"
 		usages lua	"getContainerItemProperty(3,'usages')"
 		action		"worldScreen:OnContainerButtonClick(3)"
+		actionAlt	"showContainerItemDescription(3)"
 		actionScroll "scrollContainerItems()"
 	}
 	button
@@ -16116,6 +16377,7 @@ menu
 		count lua	"getContainerItemProperty(4,'count')"
 		usages lua	"getContainerItemProperty(4,'usages')"
 		action		"worldScreen:OnContainerButtonClick(4)"
+		actionAlt	"showContainerItemDescription(4)"
 		actionScroll "scrollContainerItems()"
 	}
 	button
@@ -16128,6 +16390,7 @@ menu
 		count lua	"getContainerItemProperty(5,'count')"
 		usages lua	"getContainerItemProperty(5,'usages')"
 		action		"worldScreen:OnContainerButtonClick(5)"
+		actionAlt	"showContainerItemDescription(5)"
 		actionScroll "scrollContainerItems()"
 	}
 	button
@@ -16174,6 +16437,7 @@ menu
 		count lua	"getGroupItemProperty(0,'count')"
 		usages lua	"getGroupItemProperty(0,'usages')"
 		action		"worldScreen:OnContainerButtonClick(10)"
+		actionAlt	"showGroupItemDescription(0)"
 		actionScroll "scrollGroupItems()"
 	}
 	button
@@ -16186,6 +16450,7 @@ menu
 		count lua	"getGroupItemProperty(1,'count')"
 		usages lua	"getGroupItemProperty(1,'usages')"
 		action		"worldScreen:OnContainerButtonClick(11)"
+		actionAlt	"showGroupItemDescription(1)"
 		actionScroll "scrollGroupItems()"
 	}
 	button
@@ -16198,6 +16463,7 @@ menu
 		count lua	"getGroupItemProperty(2,'count')"
 		usages lua	"getGroupItemProperty(2,'usages')"
 		action		"worldScreen:OnContainerButtonClick(12)"
+		actionAlt	"showGroupItemDescription(2)"
 		actionScroll "scrollGroupItems()"
 	}
 	button
@@ -16210,6 +16476,7 @@ menu
 		count lua	"getGroupItemProperty(3,'count')"
 		usages lua	"getGroupItemProperty(3,'usages')"
 		action		"worldScreen:OnContainerButtonClick(13)"
+		actionAlt	"showGroupItemDescription(3)"
 		actionScroll "scrollGroupItems()"
 	}
 	button
@@ -16234,6 +16501,7 @@ menu
 		"
 			worldScreen:OnGroupScroll(1)
 		"
+		actionScroll "scrollGroupItems()" -- TODO: review, not in SOD 2.5, but in BG2 2.5
 	}
 	label
 	{
@@ -16245,6 +16513,16 @@ menu
 		area 575 76 71 28
 		text lua "game:GetPartyGold()"
 		text style "gold"
+	}
+	button
+	{
+		area 40 82 32 32
+		bam "ROUNDBUT"
+		scaleToClip
+		action
+		"
+			worldScreen:TakeAllFromContainer()
+		"
 	}
 }
 `
@@ -16377,6 +16655,14 @@ menu
 			return 1
 		else
 			return nil
+		end
+	end
+
+	function showGroundItemDescription(slotId)
+		local slot = loot.groundItems[slotId + worldScreen:GetTopGroundItem()]
+			if(slot and slot.item) then
+				Infinity_GetGroundItemDescription(slotId + worldScreen:GetTopGroundItem(), slot.slotId, slot.containerId)
+				showItemDescription(slot.item, 2)
 		end
 	end
 `
@@ -16565,360 +16851,420 @@ menu
 		name "quicklootSlot0"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(0)"	area 76 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(0,'name')"	tint lua	"getGroundItemProperty(0,'tint')"
 		icon lua	"getGroundItemProperty(0,'icon')"	count lua	"getGroundItemProperty(0,'count')"	usages lua	"getGroundItemProperty(0,'usages')"
 		action "groundItemClick2(0)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(0,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(0)"
 	}
 	button
 	{
 		name "quicklootSlot1"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(1)"	area 130 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(1,'name')"	tint lua	"getGroundItemProperty(1,'tint')"
 		icon lua	"getGroundItemProperty(1,'icon')"	count lua	"getGroundItemProperty(1,'count')"	usages lua	"getGroundItemProperty(1,'usages')"
 		action "groundItemClick2(1)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(1,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(1)"
 	}
 	button
 	{
 		name "quicklootSlot2"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(2)"	area 184 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(2,'name')"	tint lua	"getGroundItemProperty(2,'tint')"
 		icon lua	"getGroundItemProperty(2,'icon')"	count lua	"getGroundItemProperty(2,'count')"	usages lua	"getGroundItemProperty(2,'usages')"
 		action "groundItemClick2(2)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(2,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(2)"
 	}
 	button
 	{
 		name "quicklootSlot3"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(3)"	area 238 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(3,'name')"	tint lua	"getGroundItemProperty(3,'tint')"
 		icon lua	"getGroundItemProperty(3,'icon')"	count lua	"getGroundItemProperty(3,'count')"	usages lua	"getGroundItemProperty(3,'usages')"
 		action "groundItemClick2(3)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(3,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(3)"
 	}
 	button
 	{
 		name "quicklootSlot4"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(4)"	area 292 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(4,'name')"	tint lua	"getGroundItemProperty(4,'tint')"
 		icon lua	"getGroundItemProperty(4,'icon')"	count lua	"getGroundItemProperty(4,'count')"	usages lua	"getGroundItemProperty(4,'usages')"
 		action "groundItemClick2(4)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(4,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(4)"
 	}
 	button
 	{
 		name "quicklootSlot5"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(5)"	area 346 5 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(5,'name')"	tint lua	"getGroundItemProperty(5,'tint')"
 		icon lua	"getGroundItemProperty(5,'icon')"	count lua	"getGroundItemProperty(5,'count')"	usages lua	"getGroundItemProperty(5,'usages')"
 		action "groundItemClick2(5)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(5,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(5)"
 	}
 	button
 	{
 		name "quicklootSlot6"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(6)"	area 76 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(6,'name')"	tint lua	"getGroundItemProperty(6,'tint')"
 		icon lua	"getGroundItemProperty(6,'icon')"	count lua	"getGroundItemProperty(6,'count')"	usages lua	"getGroundItemProperty(6,'usages')"
 		action "groundItemClick2(6)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(6,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(6)"
 	}
 	button
 	{
 		name "quicklootSlot7"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(7)"	area 130 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(7,'name')"	tint lua	"getGroundItemProperty(7,'tint')"
 		icon lua	"getGroundItemProperty(7,'icon')"	count lua	"getGroundItemProperty(7,'count')"	usages lua	"getGroundItemProperty(7,'usages')"
 		action "groundItemClick2(7)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(7,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(7)"
 	}
 	button
 	{
 		name "quicklootSlot8"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(8)"	area 184 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(8,'name')"	tint lua	"getGroundItemProperty(8,'tint')"
 		icon lua	"getGroundItemProperty(8,'icon')"	count lua	"getGroundItemProperty(8,'count')"	usages lua	"getGroundItemProperty(8,'usages')"
 		action "groundItemClick2(8)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(8,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(8)"
 	}
 	button
 	{
 		name "quicklootSlot9"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(9)"	area 238 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(9,'name')"	tint lua	"getGroundItemProperty(9,'tint')"
 		icon lua	"getGroundItemProperty(9,'icon')"	count lua	"getGroundItemProperty(9,'count')"	usages lua	"getGroundItemProperty(9,'usages')"
 		action "groundItemClick2(9)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(9,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(9)"
 	}
 	button
 	{
 		name "quicklootSlot10"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(10)"	area 292 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(10,'name')"	tint lua	"getGroundItemProperty(10,'tint')"
 		icon lua	"getGroundItemProperty(10,'icon')"	count lua	"getGroundItemProperty(10,'count')"	usages lua	"getGroundItemProperty(10,'usages')"
 		action "groundItemClick2(10)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(10,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(10)"
 	}
 	button
 	{
 		name "quicklootSlot11"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(11)"	area 346 59 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(11,'name')"	tint lua	"getGroundItemProperty(11,'tint')"
 		icon lua	"getGroundItemProperty(11,'icon')"	count lua	"getGroundItemProperty(11,'count')"	usages lua	"getGroundItemProperty(11,'usages')"
 		action "groundItemClick2(11)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(11,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(11)"
 	}
 	button
 	{
 		name "quicklootSlot12"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(12)"	area 76 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(12,'name')"	tint lua	"getGroundItemProperty(12,'tint')"
 		icon lua	"getGroundItemProperty(12,'icon')"	count lua	"getGroundItemProperty(12,'count')"	usages lua	"getGroundItemProperty(12,'usages')"
 		action "groundItemClick2(12)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(12,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(12)"
 	}
 	button
 	{
 		name "quicklootSlot13"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(13)"	area 130 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(13,'name')"	tint lua	"getGroundItemProperty(13,'tint')"
 		icon lua	"getGroundItemProperty(13,'icon')"	count lua	"getGroundItemProperty(13,'count')"	usages lua	"getGroundItemProperty(13,'usages')"
 		action "groundItemClick2(13)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(13,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(13)"
 	}
 	button
 	{
 		name "quicklootSlot14"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(14)"	area 184 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(14,'name')"	tint lua	"getGroundItemProperty(14,'tint')"
 		icon lua	"getGroundItemProperty(14,'icon')"	count lua	"getGroundItemProperty(14,'count')"	usages lua	"getGroundItemProperty(14,'usages')"
 		action "groundItemClick2(14)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(14,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(14)"
 	}
 	button
 	{
 		name "quicklootSlot15"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(15)"	area 238 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(15,'name')"	tint lua	"getGroundItemProperty(15,'tint')"
 		icon lua	"getGroundItemProperty(15,'icon')"	count lua	"getGroundItemProperty(15,'count')"	usages lua	"getGroundItemProperty(15,'usages')"
 		action "groundItemClick2(15)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(15,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(15)"
 	}
 	button
 	{
 		name "quicklootSlot16"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(16)"	area 292 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(16,'name')"	tint lua	"getGroundItemProperty(16,'tint')"
 		icon lua	"getGroundItemProperty(16,'icon')"	count lua	"getGroundItemProperty(16,'count')"	usages lua	"getGroundItemProperty(16,'usages')"
 		action "groundItemClick2(16)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(16,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(16)"
 	}
 	button
 	{
 		name "quicklootSlot17"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(17)"	area 346 113 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(17,'name')"	tint lua	"getGroundItemProperty(17,'tint')"
 		icon lua	"getGroundItemProperty(17,'icon')"	count lua	"getGroundItemProperty(17,'count')"	usages lua	"getGroundItemProperty(17,'usages')"
 		action "groundItemClick2(17)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(17,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(17)"
 	}
 	button
 	{
 		name "quicklootSlot18"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(18)"	area 76 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(18,'name')"	tint lua	"getGroundItemProperty(18,'tint')"
 		icon lua	"getGroundItemProperty(18,'icon')"	count lua	"getGroundItemProperty(18,'count')"	usages lua	"getGroundItemProperty(18,'usages')"
 		action "groundItemClick2(18)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(18,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(18)"
 	}
 	button
 	{
 		name "quicklootSlot19"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(19)"	area 130 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(19,'name')"	tint lua	"getGroundItemProperty(19,'tint')"
 		icon lua	"getGroundItemProperty(19,'icon')"	count lua	"getGroundItemProperty(19,'count')"	usages lua	"getGroundItemProperty(19,'usages')"
 		action "groundItemClick2(19)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(19,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(19)"
 	}
 	button
 	{
 		name "quicklootSlot20"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(20)"	area 184 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(20,'name')"	tint lua	"getGroundItemProperty(20,'tint')"
 		icon lua	"getGroundItemProperty(20,'icon')"	count lua	"getGroundItemProperty(20,'count')"	usages lua	"getGroundItemProperty(20,'usages')"
 		action "groundItemClick2(20)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(20,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(20)"
 	}
 	button
 	{
 		name "quicklootSlot21"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(21)"	area 238 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(21,'name')"	tint lua	"getGroundItemProperty(21,'tint')"
 		icon lua	"getGroundItemProperty(21,'icon')"	count lua	"getGroundItemProperty(21,'count')"	usages lua	"getGroundItemProperty(21,'usages')"
 		action "groundItemClick2(21)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(21,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(21)"
 	}
 	button
 	{
 		name "quicklootSlot22"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(22)"	area 292 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(22,'name')"	tint lua	"getGroundItemProperty(22,'tint')"
 		icon lua	"getGroundItemProperty(22,'icon')"	count lua	"getGroundItemProperty(22,'count')"	usages lua	"getGroundItemProperty(22,'usages')"
 		action "groundItemClick2(22)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(22,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(22)"
 	}
 	button
 	{
 		name "quicklootSlot23"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(23)"	area 346 167 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(23,'name')"	tint lua	"getGroundItemProperty(23,'tint')"
 		icon lua	"getGroundItemProperty(23,'icon')"	count lua	"getGroundItemProperty(23,'count')"	usages lua	"getGroundItemProperty(23,'usages')"
 		action "groundItemClick2(23)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(23,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(23)"
 	}
 	button
 	{
 		name "quicklootSlot24"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(24)"	area 76 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(24,'name')"	tint lua	"getGroundItemProperty(24,'tint')"
 		icon lua	"getGroundItemProperty(24,'icon')"	count lua	"getGroundItemProperty(24,'count')"	usages lua	"getGroundItemProperty(24,'usages')"
 		action "groundItemClick2(24)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(24,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(24)"
 	}
 	button
 	{
 		name "quicklootSlot25"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(25)"	area 130 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(25,'name')"	tint lua	"getGroundItemProperty(25,'tint')"
 		icon lua	"getGroundItemProperty(25,'icon')"	count lua	"getGroundItemProperty(25,'count')"	usages lua	"getGroundItemProperty(25,'usages')"
 		action "groundItemClick2(25)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(25,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(25)"
 	}
 	button
 	{
 		name "quicklootSlot26"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(26)"	area 184 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(26,'name')"	tint lua	"getGroundItemProperty(26,'tint')"
 		icon lua	"getGroundItemProperty(26,'icon')"	count lua	"getGroundItemProperty(26,'count')"	usages lua	"getGroundItemProperty(26,'usages')"
 		action "groundItemClick2(26)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(26,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(26)"
 	}
 	button
 	{
 		name "quicklootSlot27"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(27)"	area 238 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(27,'name')"	tint lua	"getGroundItemProperty(27,'tint')"
 		icon lua	"getGroundItemProperty(27,'icon')"	count lua	"getGroundItemProperty(27,'count')"	usages lua	"getGroundItemProperty(27,'usages')"
 		action "groundItemClick2(27)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(27,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(27)"
 	}
 	button
 	{
 		name "quicklootSlot28"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(28)"	area 292 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(28,'name')"	tint lua	"getGroundItemProperty(28,'tint')"
 		icon lua	"getGroundItemProperty(28,'icon')"	count lua	"getGroundItemProperty(28,'count')"	usages lua	"getGroundItemProperty(28,'usages')"
 		action "groundItemClick2(28)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(28,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(28)"
 	}
 	button
 	{
 		name "quicklootSlot29"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(29)"	area 346 221 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(29,'name')"	tint lua	"getGroundItemProperty(29,'tint')"
 		icon lua	"getGroundItemProperty(29,'icon')"	count lua	"getGroundItemProperty(29,'count')"	usages lua	"getGroundItemProperty(29,'usages')"
 		action "groundItemClick2(29)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(29,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(29)"
 	}
 	button
 	{
 		name "quicklootSlot30"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(30)"	area 76 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(30,'name')"	tint lua	"getGroundItemProperty(30,'tint')"
 		icon lua	"getGroundItemProperty(30,'icon')"	count lua	"getGroundItemProperty(30,'count')"	usages lua	"getGroundItemProperty(30,'usages')"
 		action "groundItemClick2(30)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(30,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(30)"
 	}
 	button
 	{
 		name "quicklootSlot31"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(31)"	area 130 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(31,'name')"	tint lua	"getGroundItemProperty(31,'tint')"
 		icon lua	"getGroundItemProperty(31,'icon')"	count lua	"getGroundItemProperty(31,'count')"	usages lua	"getGroundItemProperty(31,'usages')"
 		action "groundItemClick2(31)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(31,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(31)"
 	}
 	button
 	{
 		name "quicklootSlot32"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(32)"	area 184 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(32,'name')"	tint lua	"getGroundItemProperty(32,'tint')"
 		icon lua	"getGroundItemProperty(32,'icon')"	count lua	"getGroundItemProperty(32,'count')"	usages lua	"getGroundItemProperty(32,'usages')"
 		action "groundItemClick2(32)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(32,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(32)"
 	}
 	button
 	{
 		name "quicklootSlot33"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(33)"	area 238 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(33,'name')"	tint lua	"getGroundItemProperty(33,'tint')"
 		icon lua	"getGroundItemProperty(33,'icon')"	count lua	"getGroundItemProperty(33,'count')"	usages lua	"getGroundItemProperty(33,'usages')"
 		action "groundItemClick2(33)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(33,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(33)"
 	}
 	button
 	{
 		name "quicklootSlot34"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(34)"	area 292 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(34,'name')"	tint lua	"getGroundItemProperty(34,'tint')"
 		icon lua	"getGroundItemProperty(34,'icon')"	count lua	"getGroundItemProperty(34,'count')"	usages lua	"getGroundItemProperty(34,'usages')"
 		action "groundItemClick2(34)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(34,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(34)"
 	}
 	button
 	{
 		name "quicklootSlot35"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(35)"	area 346 275 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(35,'name')"	tint lua	"getGroundItemProperty(35,'tint')"
 		icon lua	"getGroundItemProperty(35,'icon')"	count lua	"getGroundItemProperty(35,'count')"	usages lua	"getGroundItemProperty(35,'usages')"
 		action "groundItemClick2(35)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(35,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(35)"
 	}
 	button
 	{
 		name "quicklootSlot36"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(36)"	area 76 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(36,'name')"	tint lua	"getGroundItemProperty(36,'tint')"
 		icon lua	"getGroundItemProperty(36,'icon')"	count lua	"getGroundItemProperty(36,'count')"	usages lua	"getGroundItemProperty(36,'usages')"
 		action "groundItemClick2(36)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(36,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(36)"
 	}
 	button
 	{
 		name "quicklootSlot37"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(37)"	area 130 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(37,'name')"	tint lua	"getGroundItemProperty(37,'tint')"
 		icon lua	"getGroundItemProperty(37,'icon')"	count lua	"getGroundItemProperty(37,'count')"	usages lua	"getGroundItemProperty(37,'usages')"
 		action "groundItemClick2(37)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(37,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(37)"
 	}
 	button
 	{
 		name "quicklootSlot38"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(38)"	area 184 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(38,'name')"	tint lua	"getGroundItemProperty(38,'tint')"
 		icon lua	"getGroundItemProperty(38,'icon')"	count lua	"getGroundItemProperty(38,'count')"	usages lua	"getGroundItemProperty(38,'usages')"
 		action "groundItemClick2(38)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(38,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(38)"
 	}
 	button
 	{
 		name "quicklootSlot39"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(39)"	area 238 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(39,'name')"	tint lua	"getGroundItemProperty(39,'tint')"
 		icon lua	"getGroundItemProperty(39,'icon')"	count lua	"getGroundItemProperty(39,'count')"	usages lua	"getGroundItemProperty(39,'usages')"
 		action "groundItemClick2(39)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(39,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(39)"
 	}
 	button
 	{
 		name "quicklootSlot40"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(40)"	area 292 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(40,'name')"	tint lua	"getGroundItemProperty(40,'tint')"
 		icon lua	"getGroundItemProperty(40,'icon')"	count lua	"getGroundItemProperty(40,'count')"	usages lua	"getGroundItemProperty(40,'usages')"
 		action "groundItemClick2(40)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(40,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(40)"
 	}
 	button
 	{
 		name "quicklootSlot41"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(41)"	area 346 329 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(41,'name')"	tint lua	"getGroundItemProperty(41,'tint')"
 		icon lua	"getGroundItemProperty(41,'icon')"	count lua	"getGroundItemProperty(41,'count')"	usages lua	"getGroundItemProperty(41,'usages')"
 		action "groundItemClick2(41)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(41,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(41)"
 	}
 	button
 	{
 		name "quicklootSlot42"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(42)"	area 76 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(42,'name')"	tint lua	"getGroundItemProperty(42,'tint')"
 		icon lua	"getGroundItemProperty(42,'icon')"	count lua	"getGroundItemProperty(42,'count')"	usages lua	"getGroundItemProperty(42,'usages')"
 		action "groundItemClick2(42)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(42,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(42)"
 	}
 	button
 	{
 		name "quicklootSlot43"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(43)"	area 130 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(43,'name')"	tint lua	"getGroundItemProperty(43,'tint')"
 		icon lua	"getGroundItemProperty(43,'icon')"	count lua	"getGroundItemProperty(43,'count')"	usages lua	"getGroundItemProperty(43,'usages')"
 		action "groundItemClick2(43)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(43,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(43)"
 	}
 	button
 	{
 		name "quicklootSlot44"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(44)"	area 184 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(44,'name')"	tint lua	"getGroundItemProperty(44,'tint')"
 		icon lua	"getGroundItemProperty(44,'icon')"	count lua	"getGroundItemProperty(44,'count')"	usages lua	"getGroundItemProperty(44,'usages')"
 		action "groundItemClick2(44)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(44,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(44)"
 	}
 	button
 	{
 		name "quicklootSlot45"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(45)"	area 238 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(45,'name')"	tint lua	"getGroundItemProperty(45,'tint')"
 		icon lua	"getGroundItemProperty(45,'icon')"	count lua	"getGroundItemProperty(45,'count')"	usages lua	"getGroundItemProperty(45,'usages')"
 		action "groundItemClick2(45)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(45,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(45)"
 	}
 	button
 	{
 		name "quicklootSlot46"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(46)"	area 292 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(46,'name')"	tint lua	"getGroundItemProperty(46,'tint')"
 		icon lua	"getGroundItemProperty(46,'icon')"	count lua	"getGroundItemProperty(46,'count')"	usages lua	"getGroundItemProperty(46,'usages')"
 		action "groundItemClick2(46)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(46,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(46)"
 	}
 	button
 	{
 		name "quicklootSlot47"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(47)"	area 346 383 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(47,'name')"	tint lua	"getGroundItemProperty(47,'tint')"
 		icon lua	"getGroundItemProperty(47,'icon')"	count lua	"getGroundItemProperty(47,'count')"	usages lua	"getGroundItemProperty(47,'usages')"
 		action "groundItemClick2(47)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(47,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(47)"
 	}
 	button
 	{
 		name "quicklootSlot48"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(48)"	area 76 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(48,'name')"	tint lua	"getGroundItemProperty(48,'tint')"
 		icon lua	"getGroundItemProperty(48,'icon')"	count lua	"getGroundItemProperty(48,'count')"	usages lua	"getGroundItemProperty(48,'usages')"
 		action "groundItemClick2(48)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(48,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(48)"
 	}
 	button
 	{
 		name "quicklootSlot49"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(49)"	area 130 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(49,'name')"	tint lua	"getGroundItemProperty(49,'tint')"
 		icon lua	"getGroundItemProperty(49,'icon')"	count lua	"getGroundItemProperty(49,'count')"	usages lua	"getGroundItemProperty(49,'usages')"
 		action "groundItemClick2(49)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(49,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(49)"
 	}
 	button
 	{
 		name "quicklootSlot50"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(50)"	area 184 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(50,'name')"	tint lua	"getGroundItemProperty(50,'tint')"
 		icon lua	"getGroundItemProperty(50,'icon')"	count lua	"getGroundItemProperty(50,'count')"	usages lua	"getGroundItemProperty(50,'usages')"
 		action "groundItemClick2(50)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(50,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(50)"
 	}
 	button
 	{
 		name "quicklootSlot51"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(51)"	area 238 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(51,'name')"	tint lua	"getGroundItemProperty(51,'tint')"
 		icon lua	"getGroundItemProperty(51,'icon')"	count lua	"getGroundItemProperty(51,'count')"	usages lua	"getGroundItemProperty(51,'usages')"
 		action "groundItemClick2(51)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(51,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(51)"
 	}
 	button
 	{
 		name "quicklootSlot52"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(52)"	area 292 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(52,'name')"	tint lua	"getGroundItemProperty(52,'tint')"
 		icon lua	"getGroundItemProperty(52,'icon')"	count lua	"getGroundItemProperty(52,'count')"	usages lua	"getGroundItemProperty(52,'usages')"
 		action "groundItemClick2(52)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(52,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(52)"
 	}
 	button
 	{
 		name "quicklootSlot53"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(53)"	area 346 437 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(53,'name')"	tint lua	"getGroundItemProperty(53,'tint')"
 		icon lua	"getGroundItemProperty(53,'icon')"	count lua	"getGroundItemProperty(53,'count')"	usages lua	"getGroundItemProperty(53,'usages')"
 		action "groundItemClick2(53)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(53,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(53)"
 	}
 	button
 	{
 		name "quicklootSlot54"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(54)"	area 76 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(54,'name')"	tint lua	"getGroundItemProperty(54,'tint')"
 		icon lua	"getGroundItemProperty(54,'icon')"	count lua	"getGroundItemProperty(54,'count')"	usages lua	"getGroundItemProperty(54,'usages')"
 		action "groundItemClick2(54)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(54,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(54)"
 	}
 	button
 	{
 		name "quicklootSlot55"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(55)"	area 130 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(55,'name')"	tint lua	"getGroundItemProperty(55,'tint')"
 		icon lua	"getGroundItemProperty(55,'icon')"	count lua	"getGroundItemProperty(55,'count')"	usages lua	"getGroundItemProperty(55,'usages')"
 		action "groundItemClick2(55)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(55,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(55)"
 	}
 	button
 	{
 		name "quicklootSlot56"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(56)"	area 184 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(56,'name')"	tint lua	"getGroundItemProperty(56,'tint')"
 		icon lua	"getGroundItemProperty(56,'icon')"	count lua	"getGroundItemProperty(56,'count')"	usages lua	"getGroundItemProperty(56,'usages')"
 		action "groundItemClick2(56)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(56,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(56)"
 	}
 	button
 	{
 		name "quicklootSlot57"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(57)"	area 238 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(57,'name')"	tint lua	"getGroundItemProperty(57,'tint')"
 		icon lua	"getGroundItemProperty(57,'icon')"	count lua	"getGroundItemProperty(57,'count')"	usages lua	"getGroundItemProperty(57,'usages')"
 		action "groundItemClick2(57)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(57,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(57)"
 	}
 	button
 	{
 		name "quicklootSlot58"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(58)"	area 292 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(58,'name')"	tint lua	"getGroundItemProperty(58,'tint')"
 		icon lua	"getGroundItemProperty(58,'icon')"	count lua	"getGroundItemProperty(58,'count')"	usages lua	"getGroundItemProperty(58,'usages')"
 		action "groundItemClick2(58)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(58,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(58)"
 	}
 	button
 	{
 		name "quicklootSlot59"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(59)"	area 346 491 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(59,'name')"	tint lua	"getGroundItemProperty(59,'tint')"
 		icon lua	"getGroundItemProperty(59,'icon')"	count lua	"getGroundItemProperty(59,'count')"	usages lua	"getGroundItemProperty(59,'usages')"
 		action "groundItemClick2(59)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(59,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(59)"
 	}
 }
 menu
@@ -17142,6 +17488,12 @@ function LoadContainsSearchString2(rowNumber)
 		return nil --does not contain search string
 	end
 end
+function getLoadMenuTitle()
+	if (gameSaves.isImporting~=1) then
+		return t('LOAD_TITLE')
+	end
+	return t('IMPORT_TITLE')
+end
 `
 menu
 {
@@ -17150,6 +17502,9 @@ menu
 	ignoreEsc
 	onOpen
 	"
+		if gameSaves.isImporting == 1 and e:IsIOS() and (gameSaves.files == nil or #(gameSaves.files) == 0) then
+			popupInfo(Infinity_FetchString(71373))
+		end
 		LeftSideMenu = Infinity_GetINIValue('Game Options','LeftSideMenu',0)
 		getLoadArea()
 	"
@@ -17264,7 +17619,7 @@ menu
 	{
 		name"MenuLoadLabel"
 		area 1536 205 249 40
-		text "LOAD_TITLE"
+		text lua "getLoadMenuTitle()"
 		text style "title"
 	}
 	list
@@ -17274,7 +17629,7 @@ menu
 			width	100
 			label
 			{
-				area 		0,0,928,-1
+				area 		0 0 928 -1
 				enabled	"LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber)"
 				mosaic lua	'getSaveBackground(rowNumber)'
 				respectClipping
@@ -17412,7 +17767,6 @@ menu
 		sequence lua "getCampaignButtonSequence()"
 		action
 		"
-			Infinity_PlaySound('GAM_09')
 			loadScreen:LoadGame(gameSaves.files[currentSave].fileName)
 		"
 	}
@@ -17574,7 +17928,7 @@ menu
 			width	75
 			label
 			{
-				area 		0,0,928,-1
+				area 		0 0 928 -1
 				enabled	"SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber)"
 				mosaic lua	'getSaveBackground(rowNumber)'
 				respectClipping
@@ -17678,7 +18032,7 @@ menu
 			}
 			label
 			{
-				area		10 47 195 40
+				area		10 47 200 40
 				enabled	"SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber)"
 				bam 		GUIBUTNT
 				frame lua 	"currentCellCheck(2)"
@@ -17726,7 +18080,7 @@ menu
 --	}
 	button
 	{
-		area		1092 196 230 44
+		area		1092 196 230 40
 		bam			GUIBUTMT
 		text		"NEW_SAVE_LABEL"
 		text style	"button"
@@ -17740,7 +18094,7 @@ menu
 
 	button
 	{
-		area		1092 590 230 44
+		area		1092 590 230 40
 		bam			GUIBUTMT
 		clickable	lua	"currentSave"
 		text		"DELETE_BUTTON"
@@ -17753,7 +18107,8 @@ menu
 	}
 	button
 	{
-		area		1092 644 230 44
+		on escape
+		area		1092 644 230 40
 		bam			GUIBUTMT
 		text		"BACK_BUTTON"
 		text style	"button"
@@ -18187,7 +18542,7 @@ menu
 
 	button
 	{
-		area 1134 604 230 44
+		area 1134 604 230 40
 		text "IMPORT_BUTTON"
 		text style "button"
 		bam GUIBUTMT
@@ -18196,7 +18551,7 @@ menu
 	button
 	{
 		enabled "createCharScreen:GetCurrentStep() == 0"
-		area 82 604 230 44
+		area 82 604 230 40
 		text "RG_RANDOM"
 		text style "button"
 		pad 8 2 8 2
@@ -18224,7 +18579,7 @@ menu
 	button
 	{
 		on escape
-		area 352 732 230 44
+		area 352 732 230 40
 		text "BACK_BUTTON"
 		text style "button"
 		bam GUIBUTMT
@@ -18238,7 +18593,7 @@ menu
 	button
 	{
 		on escape
-		area 352 732 232 44
+		area 352 732 232 40
 		text "CANCEL_BUTTON"
 		text style "button"
 		bam GUIBUTMT
@@ -18247,7 +18602,7 @@ menu
 	}
 	button
 	{
-		area 610 732 230 44
+		area 610 732 230 40
 		text lua "chargenAcceptOrExport()"
 		text style "button"
 		bam GUIBUTMT
@@ -18256,7 +18611,7 @@ menu
 	}
 	button
 	{
-		area 866 732 230 44
+		area 866 732 230 40
 		text "CREATE_PARTY_BUTTON"
 		text style "button"
 		bam GUIBUTMT
@@ -18312,7 +18667,7 @@ menu
 	button
 	{
 		on escape
-		area 484 724 230 44
+		area 484 724 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -18321,7 +18676,7 @@ menu
 	button
 	{
 		on return
-		area 730 724 230 44
+		area 730 724 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -18848,10 +19203,11 @@ menu
 	{
 --		enabled "CurrentImage ==''"
 		enabled "MultiPortraitPicker == 0"
-		area 1134 604 230 44
+		area 1134 604 230 40
 		bam GUIBUTMT
 		text "CUSTOM_BUTTON"
 		text style "button"
+		enabled "not e:IsTouchUI()"
 		action "
 --			TEXT_popup_big = 17188
 			Infinity_PushMenu('RG_PP_POPUP')
@@ -18903,7 +19259,7 @@ menu
 	{
 		on escape
 		enabled "MultiPortraitPicker == 0"
-		area 420 726 230 44
+		area 420 726 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -18923,7 +19279,7 @@ menu
 	{
 		on return
 		enabled "MultiPortraitPicker == 0"
-		area 806 726 230 44
+		area 806 726 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -19203,7 +19559,7 @@ menu
 	button
 	{
 		on escape
-		area 420 726 230 44
+		area 420 726 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -19212,7 +19568,7 @@ menu
 	button
 	{
 		on return
-		area 806 726 230 44
+		area 806 726 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -19304,16 +19660,17 @@ menu
 	button
 	{
 		on escape
-		area 420 726 230 44
+		area 420 726 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
+		clickable lua "createCharScreen:GetCurrentStep() ~= const.STEP_DUALCLASS_CLASS"
 		action "createCharScreen:OnCancelButtonClick(); Infinity_PopMenu('CHARGEN_CLASS');"
 	}
 	button
 	{
 		on return
-		area 806 726 230 44
+		area 806 726 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -19403,7 +19760,7 @@ menu
 	button
 	{
 		on escape
-		area 420 726 230 44
+		area 420 726 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -19412,7 +19769,7 @@ menu
 	button
 	{
 		on return
-		area 806 726 230 44
+		area 806 726 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -19503,7 +19860,7 @@ menu
 	button
 	{
 		on escape
-		area 420 726 230 44
+		area 420 726 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -19512,7 +19869,7 @@ menu
 	button
 	{
 		on return
-		area 806 726 230 44
+		area 806 726 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -19817,7 +20174,7 @@ menu
 	}
 	label
 	{
-		area 504 84 426 44
+		area 504 84 426 40
 		text "ABILITIES_TITLE"
 		text style "title"
 	}
@@ -20001,7 +20358,7 @@ menu
 	text
 	{
 		enabled 	"MethodToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
-		area 		718 354 396 44
+		area 		718 354 396 40
 		text 		"ACM_CHEAT_METHOD"
 		text style 	"normal"
 		text align 	center center
@@ -20019,7 +20376,7 @@ menu
 	button
 	{
 		enabled 	"MethodToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
-		area 		716 404 200 44
+		area 		716 404 200 40
 		bam 		GUIBUTNT
 		text 		"ACM_AUTOROLL_BUTTON"
 		text style 	"label"
@@ -20037,7 +20394,7 @@ menu
 	button
 	{
 		enabled 	"MethodToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
-		area 		914 404 200 44
+		area 		914 404 200 40
 		bam 		GUIBUTNT
 		text 		"ACM_RANGEROLL_BUTTON"
 		text style 	"label"
@@ -20055,7 +20412,7 @@ menu
 	button
 	{
 		enabled 	"MethodToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
-		area 		716 448 200 44
+		area 		716 448 200 40
 		bam 		GUIBUTNT
 		text 		"ACM_POINTBUY_BUTTON"
 		text style 	"label"
@@ -20073,7 +20430,7 @@ menu
 	button
 	{
 		enabled 	"MethodToggle == 0 and HasExceptionalStrength() and Infinity_GetINIValue('Game Options','CheatMode','1')"
-		area 		716 492 200 44
+		area 		716 492 200 40
 		bam 		GUIBUTNT
 		text 		"ACM_MINSTR_BUTTON"
 		text style 	"label"
@@ -20091,7 +20448,7 @@ menu
 	button
 	{
 		enabled 	"MethodToggle == 0 and HasExceptionalStrength() and Infinity_GetINIValue('Game Options','CheatMode','1')"
-		area 		914 492 200 44
+		area 		914 492 200 40
 		bam			GUIBUTNT
 		text 		"ACM_PRISTR_BUTTON"
 		text style 	"label"
@@ -20109,7 +20466,7 @@ menu
 	button
 	{
 		enabled 	"MethodToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
-		area 		914 448 200 44
+		area 		914 448 200 40
 		bam 		GUIBUTNT
 		text 		"ACM_MAXMAX_BUTTON"
 		text style 	"label"
@@ -20189,7 +20546,7 @@ menu
 	{
 		enabled 		"MethodToggle > 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
 		clickable lua	"rolling==0"
-		area 			714 656 200 44
+		area 			714 656 200 40
 		bam 			GUIBUTNT
 		text 			"ACM_CHANGEMETHOD_BUTTON"
 		text style 		"label"
@@ -20219,7 +20576,7 @@ menu
 	text
 	{
 		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 1"
-		area 		720 354 394 44
+		area 		720 354 394 40
 		text 		"ACM_SELMETHOD_AUTOROLL_TEXT"
 		text style 	"normal"
 		text color 	'$'
@@ -20230,7 +20587,7 @@ menu
 	text
 	{
 		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 2"
-		area 		712 354 402 44
+		area 		712 354 402 40
 		text 		"ACM_SELMETHOD_RANGEROLL_TEXT"
 		text style 	"normal"
 		text color 	'$'
@@ -20240,7 +20597,7 @@ menu
 	{
 		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 2"
 		clickable	"rolling == 0"
-		area		810 478 64 44
+		area		810 478 64 40
 		var			rollMinValue
 		text style 	"edit"
 		text color 	'$'
@@ -20261,7 +20618,7 @@ menu
 	text
 	{
 		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 2"
-		area 		894 478 42 44
+		area 		894 478 42 40
 		text 		"ACM_SELMETHOD_RANGEROLL_TO_TEXT"
 		text style	"normal"
 		text color 	'$'
@@ -20271,7 +20628,7 @@ menu
 	{
 		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 2"
 		clickable	"rolling == 0"
-		area		958 478 64 44
+		area		958 478 64 40
 		var			rollMaxValue
 		text style	"edit"
 		text color 	'$'
@@ -20294,7 +20651,7 @@ menu
 	text
 	{
 		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3"
-		area 		712 354 406 44
+		area 		712 354 406 40
 		text 		"ACM_SELMETHOD_POINTBUY_TEXT"
 		text style 	"normal"
 		text color 	'$'
@@ -20303,7 +20660,7 @@ menu
 	button
 	{
 		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3"
-		area 		760 414 142 44
+		area 		760 414 142 40
 		bam 		RGSTBT
 		text 		"75"
 		text style 	"normal"
@@ -20317,7 +20674,7 @@ menu
 	button
 	{
 		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3"
-		area 		910 414 142 44
+		area 		910 414 142 40
 		bam 		RGSTBT
 		text 		"80"
 		text style 	"normal"
@@ -20331,7 +20688,7 @@ menu
 	button
 	{
 		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3"
-		area 		760 462 142 44
+		area 		760 462 142 40
 		bam 		RGSTBT
 		text 		"85"
 		text style 	"normal"
@@ -20345,7 +20702,7 @@ menu
 	button
 	{
 		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3"
-		area 		910 462 142 44
+		area 		910 462 142 40
 		bam 		RGSTBT
 		text 		"90"
 		text style 	"normal"
@@ -20370,7 +20727,7 @@ menu
 	text
 	{
 		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 4"
-		area 		720 354 394 44
+		area 		720 354 394 40
 		text 		"ACM_SELMETHOD_MINSTR_TEXT"
 		text style 	"normal"
 		text color 	'$'
@@ -20410,7 +20767,7 @@ menu
 	text
 	{
 		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
-		area 		720 354 394 44
+		area 		720 354 394 40
 		text 		"ACM_SELMETHOD_PRISTR_TEXT"
 		text style 	"normal"
 		text color 	'$'
@@ -20570,7 +20927,7 @@ menu
 	text
 	{
 		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 6"
-		area 		720 354 394 44
+		area 		720 354 394 40
 		text 		"ACM_SELMETHOD_MAXMAX_TEXT"
 		text style 	"normal"
 		text color 	'$'
@@ -20594,7 +20951,7 @@ menu
 	button
 	{
 		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle > 0 and MethodToggle < 6 and rolling == 0"
-		area 914 656 200 44
+		area 914 656 200 40
 		bam GUIBUTNT
 		sequence 0
 		text "ACM_START"
@@ -20662,7 +21019,7 @@ menu
 	button
 	{
 		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle > 0 and MethodToggle < 6 and rolling == 1"
-		area 914 656 200 44
+		area 914 656 200 40
 		bam GUIBUTNT
 		sequence 0
 		text "ACM_STOP"
@@ -20697,7 +21054,7 @@ menu
 	button
 	{
 		clickable lua "rolling==0"
-		area 556 608 142 44
+		area 556 608 142 40
 		bam RGSTBT
 		sequence 0
 		text "ACM_FLATTEN"
@@ -20710,7 +21067,7 @@ menu
 	button
 	{
 		clickable lua "rolling==0"
-		area 556 652 142 44
+		area 556 652 142 40
 		bam RGSTBT
 		sequence 0
 		text "ACM_MINIMUM"
@@ -20723,7 +21080,7 @@ menu
 	button
 	{
 		clickable lua "rolling==0"
-		area 334 564 200 44
+		area 334 564 200 40
 		bam GUIBUTNT
 		sequence 0
 		text "REROLL_BUTTON"
@@ -20733,7 +21090,7 @@ menu
 	button
 	{
 		clickable lua "rolling==0"
-		area 334 608 200 44
+		area 334 608 200 40
 		bam GUIBUTNT
 		sequence 0
 		text "STORE_BUTTON"
@@ -20761,7 +21118,7 @@ menu
 	button
 	{
 		clickable lua "rolling==0 and createCharScreen:IsAbilityRecallButtonClickable()"
-		area 334 652 200 44
+		area 334 652 200 40
 		bam GUIBUTNT
 		sequence 0
 		text "RECALL_BUTTON"
@@ -20781,7 +21138,7 @@ menu
 	{
 		clickable lua "rolling==0"
 		on escape
-		area 410 728 230 44
+		area 410 728 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -20810,7 +21167,7 @@ menu
 	{
 		clickable lua "rolling==0 and createCharScreen:IsDoneButtonClickable()"
 		on return
-		area 814 728 230 44
+		area 814 728 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -21065,7 +21422,7 @@ menu
 			width 13
 			label
 			{
-				area 0 0 60 54
+				area 0 0 40 54
 				text lua "chargen.thief_skill[rowNumber].value"
 				text style "normal"
 				text align left center
@@ -21151,7 +21508,7 @@ menu
 	button
 	{
 		enabled "chargen.levelingUp"
-		area 990 730 230 44
+		area 990 730 230 40
 		bam GUIBUTMT
 		text "INFORMATION_BUTTON"
 		text style "button"
@@ -21164,17 +21521,17 @@ menu
 	button
 	{
 		on escape
-		area 236 730 230 44
+		area 236 730 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
---		clickable lua "not chargen.levelingUp"
+		clickable lua "isChargenProficienciesBackButtonClickable()"
 		action "createCharScreen:OnCancelButtonClick();"
 	}
 	button
 	{
 		on return
-		area 618 730 230 44
+		area 618 730 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -21211,7 +21568,7 @@ function specialistFrame(num)
 	return 0
 end
 function spellLearnOrUnlearnText()
-	if chargen.extraSpells > 0 then
+	if currentChargenChooseMageSpell == nil or not chargen.choose_spell[currentChargenChooseMageSpell].enabled then
 		return t("BUTTON_LEARN")
 	else
 		return t("BUTTON_UNLEARN")
@@ -21283,6 +21640,15 @@ function nextOrDone()
 		return t('DONE_BUTTON')
 	end
 end
+function shouldShowSpecialistMessage()
+	local ret = false
+
+	if chargen.extraSpells == 0 and not createCharScreen:IsDoneButtonClickable() then
+		ret = true
+	end
+
+	return ret
+end
 `
 menu
 {
@@ -21293,6 +21659,39 @@ menu
 		rgspelldesc = 0
 		table.sort(chargen.choose_spell, sortBySpellName)
 		currentChargenChooseMageSpell = nil
+
+		if currentChargenKit == nil then
+			currentChargenKit = 0
+		end
+
+		local currentKitName = ''
+
+		--gnome illusionists
+		if currentChargenRace ~= 6 and chargen.kit then
+			currentKitName = Infinity_FetchString(chargen.kit[currentChargenKit].name)
+		else
+			currentKitName = Infinity_FetchString(25323)
+		end
+
+		if currentKitName == Infinity_FetchString(25319) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('ABJURATION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(25320) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('CONJURATION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(25321) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('DIVINATION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(25322) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('ENCHANTMENT_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(25323) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('ILLUSION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(25324) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('EVOCATION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(25325) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('NECROMANCY_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(25326) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('TRANSMUTATION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(25327) then
+			setStringTokenLua('<SCHOOLTOKEN>',Infinity_FetchString(25327))
+		end
 		rgUnlearnDefault()
 		"
 	label
@@ -21573,10 +21972,20 @@ menu
 		text style "normal"
 		text align center center
 	}
+	-- TODO: maybe need to change the area and fill props
+	label
+	{
+		area 350 660 352 39
+		enabled "shouldShowSpecialistMessage()"
+		text lua "t('SPECIALIST_SPELL_REQ')"
+		text style "normal"
+		text align center center
+		fill 0 0 0 255
+	}
 
 	button
 	{
---		area 240 654 230 44
+--		area 240 654 230 40
 		bam GUIBUTMT
 		text lua "spellLearnOrUnlearnText()"
 		text style "button"
@@ -21588,7 +21997,7 @@ menu
 	button
 	{
 		on escape
-		area 408 724 230 44
+		area 408 724 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -21598,7 +22007,7 @@ menu
 	button
 	{
 		on return
-		area 806 724 230 44
+		area 806 724 230 40
 		bam GUIBUTMT
 		text lua "nextOrDone()"
 		text style "button"
@@ -21739,7 +22148,7 @@ menu
 	button
 	{
 		on escape
-		area 416 724 230 44
+		area 416 724 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -21748,7 +22157,7 @@ menu
 	button
 	{
 		on return
-		area 808 724 230 44
+		area 808 724 230 40
 		bam GUIBUTMT
 		text lua "nextOrDone()"
 		text style "button"
@@ -22001,7 +22410,7 @@ menu
 	button
 	{
 		on escape
-		area 410 722 230 44
+		area 410 722 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -22010,7 +22419,7 @@ menu
 	button
 	{
 		on return
-		area 806 722 230 44
+		area 806 722 230 40
 		bam GUIBUTMT
 		text lua "nextOrDone()"
 		text style "button"
@@ -22070,16 +22479,16 @@ menu
 	}
 	button
 	{
-		area 374 184 300 44
+		area 374 184 300 40
 		bam GUIBUTWT
-		text "PLAY_GAME_BUTTON"
+		text "PLAY_SOUND_BUTTON"
 		text style "button"
 		action "createCharScreen:OnPlayButtonClick()"
 	}
 	button
 	{
 		on escape
-		area 420 724 230 44
+		area 420 724 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -22088,7 +22497,7 @@ menu
 	button
 	{
 		on return
-		area 802 724 230 44
+		area 802 724 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -22176,7 +22585,7 @@ menu
 	button
 	{
 		on escape
-		area 420 726 230 44
+		area 420 726 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -22185,7 +22594,7 @@ menu
 	button
 	{
 		on return
-		area 806 726 230 44
+		area 806 726 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -22204,12 +22613,12 @@ menu
 	ignoreesc
 	onopen
 	"
-		Infinity_FocusTextEdit('charNameEditArea')
 		if chargen.name then
 			charNameEdit = chargen.name
 		else
 			charNameEdit = ''
 		end
+		Infinity_FocusTextEdit('charNameEditArea')
 	"
 	label
 	{
@@ -22246,7 +22655,7 @@ menu
 	button
 	{
 		on escape
-		area 410 720 230 44
+		area 410 720 230 40
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
@@ -22255,7 +22664,7 @@ menu
 	button
 	{
 		on return
-		area 812 720 230 44
+		area 812 720 230 40
 		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style "button"
@@ -22299,7 +22708,7 @@ menu
 	button
 	{
 		on escape
-		area 354 724 230 44
+		area 354 724 230 40
 		text "BACK_BUTTON"
 		text style "button"
 		bam GUIBUTMT
@@ -22307,7 +22716,7 @@ menu
 	}
 	button
 	{
-		area 606 724 230 44
+		area 606 724 230 40
 		text "CLEAR_BUTTON"
 		text style "button"
 		bam GUIBUTMT
@@ -22316,7 +22725,7 @@ menu
 	button
 	{
 		on return
-		area 860 724 230 44
+		area 860 724 230 40
 		text "DONE_BUTTON"
 		text style "button"
 		bam GUIBUTMT
@@ -22553,7 +22962,7 @@ menu
 	}
 	button
 	{
-		area 438 653 230 44
+		area 438 653 230 40
 		bam GUIBUTMT
 		clickable lua "createCharScreen:GetCurrentStep() == const.STEP_DUALCLASS_DONE"
 		text "DONE_BUTTON"
@@ -22565,7 +22974,8 @@ menu
 	}
 	button
 	{
-		area 196 653 230 44
+		on escape
+		area 196 653 230 40
 		clickable false
 		bam GUIBUTMT
 		text "BACK_BUTTON"
@@ -22669,7 +23079,7 @@ menu
 	button
 	{
 		on escape
-		area 352 732 230 44
+		area 352 732 230 40
 		bam GUIBUTMT
 		text 15416
 		text style "button"
@@ -22686,7 +23096,7 @@ menu
 	}
 	button
 	{
-		area 866 732 230 44
+		area 866 732 230 40
 		bam GUIBUTMT
 		text lua "t('VENTURE_FORTH')"
 		text style "button"
@@ -22699,7 +23109,7 @@ menu
 	}
 	button
 	{
-		area 586 732 230 44
+		area 586 732 230 40
 		bam GUIBUTMT
 		text 11973
 		text style "button"
@@ -22845,7 +23255,7 @@ menu
 	}
 	button
 	{
-		area 566 724 300 44
+		area 566 724 300 40
 		bam GUIBUTWT
 		text "PLAY_MOVIE_BUTTON"
 		text style "button"
@@ -22853,7 +23263,7 @@ menu
 	}
 	button
 	{
-		area 160 724 300 44
+		area 160 724 300 40
 		bam GUIBUTWT
 		text "CREDITS_MOVIE_BUTTON"
 		text style "button"
@@ -22861,11 +23271,16 @@ menu
 	}
 	button
 	{
-		area 984 724 300 44
+		area 984 724 300 40
 		bam GUIBUTWT
 		text "DONE_BUTTON"
 		text style "button"
-		action "moviesScreen:OnDoneButtonClick()"
+		action
+		"
+			-- TODO: do we need the pop menu call? not present in SOD v2.5, but is in BG2 v2.5
+			Infinity_PopMenu('MOVIES')
+			moviesScreen:OnDoneButtonClick()
+		"
 	}
 
 
@@ -23143,10 +23558,10 @@ menu
 	}
 	button
 	{
-		area		911 84 45 40
+		area		911 90 32 32
 		bam 		ROUNDBUT
 		glow lua	"connectionFilterNoPasswords"
-		align 		center center
+		scaleToClip
 		tooltip lua "t('CONNECTION_NO_PASSWORDS_TOOLTIP')"
 		action
 		"
@@ -23164,10 +23579,10 @@ menu
 	}
 	button
 	{
-		area		911 130 45 42
+		area		911 136 32 32
 		bam 		ROUNDBUT
 		glow lua	"connectionFilterNoFullGames"
-		align 		center center
+		scaleToClip
 		tooltip lua "t('CONNECTION_NO_FULL_GAMES_TOOLTIP')"
 		action
 		"
@@ -23178,7 +23593,7 @@ menu
 
 	button -- Create game
 	{
-		area		168 110 230 44
+		area		168 110 230 40
 		bam			GUIBUTMT
 		sequence	6
 		text  		"CONNECTION_CREATE_NEW_GAME_BUTTON"
@@ -23190,7 +23605,7 @@ menu
 	}
 	button -- Direct Connect
 	{
-		area		406 718 230 44
+		area		406 718 230 40
 		bam			GUIBUTMT
 		sequence	6
 		text  		"CONNECTION_DIRECT_CONNECTION_BUTTON"
@@ -23211,13 +23626,16 @@ menu
 		tooltip lua "t('CONNECTION_REFRESH_TOOLTIP')"
 		action
 		"
+			selectedMp = nil
+			mp_shownSessions = {}
+			mp_sessions = {}
 			connectionScreen:ClearSessions()
 		"
 	}
 
 	button -- Join game
 	{
-		area		1042 718 230 44
+		area		1042 718 230 40
 		bam			GUIBUTMT
 		sequence	6
 		text  "JOIN_BUTTON"
@@ -23226,7 +23644,9 @@ menu
 		action
 		"
 			Infinity_GetPasswordRequired(mp_shownSessions[selectedMp]['actualIndex'])
-			if passwordReq == 0 then
+			if string.find(connectionPlayerNameEdit, '%S') == nil then
+				Infinity_PushMenu('CONNECTION_NAME')
+			elseif passwordReq == 0 then
 				Infinity_PopMenu();
 				Infinity_PopMenu();
 				mp_sessions[mp_shownSessions[selectedMp]['actualIndex']]['password'] = passwordMp
@@ -23238,7 +23658,7 @@ menu
 	}
 	button -- Back/ Log out
 	{
-		area		168 718 230 44
+		area		168 718 230 40
 		bam			GUIBUTMT
 		sequence	0
 		text  "BACK_BUTTON"
@@ -23325,10 +23745,10 @@ connectionPasswordProtected = 0
 connectionLocalNetworkGame = 0
 
 function connectionCreateGameClickable()
-	local ret = connectionPlayerNameEdit ~= '' and connectionSessionNameEdit ~= ''
+	local ret = string.find(connectionPlayerNameEdit, '%S') ~= nil and string.find(connectionSessionNameEdit, '%S') ~= nil
 
 	if connectionPasswordProtected == 1 then
-		ret = ret and connectionSessionPasswordEdit ~= ""
+		ret = ret and string.find(connectionSessionPasswordEdit, '%S') ~= nil
 	end
 
 	return ret
@@ -23358,7 +23778,12 @@ function connectionSetDefaultGameSettings()
 	else
 		connectionPasswordProtected = 0
 	end
-	connectionLocalNetworkGame = 0
+
+	if connectionScreen:HasServiceProvider() then
+		connectionLocalNetworkGame = 0
+	else
+		connectionLocalNetworkGame = 1
+	end
 end
 `
 menu
@@ -23438,10 +23863,10 @@ menu
 	}
 	button
 	{
-		area		230 321 45 45
+		area		237 328 32 32
 		bam 		ROUNDBUT
 		glow lua	"connectionPasswordProtected"
-		align 		center center
+		scaleToClip
 		tooltip lua "t('CONNECTION_PASSWORD_PROTECTED_TOOLTIP')"
 		action
 		"
@@ -23462,14 +23887,16 @@ menu
 	}
 	button
 	{
-		area		230 366 45 45
+		area		237 373 32 32
 		bam 		ROUNDBUT
 		glow lua	"connectionLocalNetworkGame"
-		align 		center center
+		scaleToClip
 		tooltip lua "t('CONNECTION_LOCAL_NETWORK_GAME_TOOLTIP')"
 		action
 		"
-			connectionLocalNetworkGame = 1 - connectionLocalNetworkGame
+			if connectionScreen:HasServiceProvider() then
+				connectionLocalNetworkGame = 1 - connectionLocalNetworkGame
+			end
 		"
 	}
 
@@ -23498,12 +23925,22 @@ menu
 	button
 	{
 		clickable lua 	"connectionCreateGameClickable()"
-		area 			236 572 200 44
+		area 			236 572 200 40
 		bam				'GUIBUTNT'
 		text style		"button"
 		text			"CREATEGAME_BUTTON"
 		action
 		"
+			local stringStart = string.find(connectionPlayerNameEdit, '%S');
+			connectionPlayerNameEdit = string.sub(connectionPlayerNameEdit, stringStart, string.len(connectionPlayerNameEdit))
+			stringStart = string.find(connectionSessionNameEdit, '%S');
+			connectionSessionNameEdit = string.sub(connectionSessionNameEdit, stringStart, string.len(connectionSessionNameEdit))
+
+			if connectionPasswordProtected == 1 then
+				stringStart = string.find(connectionSessionPasswordEdit, '%S');
+				connectionSessionPasswordEdit = string.sub(connectionSessionPasswordEdit, stringStart, string.len(connectionSessionPasswordEdit))
+			end
+
 			if connectionPasswordProtected == 0 then
 				connectionSessionPasswordEdit = ''
 			end
@@ -23513,7 +23950,8 @@ menu
 	}
 	button
 	{
-		area 		236 528 200 44
+		on escape
+		area 		236 528 200 40
 		bam			'GUIBUTNT'
 		text style	"button"
 		text		"BACK_BUTTON"
@@ -23668,8 +24106,14 @@ menu
 		"
 			--On return pressed
 			if (key_pressed == 13) then
-				mp_sessions[selectedMp]['password'] = connectionPasswordPasswordEdit
-				Infinity_JoinMultiplayerGame(mp_shownSessions[selectedMp]['actualIndex'])
+				local stringStart = string.find(connectionNameNameEdit, '%S')
+				if stringStart ~= nil then
+					local stringStart = string.find(connectionPasswordPasswordEdit, '%S')
+					mp_sessions[selectedMp]['password'] = string.sub(connectionPasswordPasswordEdit, stringStart, string.len(connectionPasswordPasswordEdit) )
+					Infinity_PopMenu()
+					Infinity_JoinMultiplayerGame(mp_shownSessions[selectedMp]['actualIndex'])
+				end
+				return -1
 			end
 			return 1
 		"
@@ -23677,22 +24121,24 @@ menu
 
 	button
 	{
-		area 		343 170 230 44
+		area 		343 170 230 40
 		bam			'GUIBUTMT'
 		text style	"button"
 		text		"DONE_BUTTON"
-		clickable lua "connectionPasswordPasswordEdit ~=''"
+		clickable lua "connectionPasswordPasswordEdit ~='' and string.find(connectionPasswordPasswordEdit, '%S') ~= nil"
 		action
 		"
 			Infinity_PopMenu();
-			mp_sessions[selectedMp]['password'] = connectionPasswordPasswordEdit
+			local stringStart = string.find(connectionPasswordPasswordEdit, '%S')
+			mp_sessions[selectedMp]['password'] = string.sub(connectionPasswordPasswordEdit, stringStart, string.len(connectionPasswordPasswordEdit) )
 			Infinity_JoinMultiplayerGame(mp_shownSessions[selectedMp]['actualIndex'])
 		"
 	}
 
 	button
 	{
-		area 79 170 230 44
+		on escape
+		area 79 170 230 40
 		bam			'GUIBUTMT'
 		text style	"button"
 		text		"BACK_BUTTON"
@@ -24677,7 +25123,7 @@ menu
 			}
 			label
 			{
-				area		2 50 195 40
+				area		2 52 195 40
 				bam 		'GUIBUTNT'
 				sequence 	1
 				frame lua 	"currentCellCheck(3)"
@@ -26873,6 +27319,12 @@ menu
 		action
 		"
 			chatViewed = 1
+			mpChatboxScrollToBottom = 1
+			if showMpChat == 1 then
+				Infinity_FocusTextEdit('mpChatEdit')
+			else
+				Infinity_FocusTextEdit('')
+			end
 		"
 	}
 
@@ -26885,6 +27337,7 @@ menu
 		text style "normal"
 		text lua "getMPMessage()"
 		pad 8 8 8 8
+		ignoreEvents
 		fill 0 0 0 200
 	}
 	text
@@ -26923,6 +27376,7 @@ menu
 					Infinity_PlaySound('WAL_19B')
 					mpChatEditOverlay=''
 					resizeMpEditBox()
+					mpChatboxScrollToBottom = 1
 					return -1
 				end
 			end
@@ -26947,6 +27401,29 @@ menu
 	}
 }
 `
+function reinitQuests()
+	for questIdx, quest in pairs(quests) do
+		local noquest = true
+		for objIdx,objective in pairs(quest.objectives) do
+			local noobjective = true
+			for entryIdx,entry in pairs(objective.entries) do
+				if quests[questIdx].objectives[objIdx].entries[entryIdx].stateType ~= const.ENTRY_TYPE_NONE and quests[questIdx].objectives[objIdx].entries[entryIdx].stateType ~= nil then
+					noobjective = false
+				end
+			end
+			if noobjective then
+				quests[questIdx].objectives[objIdx].stateType = const.ENTRY_TYPE_NONE
+			end
+			if quests[questIdx].objectives[objIdx].stateType ~= const.ENTRY_TYPE_NONE and quests[questIdx].objectives[objIdx].stateType ~= nil then
+				noquest = false
+			end
+		end
+		if noquest then
+			quests[questIdx].stateType = const.ENTRY_TYPE_NONE
+		end
+	end
+end
+
 function initQuests()
 	--instead of always searching the quests, just map entry ids to their quests
 	entryToQuest = {}
@@ -26993,12 +27470,16 @@ function updateJournalEntry(journalId, recvTime, stateType, chapter, timeStamp)
 		return
 	end
 	--find the quest that is parent to this entry.
-
 	--NOTE this can be placed in a loop if there needs to be more than quest to an entry
 	--this would just mean entryToQuest returns a table that we iterate over
 	local questId = entryToQuest[journalId]
-	if questId == nil then
+	if questId == nil or stateType == const.ENTRY_TYPE_INFO then
 		--add loose entries into the looseEntries table so they still get displayed.
+		for _,entry in pairs(looseEntries) do
+			if entry.text == journalId then
+				return
+			end
+		end
 		local entry = buildEntry(journalId, recvTime, stateType, chapter, timeStamp)
 		table.insert(looseEntries,entry)
 
@@ -27105,7 +27586,9 @@ function buildQuestDisplay()
 				if(objective.stateType ~= const.ENTRY_TYPE_NONE) then
 					objective.objective = 1
 					objective.parent = curQuestIdx
-
+					if(objective.text == Infinity_FetchString(quest.text) or objective.text == nil) then
+						objective.text = objective.entries[1].timeStamp
+					end
 					if(objective.stateType ~= const.ENTRY_TYPE_INFO) then
 						--info entries should not go into quests
 						table.insert(questDisplay, objective)
@@ -27198,8 +27681,19 @@ function getObjectiveText(row)
 	return text
 end
 
+--Many thanks to 'lefreut'
+function childrenContainsChapter(children)
+	for k,v in pairs(children) do
+		if containsChapter(questDisplay[v].chapters,chapter) then
+			return true
+		end
+	end
+	return nil
+end
+
 function questEnabled(row)
-	return (questDisplay[row] and questDisplay[row].quest and containsChapter(questDisplay[row].chapters,chapter) and (#questDisplay[row].children > 0))
+	--return (questDisplay[row] and questDisplay[row].quest and containsChapter(questDisplay[row].chapters,chapter) and (#questDisplay[row].children > 0))
+	return (questDisplay[row] and questDisplay[row].quest and containsChapter(questDisplay[row].chapters,chapter) and childrenContainsChapter(questDisplay[row].children))
 end
 
 function CloseAll(side)
@@ -27543,6 +28037,7 @@ menu
 	modal lua "JournalSize == UIStrings.UI_Large"
 	onopen
 	"
+		reinitQuests()
 		buildQuestDisplay()
 		chapter = math.max(0,Infinity_GetMaxChapterPage())
 		questOpened = 0
@@ -27905,7 +28400,7 @@ menu
 		bam RGGBUT
 		sequence 7
 		frame lua "rggbuttHighlight10()"
-		tooltip lua "getTooltipWithHotkey(9,11942)"
+		tooltip lua "getTooltipWithHotkey(31,11942)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		clickable lua "sidebarsGreyed ~= 1"
@@ -29101,6 +29596,7 @@ menu
 
 	button
 	{
+		on escape
 		name 		"JournalSmall_24"
 		enabled 	"journalMode == const.JOURNAL_MODE_EDIT and JournalSize == UIStrings.UI_Small"
 		area 		58 641 162 47
@@ -29509,6 +30005,8 @@ menu
 -- Retrieves the current dialog background area
 
 	function resizeDialog()
+		buildResponsesList()
+
 	if ( ClassicDialog == 1) then
 	previousTop = nil
 	scrolled = false
@@ -29581,10 +30079,11 @@ menu
 	end
 
 	function getDialogButtonClickable()
+		local ret = worldScreen:GetInControlOfDialog()
 		if(gameOptions.m_bConfirmDialog == true) then
-			return (#worldPlayerDialogChoices == 0) or (worldPlayerDialogSelection and worldPlayerDialogSelection > 0) --no choices, or we've selected a choice.
+			return ret and ((#worldPlayerDialogChoices == 0) or (worldPlayerDialogSelection and worldPlayerDialogSelection > 0)) --no choices, or we've selected a choice.
 		else
-			return true
+			return ret
 		end
 	end
 
@@ -29804,9 +30303,34 @@ menu
 		previousTop = nil
 		scrolled = false
 		scrollToBottom = false
+
+		-- This adds convenient answer dialog buttons on the sides
+		-- of the screen for touch devices.
+		if isTouchActionbar() and not dialogViewMode then
+			Infinity_PushMenu('WORLD_DIALOG_LEFT')
+			Infinity_PushMenu('WORLD_DIALOG_RIGHT')
+			Infinity_PopMenu('LEFT_SIDEBAR_BOTTOM')
+			Infinity_PopMenu('RIGHT_SIDEBAR_BOTTOM')
+			worldDialogSidebars = true
+
+			-- make sure the enhanced dialog is not covered
+			local x = Infinity_GetArea('worldDialogBackground')
+			if ClassicDialog ~= 1 and x < 90 then
+				dragDialogX(90 - x)
+			end
+		end
 	"
 	onClose
 	"
+		-- TODO: review
+		if worldDialogSidebars then
+			Infinity_PopMenu('WORLD_DIALOG_LEFT')
+			Infinity_PopMenu('WORLD_DIALOG_RIGHT')
+			Infinity_PushMenu('LEFT_SIDEBAR_BOTTOM')
+			Infinity_PushMenu('RIGHT_SIDEBAR_BOTTOM')
+			worldDialogSidebars = nil
+		end
+
 		ungreySidebars()
 		dialogButtonText = ''
 		Infinity_PopMenu('WORLD_MESSAGEBOXHISTORY')
@@ -30043,6 +30567,7 @@ menu
 	{
 		enabled "ClassicDialog ~= 1"
 		name "worldDialogButton1"
+		tooltip lua "t('LOG_HISTORY_TOOLTIP')"
 		area 340 13 36 22
 		bam "RGDBUTT"
 		sequence 1
