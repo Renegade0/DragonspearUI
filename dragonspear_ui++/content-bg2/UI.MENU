@@ -7852,7 +7852,7 @@ local function patchObject(object, keys, wrapper)
 	for _, name in pairs(keys) do
 		local value = object[name]
 		store[name] = value
-		object[name] = wrapper(value)
+		object[name] = wrapper(value, name)
 	end
 
 	return store
@@ -7864,7 +7864,7 @@ Inventory = {
 
 
 function Inventory:create()
-	self = deepcopy(self)
+	local self = setmetatable({}, { __index = self })
 
 	self.name_to_idx = {}
 	self.idx_to_id = {}
@@ -7892,16 +7892,35 @@ function Inventory:create()
 
 	-- Inject updateSlotsHighlight to the functions listed below.
 	-- It's needed to update slots' highlighting on item drag start/stop.
+	self.slotsHighlightScheduled = nil
 	local names = {
 		'Infinity_SwapSlot',
 		'Infinity_SwapWithPortrait',
 		'Infinity_SwapWithAppearance'
 	}
 
-	local function wrapper(f)
+	local function wrapper(f, name)
+		-- The game crashes if updateSlotsHighlight is called here
+		-- when you swap an item with another one on the ground.
+		-- There is a noticeable visual delay if the update is
+		-- done later, so only do it conditionally.
+		local needsWorkaround = name == 'Infinity_SwapSlot'
+
 		return function(...)
 			-- result = 1: item picked up, 2: put down
 			local result = f(...)
+
+			if result == 1 and needsWorkaround then
+				-- The returned mouse position is weird, I think it's relative
+				-- to the center of some parent element, probably inventory window.
+				-- Either way the character slots end at 700 apparently.
+				local x = Infinity_GetMousePosition()
+				if x > 700 then
+					self.slotsHighlightScheduled = true
+					return result
+				end
+			end
+
 			self:updateSlotsHighlight()
 			return result
 		end
@@ -7914,10 +7933,12 @@ end
 
 function Inventory:deinit()
 	-- restore patched swap slot functions
-	for name, original in pairs(self._patched) do
-		_G[name] = original
+	if self._patched then
+		for name, original in pairs(self._patched) do
+			_G[name] = original
+		end
+		self._patched = {}
 	end
-	self._patched = {}
 end
 
 function Inventory:slot(slot_idx, char_idx)
@@ -7946,6 +7967,11 @@ function Inventory:update()
 		else
 			Infinity_SetArea('slotsAreaCover', nil, nil, 0, 0)
 		end
+	end
+
+	if self.slotsHighlightScheduled then
+		self.slotsHighlightScheduled = nil
+		self:updateSlotsHighlight()
 	end
 
 	return true
