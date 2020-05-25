@@ -8,6 +8,8 @@ LANGUAGE
 	~Polski (by Etamin)~ ~dragonspear_ui++/tra/english.tra~ ~dragonspear_ui++/tra/polish.tra~
 LANGUAGE 
 	~Italian (by Aedan)~ ~dragonspear_ui++/tra/english.tra~ ~dragonspear_ui++/tra/italian.tra~
+LANGUAGE
+	~Russian (by d0lphin)~ ~dragonspear_ui++/tra/russian.tra~ ~dragonspear_ui++/tra/russian.tra~
 
 	
 /////////////////////////////////////////////////////////////////////////////////
@@ -16,7 +18,7 @@ LANGUAGE
 
 BEGIN @1004 NO_LOG_RECORD
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 REQUIRE_PREDICATE FILE_EXISTS ~override/M_BG.lua~ @1005
 
@@ -29,7 +31,7 @@ COPY_EXISTING ~M_BG.lua~ ~dragonspear_ui++/backup-M_BG~
 
 BEGIN @1000
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 COPY ~dragonspear_ui++/content-common~ ~override~
 
@@ -42,6 +44,68 @@ END
 ACTION_IF GAME_IS ~bg2ee~ THEN BEGIN
 
 COPY ~dragonspear_ui++/content-bg2~ ~override~
+
+END
+
+ACTION_IF GAME_IS ~eet~ THEN BEGIN
+
+COPY ~dragonspear_ui++/content-sod/BPEND.BAM~ ~override~
+COPY GLOB ~dragonspear_ui++/content-sod/GUICHP*.BAM~ ~override~
+COPY GLOB ~dragonspear_ui++/content-sod/GUIDRM*.BAM~ ~override~
+COPY GLOB ~dragonspear_ui++/content-sod/MOS31*.PVRZ~ ~override~
+COPY ~dragonspear_ui++/content-sod/arrive.BAM~ ~override~
+COPY ~dragonspear_ui++/content-sod/leave.BAM~ ~override~
+COPY ~dragonspear_ui++/content-sod/rgdback1.wbm~ ~override~
+COPY ~dragonspear_ui++/content-sod/rgdback2.wbm~ ~override~
+COPY ~dragonspear_ui++/content-sod/toscenda.BAM~ ~override~
+
+COPY ~dragonspear_ui++/content-sod/rgdback3.wbm~ ~override/rgdback5.wbm~
+COPY ~dragonspear_ui++/content-sod/rgdback1.wbm~ ~override/rgdback7.wbm~
+COPY ~dragonspear_ui++/content-bg2/rgdback1.wbm~ ~override/rgdback3.wbm~
+COPY ~dragonspear_ui++/content-bg2/rgdback2.wbm~ ~override/rgdback4.wbm~
+COPY ~dragonspear_ui++/content-bg2/rgdback3.wbm~ ~override/rgdback6.wbm~
+
+COPY ~dragonspear_ui++/content-bg2/BIGLOGOold.BAM~ ~override~
+COPY GLOB ~dragonspear_ui++/content-bg2/CH*.BAM~ ~override~
+COPY ~dragonspear_ui++/content-bg2/COLORI.MOS~ ~override~
+COPY ~dragonspear_ui++/content-bg2/CONTBACK.BAM~ ~override~
+COPY ~dragonspear_ui++/content-bg2/DONATE.BAM~ ~override~
+COPY GLOB ~dragonspear_ui++/content-bg2/GMP*.MOS~ ~override~
+COPY GLOB ~dragonspear_ui++/content-bg2/GUI*.BAM~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUICGSND.MOS~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUICGWDE.MOS~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUICHISD.PNG~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUICONN1.MOS~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUICONNB.MOS~ ~override~
+COPY GLOB ~dragonspear_ui++/content-bg2/GUIE*.MOS~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUIHELP.PNG~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUINOTE.MOS~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUISTBK2.MOS~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUITUTB.PNG~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUMPBUTX.BAM~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUICGPR.PNG~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUIDCX.PNG~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUISMBM.PNG~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUISRRQB.PNG~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUIWLSP.PNG~ ~override~
+COPY ~dragonspear_ui++/content-bg2/GUIWRSP.PNG~ ~override~
+COPY ~dragonspear_ui++/content-bg2/RECENTEV.PNG~ ~override~
+COPY GLOB ~dragonspear_ui++/content-bg2/GUW*~ ~override~
+COPY GLOB ~dragonspear_ui++/content-bg2/L_*.LUA~ ~override~
+COPY ~dragonspear_ui++/content-bg2/INVBUT.BAM~ ~override~
+COPY GLOB ~dragonspear_ui++/content-bg2/MOS*.PVRZ~ ~override~
+COPY ~dragonspear_ui++/content-bg2/NPCCHAP.MOS~ ~override~
+COPY ~dragonspear_ui++/content-bg2/RGGHLA.PNG~ ~override~
+COPY ~dragonspear_ui++/content-bg2/RGTITLE.BAM~ ~override~
+COPY ~dragonspear_ui++/content-bg2/STARTBUT.BAM~ ~override~
+COPY GLOB ~dragonspear_ui++/content-bg2/STON*.BAM~ ~override~
+COPY GLOB ~dragonspear_ui++/content-bg2/box*.PVRZ~ ~override~
+COPY ~dragonspear_ui++/content-bg2/guipop55.MOS~ ~override~
+COPY ~dragonspear_ui++/content-bg2/rgwmap1.png~ ~override~
+COPY ~dragonspear_ui++/content-bg2/rgglogo.BAM~ ~override~
+COPY ~dragonspear_ui++/content-bg2/cmpgsml.BAM~ ~override~
+
+COPY ~dragonspear_ui++/content-eet~ ~override~
 
 END
 
@@ -87,7 +151,7 @@ COPY_EXISTING ~M_BG.lua~ ~override~
 
 BEGIN @1007
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 COPY ~dragonspear_ui++/content-tooltip~ ~override~
 
@@ -98,7 +162,7 @@ COPY ~dragonspear_ui++/content-tooltip~ ~override~
 
 BEGIN @1001
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 STRING_SET ~23084~ @101
 
@@ -111,7 +175,7 @@ STRING_SET ~11953~ @110
 ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 STRING_SET ~24366~ @102
 END
-ACTION_IF GAME_IS ~bg2ee~ THEN BEGIN
+ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
 STRING_SET ~5684~ @102
 END
 
@@ -122,7 +186,7 @@ END
 
 BEGIN ~1~
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 SUBCOMPONENT @1008
 
@@ -132,7 +196,7 @@ COPY_EXISTING ~savename.2da~ ~override~
 
 BEGIN ~2~
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 SUBCOMPONENT @1008
 
@@ -142,7 +206,7 @@ COPY_EXISTING ~savename.2da~ ~override~
 	
 BEGIN ~3~
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 SUBCOMPONENT @1008
 
@@ -152,7 +216,7 @@ COPY_EXISTING ~savename.2da~ ~override~
 
 BEGIN ~4~
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 SUBCOMPONENT @1008
 
@@ -162,7 +226,7 @@ COPY_EXISTING ~savename.2da~ ~override~
 	
 BEGIN ~5~
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 SUBCOMPONENT @1008
 
@@ -172,7 +236,7 @@ COPY_EXISTING ~savename.2da~ ~override~
 	
 BEGIN ~6~
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 SUBCOMPONENT @1008
 
@@ -186,7 +250,7 @@ COPY_EXISTING ~savename.2da~ ~override~
 
 BEGIN @1002
 
-REQUIRE_PREDICATE GAME_IS ~bgee bg2ee~ @1003
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 REQUIRE_PREDICATE FILE_EXISTS ~override/RGCGAPP.png~ @1006
 

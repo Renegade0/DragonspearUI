@@ -1,0 +1,20 @@
+@101=~Часов~
+@102=~Недостижимо~
+@103=~Паралич/Отравление/Смерть~
+@104=~Жезл/Посох/Палочка~
+@105=~Окаменение/Полиморф~
+@106=~Самый сильный поверженный враг~
+@107=~Любимое заклинание~
+@108=~Всего опыта группы~
+@109=~Всего убийств в группе~
+@110=~Опыта за убийства~
+
+@1000=~Install SoD GUI Overhaul Core Component~
+@1001=~Update several strings in Dialog.tlk~
+@1002=~Update portrait Picker~
+@1003=~BGEE not found, skipping~
+@1004=~Backup M_BG.lua file~
+@1005=~M_BG.lua file not found~
+@1006=~Sod GUI Overhaul Core Component not found~
+@1007=~Add Transparent Tooltip Background~
+@1008=~Select Number of Quicksave Slots~
