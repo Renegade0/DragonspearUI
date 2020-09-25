@@ -29931,10 +29931,6 @@ menu
 	name 'EPILOGUE'
 	align center center
 	ignoreEsc
-	onOpen
-	"
-		generateMegaCredits()
-	"
 	label
 	{
 		area 0 0 1024 768
@@ -29950,18 +29946,18 @@ menu
 	{
 		area 100 86 828 34
 		text style "title"
-		text "EXPANSION_LABEL"
+		text "EXPANSION_BG2_LABEL"
 	}
 	label
 	{
 		area 110 176 274 430
-		mosaic lua "epilogueImage"
+		bitmap lua "epilogueImage"
 	}
 	text
 	{
 		name "text_CHAPTERSCROLL_item"
 		area 440 148 492 482
-		text lua "megacredits"
+		text lua "text_CHAPTERSCROLL"
 		text style normal
 		text align center top
 		scrollbar 'GUISCRC'
