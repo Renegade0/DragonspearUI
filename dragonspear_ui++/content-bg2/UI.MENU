@@ -8658,13 +8658,11 @@ menu
 
 	label
 	{
-		enabled "characters[id].PC == 1"
 		area 1030 370 42 44
 		colordisplay 6
 	}
 	label
 	{
-		enabled "characters[id].PC == 1"
 		area 1030 444 42 44
 		colordisplay 3
 	}
@@ -8689,7 +8687,6 @@ menu
 
 	label
 	{
-		enabled "characters[id].PC == 1"
 		area 368 340 704 30
 		text "HAIR_LABEL"
 		text style "label"
@@ -8697,7 +8694,6 @@ menu
 	slider
 	{
 		palette 6
-		enabled "characters[id].PC == 1"
 		area 368 370 662 44
 		bam	 'SLDRSTAR'
 		scaleToClip
@@ -8713,7 +8709,6 @@ menu
 
 	label
 	{
-		enabled "characters[id].PC == 1"
 		area 368 414 704 30
 		text "SKIN_LABEL"
 		text style "label"
@@ -8721,7 +8716,6 @@ menu
 	slider
 	{
 		palette 3
-		enabled "characters[id].PC == 1"
 		area 368 444 662 44
 		bam	 'SLDRSTAR'
 		scaleToClip
