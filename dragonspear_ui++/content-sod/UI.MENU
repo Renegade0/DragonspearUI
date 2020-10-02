@@ -19787,6 +19787,7 @@ menu
 		area 376 180 318 518
 		table "chargen.kit"
 		var currentChargenKit
+		scrollbar 'GUISCRC'
 	}
 	text
 	{
