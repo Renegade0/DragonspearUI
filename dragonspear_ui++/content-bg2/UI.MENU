@@ -7866,6 +7866,16 @@ Inventory = {
 function Inventory:create()
 	local self = setmetatable({}, { __index = self })
 
+	-- ASSIGN_KEYS_QUICKSLOTS_CHARACTER[1-6]
+	self.keymap = keybindingsForIds({ 56, 57, 58, 59, 60, 61 })
+	for _, i in pairs(self.keymap.missing) do
+		popupInfo(string.format(
+			"Shortcut to select character %d is unassigned.\n" ..
+			"Inventory won't work correctly."
+		, i))
+		break
+	end
+
 	self.paused = false
 	self.name_to_idx = {}
 	self.idx_to_id = {}
@@ -7989,7 +7999,10 @@ function Inventory:updateSlotsHighlight()
 end
 
 function Inventory:select(i)
-	Infinity_PressKeyboardButton(i)
+	local key = self.keymap[i]
+	if key then
+		Infinity_PressKeyboardButton(key)
+	end
 end
 
 function Inventory:onSlotsAreaEnter(n)
@@ -8019,6 +8032,28 @@ end
 
 function Inventory:togglePause()
 	self.paused = not self.paused
+end
+
+function keybindingsForIds(keys)
+	local bindingsById = {}
+	for _, category in pairs(keybindings) do
+		for _, key in pairs(category) do
+			bindingsById[key[1]] = key
+		end
+	end
+
+	local map = { missing = {} }
+
+	for index, name in pairs(keys) do
+		local key = bindingsById[name]
+		if key and key[6] ~= 0 then
+			map[index] = string.char(key[6])
+		else
+			table.insert(map.missing, index)
+		end
+	end
+
+	return map
 end
 `
 menu
