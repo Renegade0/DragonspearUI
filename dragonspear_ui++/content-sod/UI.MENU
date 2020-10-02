@@ -7948,6 +7948,7 @@ Inventory = {
 function Inventory:create()
 	local self = setmetatable({}, { __index = self })
 
+	self.paused = false
 	self.name_to_idx = {}
 	self.idx_to_id = {}
 	self.count = Infinity_GetNumCharacters()
@@ -8097,6 +8098,10 @@ function Inventory:onSlotsAreaEnter(n)
 		self:select(n)
 	end
 end
+
+function Inventory:togglePause()
+	self.paused = not self.paused
+end
 `
 menu
 {
@@ -8141,6 +8146,7 @@ menu
 	text {
 		area 0 0 788 756
 		actionEnter "inventory:onSlotsAreaEnter(nil)"
+		enabled "not inventory.paused"
 	}
 
 	text
@@ -8374,13 +8380,13 @@ menu
 	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 1)"   area 936 85 49 49 }
 	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 1)"   area 936 134 49 49 }
 	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 1)"   area 985 85 49 49 }
-	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 1)"  area 985 134 49 49 }
-	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 1)"  area 1034 85 49 49 }
-	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 1)"  area 1034 134 49 49 }
-	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 1)"  area 1083 85 49 49 }
-	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 1)"  area 1083 134 49 49 }
-	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 1)"  area 1132 85 49 49 }
-	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 1)"  area 1132 134 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 1)"   area 985 134 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 1)"   area 1034 85 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 1)"   area 1034 134 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 1)"   area 1083 85 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 1)"   area 1083 134 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 1)"   area 1132 85 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 1)"   area 1132 134 49 49 }
 
 	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 2)"   area 789 191 49 49 }
 	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 2)"   area 789 240 49 49 }
@@ -8391,13 +8397,13 @@ menu
 	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 2)"   area 936 191 49 49 }
 	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 2)"   area 936 240 49 49 }
 	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 2)"   area 985 191 49 49 }
-	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 2)"  area 985 240 49 49 }
-	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 2)"  area 1034 191 49 49 }
-	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 2)"  area 1034 240 49 49 }
-	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 2)"  area 1083 191 49 49 }
-	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 2)"  area 1083 240 49 49 }
-	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 2)"  area 1132 191 49 49 }
-	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 2)"  area 1132 240 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 2)"   area 985 240 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 2)"   area 1034 191 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 2)"   area 1034 240 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 2)"   area 1083 191 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 2)"   area 1083 240 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 2)"   area 1132 191 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 2)"   area 1132 240 49 49 }
 
 	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 3)"   area 789 297 49 49 }
 	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 3)"   area 789 346 49 49 }
@@ -8408,13 +8414,13 @@ menu
 	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 3)"   area 936 297 49 49 }
 	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 3)"   area 936 346 49 49 }
 	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 3)"   area 985 297 49 49 }
-	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 3)"  area 985 346 49 49 }
-	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 3)"  area 1034 297 49 49 }
-	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 3)"  area 1034 346 49 49 }
-	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 3)"  area 1083 297 49 49 }
-	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 3)"  area 1083 346 49 49 }
-	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 3)"  area 1132 297 49 49 }
-	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 3)"  area 1132 346 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 3)"   area 985 346 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 3)"   area 1034 297 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 3)"   area 1034 346 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 3)"   area 1083 297 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 3)"   area 1083 346 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 3)"   area 1132 297 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 3)"   area 1132 346 49 49 }
 
 	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 4)"   area 789 403 49 49 }
 	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 4)"   area 789 452 49 49 }
@@ -8425,13 +8431,13 @@ menu
 	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 4)"   area 936 403 49 49 }
 	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 4)"   area 936 452 49 49 }
 	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 4)"   area 985 403 49 49 }
-	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 4)"  area 985 452 49 49 }
-	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 4)"  area 1034 403 49 49 }
-	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 4)"  area 1034 452 49 49 }
-	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 4)"  area 1083 403 49 49 }
-	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 4)"  area 1083 452 49 49 }
-	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 4)"  area 1132 403 49 49 }
-	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 4)"  area 1132 452 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 4)"   area 985 452 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 4)"   area 1034 403 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 4)"   area 1034 452 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 4)"   area 1083 403 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 4)"   area 1083 452 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 4)"   area 1132 403 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 4)"   area 1132 452 49 49 }
 
 	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 5)"   area 789 509 49 49 }
 	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 5)"   area 789 558 49 49 }
@@ -8442,13 +8448,13 @@ menu
 	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 5)"   area 936 509 49 49 }
 	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 5)"   area 936 558 49 49 }
 	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 5)"   area 985 509 49 49 }
-	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 5)"  area 985 558 49 49 }
-	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 5)"  area 1034 509 49 49 }
-	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 5)"  area 1034 558 49 49 }
-	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 5)"  area 1083 509 49 49 }
-	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 5)"  area 1083 558 49 49 }
-	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 5)"  area 1132 509 49 49 }
-	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 5)"  area 1132 558 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 5)"   area 985 558 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 5)"   area 1034 509 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 5)"   area 1034 558 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 5)"   area 1083 509 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 5)"   area 1083 558 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 5)"   area 1132 509 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 5)"   area 1132 558 49 49 }
 
 	slot { name  "slot_inv_30"  bam "RGSTONSL"  slotinfo "inventory:slot(1, 6)"   area 789 615 49 49 }
 	slot { name  "slot_inv_31"  bam "RGSTONSL"  slotinfo "inventory:slot(2, 6)"   area 789 664 49 49 }
@@ -8459,51 +8465,56 @@ menu
 	slot { name  "slot_inv_36"  bam "RGSTONSL"  slotinfo "inventory:slot(7, 6)"   area 936 615 49 49 }
 	slot { name  "slot_inv_37"  bam "RGSTONSL"  slotinfo "inventory:slot(8, 6)"   area 936 664 49 49 }
 	slot { name  "slot_inv_38"  bam "RGSTONSL"  slotinfo "inventory:slot(9, 6)"   area 985 615 49 49 }
-	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 6)"  area 985 664 49 49 }
-	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 6)"  area 1034 615 49 49 }
-	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 6)"  area 1034 664 49 49 }
-	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 6)"  area 1083 615 49 49 }
-	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 6)"  area 1083 664 49 49 }
-	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 6)"  area 1132 615 49 49 }
-	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 6)"  area 1132 664 49 49 }
+	slot { name  "slot_inv_39"  bam "RGSTONSL"  slotinfo "inventory:slot(10, 6)"   area 985 664 49 49 }
+	slot { name  "slot_inv_40"  bam "RGSTONSL"  slotinfo "inventory:slot(11, 6)"   area 1034 615 49 49 }
+	slot { name  "slot_inv_41"  bam "RGSTONSL"  slotinfo "inventory:slot(12, 6)"   area 1034 664 49 49 }
+	slot { name  "slot_inv_42"  bam "RGSTONSL"  slotinfo "inventory:slot(13, 6)"   area 1083 615 49 49 }
+	slot { name  "slot_inv_43"  bam "RGSTONSL"  slotinfo "inventory:slot(14, 6)"   area 1083 664 49 49 }
+	slot { name  "slot_inv_44"  bam "RGSTONSL"  slotinfo "inventory:slot(15, 6)"   area 1132 615 49 49 }
+	slot { name  "slot_inv_45"  bam "RGSTONSL"  slotinfo "inventory:slot(16, 6)"   area 1132 664 49 49 }
 
 	text
 	{
 		name "slotsArea1"
 		area		789 85 392 98
 		actionEnter "inventory:onSlotsAreaEnter(1)"
+		enabled "not inventory.paused"
 	}
 	text
 	{
 		name "slotsArea2"
 		area		789 191 392 98
 		actionEnter "inventory:onSlotsAreaEnter(2)"
+		enabled "not inventory.paused"
 	}
 	text
 	{
 		name "slotsArea3"
 		area		789 297 392 98
 		actionEnter "inventory:onSlotsAreaEnter(3)"
+		enabled "not inventory.paused"
 	}
 	text
 	{
 		name "slotsArea4"
 		area		789 403 392 98
 		actionEnter "inventory:onSlotsAreaEnter(4)"
+		enabled "not inventory.paused"
 	}
 	text
 	{
 		name "slotsArea5"
 		area		789 509 392 98
 		actionEnter "inventory:onSlotsAreaEnter(5)"
+		enabled "not inventory.paused"
 	}
 	text
 	{
 		name "slotsArea6"
 		area		789 615 392 98
 		actionEnter "inventory:onSlotsAreaEnter(6)"
+		enabled "not inventory.paused"
 	}
-
 	button
 	{
 		name "invPortrait0"
@@ -8516,7 +8527,6 @@ menu
 		actiondrag "Infinity_SwapWithPortrait(0)"
 		clickable lua "sidebarsGreyed ~= 1"
 	}
-
 	button
 	{
 		name "invPortrait1"
@@ -8584,14 +8594,14 @@ menu
 		actionScroll "scrollGroundItems()"
 	}
 
-	slot {name "slot_inv_68"		area 1214 220 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground0"	actionScroll "scrollGroundItems()"	}
-	slot {name "slot_inv_69"		area 1214 273 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground1"	actionScroll "scrollGroundItems()"	}
-	slot {name "slot_inv_70"		area 1214 326 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground2"	actionScroll "scrollGroundItems()"	}
-	slot {name "slot_inv_71"		area 1214 379 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground3"	actionScroll "scrollGroundItems()"	}
-	slot {name "slot_inv_72"		area 1214 432 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground4"	actionScroll "scrollGroundItems()"	}
-	slot {name "slot_inv_73"		area 1214 485 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground5"	actionScroll "scrollGroundItems()"	}
-	slot {name "slot_inv_74"		area 1214 538 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground6"	actionScroll "scrollGroundItems()"	}
-	slot {name "slot_inv_75"		area 1214 591 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground7"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_68"		area 1214 220 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground0"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_69"		area 1214 273 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground1"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_70"		area 1214 326 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground2"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_71"		area 1214 379 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground3"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_72"		area 1214 432 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground4"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_73"		area 1214 485 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground5"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_74"		area 1214 538 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground6"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_75"		area 1214 591 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground7"	actionScroll "scrollGroundItems()"	}
 
 	button
 	{
@@ -8644,6 +8654,7 @@ menu
 		mosaic "RGJBACK"
 		area 789 85 0 0
 		tooltip force lua "''"
+		enabled "not inventory.paused"
 
 		-- actionExit doesn't work without actionEnter
 		actionEnter ""
@@ -8682,6 +8693,9 @@ menu
 
 	onOpen
 	"
+		if inventory then
+			inventory:togglePause()
+		end
 		Infinity_UpdateLuaStats()
 
 		SLIDER_color_hair = characters[id].colors.hair
@@ -8702,6 +8716,10 @@ menu
 		if(SLIDER_color_major_start ~= -1) then Infinity_SetMajorColor(SLIDER_color_major_start) end
 		if(SLIDER_color_minor_start ~= -1) then Infinity_SetMinorColor(SLIDER_color_minor_start) end
 		ungreySidebars()
+
+		if inventory then
+			inventory:togglePause()
+		end
 	"
 	label
 	{
