@@ -11939,8 +11939,8 @@ menu
 		currentContingencyTarget = 0
 		currentAnimationID = 1
 		updateCounterMemorizationSparkles = 1
-		Infinity_PopMenu('WORLD_QUICKLOOT');
 		pushSidebars()
+		Infinity_PopMenu('WORLD_QUICKLOOT');
 		"
 	onclose "
 		spellDescString = nil
