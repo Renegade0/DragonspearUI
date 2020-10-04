@@ -13205,7 +13205,7 @@ function addPriestBookLevel(value)
 		setPriestBookLevel(level)
 		currentBookSpell = 0
 		currentSpellLevel = level
-		PriestScreen:SetSpellLevel(level-1)
+		priestScreen:SetSpellLevel(level-1)
 		getPrSpellButtHighlight(level)
 		refreshPriestBook()
 	end
