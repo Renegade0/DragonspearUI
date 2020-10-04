@@ -18619,7 +18619,10 @@ menu
 		text "IMPORT_BUTTON"
 		text style "button"
 		bam GUIBUTMT
-		action "createCharScreen:OnImportCharacterButtonClick()"
+		action "
+			createCharScreen:OnImportCharacterButtonClick()
+			randomCharacter = createCharScreen:GetCurrentStep() == 0
+		"
 	}
 	button
 	{
