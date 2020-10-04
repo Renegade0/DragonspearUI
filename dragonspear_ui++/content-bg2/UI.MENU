@@ -14325,7 +14325,7 @@ menu
 	align center center
 	label
 	{
-		area 0 0 1496 726
+		area 0 0 1026 590
 		mosaic RGWMAP1
 	}
 --	label
@@ -14347,7 +14347,7 @@ menu
 	}
 	map
 	{
-		area 14 12 1470 700
+		area 14 12 1000 564
 		worldmap
 		action
 		"
