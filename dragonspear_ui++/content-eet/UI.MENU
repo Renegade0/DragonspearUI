@@ -20923,7 +20923,10 @@ menu
 
 		--gnome illusionists
 		if currentChargenRace ~= 6 and chargen.kit then
-			currentKitName = Infinity_FetchString(chargen.kit[currentChargenKit].name)
+			local kit = chargen.kit[currentChargenKit]
+			if kit then
+				currentKitName = Infinity_FetchString(kit.name)
+			end
 		else
 			currentKitName = Infinity_FetchString(2862)
 		end
@@ -22231,7 +22234,7 @@ menu
 	{
 		on escape
 		area 196 653 230 40
-		clickable false
+		clickable lua "false"
 		bam GUIBUTMT
 		text "BACK_BUTTON"
 		text style "button"
