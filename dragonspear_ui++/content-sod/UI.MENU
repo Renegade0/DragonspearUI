@@ -17835,7 +17835,7 @@ menu
 		area		1536 450 249 45
 		bam			'STARTBUT'
 		clickable	lua	"currentSave"
-		text		"LOAD_BUTTON"
+		text		lua "getLoadMenuTitle()"
 		text style	"button"
 		sequence lua "getCampaignButtonSequence()"
 		action
