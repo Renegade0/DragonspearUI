@@ -21770,7 +21770,7 @@ menu
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(11)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[11].key].groundicon"	align center center	}	}
 		rowwidth 72	hideHighlight	area 347 338 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
-		action "	if cellNumber == 1 and not chargen.choose_spell[1].known then	createCharScreen:OnLearnMageSpellButtonClick(11)	end	"
+		action "	if cellNumber == 1 and not chargen.choose_spell[11].known then	createCharScreen:OnLearnMageSpellButtonClick(11)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[11].key].desc	rgspelldesc = 1"}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[12].enabled or chargen.choose_spell[12].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(12)"	}
