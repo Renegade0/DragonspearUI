@@ -21543,36 +21543,11 @@ function chooseSpellOrGeneralHelp()
 end
 function rgUnlearnDefault()
 	if randomCharacter == 0 then
-		if chargen.choose_spell[1].known or chargen.choose_spell[1].enabled then	createCharScreen:OnLearnMageSpellButtonClick(1) end
-		if chargen.choose_spell[2].known or chargen.choose_spell[2].enabled then	createCharScreen:OnLearnMageSpellButtonClick(2) end
-		if chargen.choose_spell[3].known or chargen.choose_spell[3].enabled then	createCharScreen:OnLearnMageSpellButtonClick(3) end
-		if chargen.choose_spell[4].known or chargen.choose_spell[4].enabled then	createCharScreen:OnLearnMageSpellButtonClick(4) end
-		if chargen.choose_spell[5].known or chargen.choose_spell[5].enabled then	createCharScreen:OnLearnMageSpellButtonClick(5) end
-		if chargen.choose_spell[6].known or chargen.choose_spell[6].enabled then	createCharScreen:OnLearnMageSpellButtonClick(6) end
-		if chargen.choose_spell[7].known or chargen.choose_spell[7].enabled then	createCharScreen:OnLearnMageSpellButtonClick(7) end
-		if chargen.choose_spell[8].known or chargen.choose_spell[8].enabled then	createCharScreen:OnLearnMageSpellButtonClick(8) end
-		if chargen.choose_spell[9].known or chargen.choose_spell[9].enabled then	createCharScreen:OnLearnMageSpellButtonClick(9) end
-		if chargen.choose_spell[10].known or chargen.choose_spell[10].enabled then	createCharScreen:OnLearnMageSpellButtonClick(10) end
-		if chargen.choose_spell[11].known or chargen.choose_spell[11].enabled then	createCharScreen:OnLearnMageSpellButtonClick(11) end
-		if chargen.choose_spell[12].known or chargen.choose_spell[12].enabled then	createCharScreen:OnLearnMageSpellButtonClick(12) end
-		if chargen.choose_spell[13].known or chargen.choose_spell[13].enabled then	createCharScreen:OnLearnMageSpellButtonClick(13) end
-		if chargen.choose_spell[14].known or chargen.choose_spell[14].enabled then	createCharScreen:OnLearnMageSpellButtonClick(14) end
-		if chargen.choose_spell[15].known or chargen.choose_spell[15].enabled then	createCharScreen:OnLearnMageSpellButtonClick(15) end
-		if chargen.choose_spell[16].known or chargen.choose_spell[16].enabled then	createCharScreen:OnLearnMageSpellButtonClick(16) end
-		if chargen.choose_spell[17].known or chargen.choose_spell[17].enabled then	createCharScreen:OnLearnMageSpellButtonClick(17) end
-		if chargen.choose_spell[18].known or chargen.choose_spell[18].enabled then	createCharScreen:OnLearnMageSpellButtonClick(18) end
-		if chargen.choose_spell[19].known or chargen.choose_spell[19].enabled then	createCharScreen:OnLearnMageSpellButtonClick(19) end
-		if chargen.choose_spell[20].known or chargen.choose_spell[20].enabled then	createCharScreen:OnLearnMageSpellButtonClick(20) end
-		if chargen.choose_spell[21].known or chargen.choose_spell[21].enabled then	createCharScreen:OnLearnMageSpellButtonClick(21) end
-		if chargen.choose_spell[22].known or chargen.choose_spell[22].enabled then	createCharScreen:OnLearnMageSpellButtonClick(22) end
-		if chargen.choose_spell[23].known or chargen.choose_spell[23].enabled then	createCharScreen:OnLearnMageSpellButtonClick(23) end
-		if chargen.choose_spell[24].known or chargen.choose_spell[24].enabled then	createCharScreen:OnLearnMageSpellButtonClick(24) end
-		if chargen.choose_spell[25].known or chargen.choose_spell[25].enabled then	createCharScreen:OnLearnMageSpellButtonClick(25) end
-		if chargen.choose_spell[26].known or chargen.choose_spell[26].enabled then	createCharScreen:OnLearnMageSpellButtonClick(26) end
-		if chargen.choose_spell[27].known or chargen.choose_spell[27].enabled then	createCharScreen:OnLearnMageSpellButtonClick(27) end
-		if chargen.choose_spell[28].known or chargen.choose_spell[28].enabled then	createCharScreen:OnLearnMageSpellButtonClick(28) end
-		if chargen.choose_spell[29].known or chargen.choose_spell[29].enabled then	createCharScreen:OnLearnMageSpellButtonClick(29) end
-		if chargen.choose_spell[30].known or chargen.choose_spell[30].enabled then	createCharScreen:OnLearnMageSpellButtonClick(30) end
+		for i, spell in pairs(chargen.choose_spell) do
+			if spell.known or spell.enabled then
+				createCharScreen:OnLearnMageSpellButtonClick(i)
+			end
+		end
 	end
 end
 
@@ -21706,184 +21681,394 @@ menu
 		"
 	}
 
+	label	{
+		bam GUIBTBUT
+		area 357 188 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[1] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[1].enabled or chargen.choose_spell[1].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(1)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[1].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 347 178 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[1] ~= nil"
+		rowwidth 72	hideHighlight	area 347 178 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[1].known then	createCharScreen:OnLearnMageSpellButtonClick(1)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[1].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 429 188 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[2] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[2].enabled or chargen.choose_spell[2].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(2)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[2].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 419 178 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[2] ~= nil"
+		rowwidth 72	hideHighlight	area 419 178 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[2].known then	createCharScreen:OnLearnMageSpellButtonClick(2)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[2].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 501 188 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[3] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[3].enabled or chargen.choose_spell[3].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(3)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[3].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 491 178 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[3] ~= nil"
+		rowwidth 72	hideHighlight	area 491 178 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[3].known then	createCharScreen:OnLearnMageSpellButtonClick(3)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[3].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 573 188 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[4] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[4].enabled or chargen.choose_spell[4].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(4)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[4].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 563 178 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[4] ~= nil"
+		rowwidth 72	hideHighlight	area 563 178 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[4].known then	createCharScreen:OnLearnMageSpellButtonClick(4)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[4].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 645 188 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[5] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[5].enabled or chargen.choose_spell[5].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(5)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[5].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 635 178 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[5] ~= nil"
+		rowwidth 72	hideHighlight	area 635 178 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[5].known then	createCharScreen:OnLearnMageSpellButtonClick(5)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[5].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 357 268 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[6] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[6].enabled or chargen.choose_spell[6].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(6)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[6].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 347 258 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[6] ~= nil"
+		rowwidth 72	hideHighlight	area 347 258 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[6].known then	createCharScreen:OnLearnMageSpellButtonClick(6)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[6].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 429 268 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[7] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[7].enabled or chargen.choose_spell[7].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(7)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[7].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 419 258 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[7] ~= nil"
+		rowwidth 72	hideHighlight	area 419 258 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[7].known then	createCharScreen:OnLearnMageSpellButtonClick(7)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[7].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 501 268 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[8] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[8].enabled or chargen.choose_spell[8].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(8)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[8].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 491 258 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[8] ~= nil"
+		rowwidth 72	hideHighlight	area 491 258 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[8].known then	createCharScreen:OnLearnMageSpellButtonClick(8)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[8].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 573 268 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[9] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[9].enabled or chargen.choose_spell[9].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(9)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[9].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 563 258 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[9] ~= nil"
+		rowwidth 72	hideHighlight	area 563 258 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[9].known then	createCharScreen:OnLearnMageSpellButtonClick(9)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[9].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 645 268 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[10] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[10].enabled or chargen.choose_spell[10].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(10)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[10].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 635 258 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[10] ~= nil"
+		rowwidth 72	hideHighlight	area 635 258 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[10].known then	createCharScreen:OnLearnMageSpellButtonClick(10)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[10].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 357 348 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[11] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[11].enabled or chargen.choose_spell[11].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(11)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[11].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 347 338 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[11] ~= nil"
+		rowwidth 72	hideHighlight	area 347 338 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[11].known then	createCharScreen:OnLearnMageSpellButtonClick(11)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[11].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 429 348 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[12] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[12].enabled or chargen.choose_spell[12].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(12)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[12].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 419 338 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[12] ~= nil"
+		rowwidth 72	hideHighlight	area 419 338 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[12].known then	createCharScreen:OnLearnMageSpellButtonClick(12)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[12].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 501 348 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[13] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[13].enabled or chargen.choose_spell[13].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(13)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[13].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 491 338 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[13] ~= nil"
+		rowwidth 72	hideHighlight	area 491 338 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[13].known then	createCharScreen:OnLearnMageSpellButtonClick(13)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[13].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 573 348 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[14] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[14].enabled or chargen.choose_spell[14].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(14)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[14].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 563 338 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[14] ~= nil"
+		rowwidth 72	hideHighlight	area 563 338 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[14].known then	createCharScreen:OnLearnMageSpellButtonClick(14)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[14].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 645 348 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[15] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[15].enabled or chargen.choose_spell[15].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(15)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[15].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 635 338 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[15] ~= nil"
+		rowwidth 72	hideHighlight	area 635 338 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[15].known then	createCharScreen:OnLearnMageSpellButtonClick(15)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[15].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 357 428 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[16] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[16].enabled or chargen.choose_spell[16].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(16)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[16].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 347 418 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[16] ~= nil"
+		rowwidth 72	hideHighlight	area 347 418 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[16].known then	createCharScreen:OnLearnMageSpellButtonClick(16)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[16].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 429 428 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[17] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[17].enabled or chargen.choose_spell[17].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(17)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[17].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 419 418 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[17] ~= nil"
+		rowwidth 72	hideHighlight	area 419 418 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[17].known then	createCharScreen:OnLearnMageSpellButtonClick(17)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[17].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 501 428 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[18] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[18].enabled or chargen.choose_spell[18].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(18)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[18].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 491 418 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[18] ~= nil"
+		rowwidth 72	hideHighlight	area 491 418 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[18].known then	createCharScreen:OnLearnMageSpellButtonClick(18)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[18].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 573 428 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[19] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[19].enabled or chargen.choose_spell[19].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(19)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[19].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 563 418 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[19] ~= nil"
+		rowwidth 72	hideHighlight	area 563 418 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[19].known then	createCharScreen:OnLearnMageSpellButtonClick(19)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[19].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 645 428 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[20] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[20].enabled or chargen.choose_spell[20].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(20)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[20].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 635 418 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[20] ~= nil"
+		rowwidth 72	hideHighlight	area 635 418 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[20].known then	createCharScreen:OnLearnMageSpellButtonClick(20)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[20].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 357 508 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[21] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[21].enabled or chargen.choose_spell[21].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(21)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[21].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 347 498 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[21] ~= nil"
+		rowwidth 72	hideHighlight	area 347 498 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[21].known then	createCharScreen:OnLearnMageSpellButtonClick(21)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[21].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 429 508 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[22] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[22].enabled or chargen.choose_spell[22].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(22)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[22].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 419 498 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[22] ~= nil"
+		rowwidth 72	hideHighlight	area 419 498 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[22].known then	createCharScreen:OnLearnMageSpellButtonClick(22)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[22].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 501 508 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[23] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[23].enabled or chargen.choose_spell[23].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(23)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[23].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 491 498 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[23] ~= nil"
+		rowwidth 72	hideHighlight	area 491 498 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[23].known then	createCharScreen:OnLearnMageSpellButtonClick(23)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[23].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 573 508 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[24] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[24].enabled or chargen.choose_spell[24].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(24)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[24].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 563 498 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[24] ~= nil"
+		rowwidth 72	hideHighlight	area 563 498 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[24].known then	createCharScreen:OnLearnMageSpellButtonClick(24)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[24].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 645 508 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[25] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[25].enabled or chargen.choose_spell[25].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(25)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[25].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 635 498 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[25] ~= nil"
+		rowwidth 72	hideHighlight	area 635 498 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[25].known then	createCharScreen:OnLearnMageSpellButtonClick(25)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[25].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 357 588 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[26] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[26].enabled or chargen.choose_spell[26].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(26)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[26].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 347 578 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[26] ~= nil"
+		rowwidth 72	hideHighlight	area 347 578 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[26].known then	createCharScreen:OnLearnMageSpellButtonClick(26)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[26].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 429 588 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[27] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[27].enabled or chargen.choose_spell[27].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(27)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[27].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 419 578 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[27] ~= nil"
+		rowwidth 72	hideHighlight	area 419 578 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[27].known then	createCharScreen:OnLearnMageSpellButtonClick(27)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[27].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 501 588 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[28] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[28].enabled or chargen.choose_spell[28].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(28)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[28].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 491 578 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[28] ~= nil"
+		rowwidth 72	hideHighlight	area 491 578 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[28].known then	createCharScreen:OnLearnMageSpellButtonClick(28)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[28].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 573 588 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[29] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[29].enabled or chargen.choose_spell[29].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(29)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[29].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 563 578 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[29] ~= nil"
+		rowwidth 72	hideHighlight	area 563 578 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[29].known then	createCharScreen:OnLearnMageSpellButtonClick(29)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[29].key].desc	rgspelldesc = 1"}
+	label	{
+		bam GUIBTBUT
+		area 645 588 52 52
+		align center center	frame 0
+		enabled "chargen.choose_spell[30] == nil"
+	}
 	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "chargen.choose_spell[30].enabled or chargen.choose_spell[30].known"	}
 			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(30)"	}
 			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[30].key].groundicon"	align center center	}	}
-		rowwidth 72	hideHighlight	area 635 578 72 72	table "chargen.choose_spell"	var currentChargenChooseMageSpell
+		enabled "chargen.choose_spell[30] ~= nil"
+		rowwidth 72	hideHighlight	area 635 578 72 72	table "{1}"	var currentChargenChooseMageSpell
 		action "	if cellNumber == 1 and not chargen.choose_spell[30].known then	createCharScreen:OnLearnMageSpellButtonClick(30)	end	"
 		actionEnter	"desc = spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[30].key].desc	rgspelldesc = 1"}
 
