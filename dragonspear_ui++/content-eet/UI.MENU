@@ -429,10 +429,7 @@ function updateAttrTable()
 	-- showStats = showStats == 1 and characterViewable == true
 	-- showAbilityBonuses = showAbilityBonuses == 1 and characterViewable == true
 
-	showOverview = showOverview == 1 and characterViewable == true
-	showClass = showClass == 1 and characterViewable == true
-	showBiography = showBiography == 1 and characterViewable == true
-	showStatistics = showStatistics == 1 and characterViewable == true
+	record = Record:create(characterViewable and currentID)
 end
 
 characters = {}
@@ -714,7 +711,7 @@ end
 Record = {}
 
 function Record:create(id)
-	local character = characterViewable and characters[id]
+	local character = characters[id]
 	if not character then
 		return { valid = false, classes = { {} } }
 	end
@@ -805,11 +802,12 @@ menu
 		showBothLists = 0
 		characterViewable = true
 		toggleCombatStats = 0
-		showOverview = 1
-		showClass = 0
-		showBiography = 0
-		showStatistics = 0
+		showOverview = true
+		showClass = false
+		showBiography = false
+		showStatistics = false
 		rgrecpage = nil
+		record = nil
 
 		if(CurrentlyInGame()) then
 			pushSidebars()
@@ -827,8 +825,6 @@ menu
 			end
 		end
 		Infinity_PopMenu('WORLD_QUICKLOOT');
-
-		record = Record:create(currentID)
 	"
 	onclose
 	"
@@ -1297,7 +1293,7 @@ menu
 		text style "button"
 		pad 10 4 10 4
 		--action "currentTab = 1; updateAttrTable()"
-		action "showOverview = 1; showClass = 0; showBiography = 0; showStatistics = 0; updateAttrTable()"
+		action "showOverview = true; showClass = false; showBiography = false; showStatistics = false; updateAttrTable()"
 	}
 	button
 	{
@@ -1308,7 +1304,7 @@ menu
 		text style "button"
 		pad 10 4 10 4
 		--action "currentTab = 6; updateAttrTable()"
-		action "showOverview = 0; showClass = 0; showBiography = 0; showStatistics = 1; updateAttrTable()"
+		action "showOverview = false; showClass = false; showBiography = false; showStatistics = true; updateAttrTable()"
 	}
 	button
 	{
@@ -1319,7 +1315,7 @@ menu
 		text style "button"
 		pad 10 4 10 4
 		--action "currentTab = 7; updateAttrTable()"
-		action "showOverview = 0; showClass = 0; showBiography = 1; showStatistics = 0; updateAttrTable()"
+		action "showOverview = false; showClass = false; showBiography = true; showStatistics = false; updateAttrTable()"
 	}
 	button
 	{
@@ -1331,7 +1327,7 @@ menu
 		text style "button"
 		pad 10 4 10 4
 		--action "currentTab = 2; updateAttrTable()"
-		action "showOverview = 0; showClass = 1; showBiography = 0; showStatistics = 0; updateAttrTable()"
+		action "showOverview = false; showClass = true; showBiography = false; showStatistics = false; updateAttrTable()"
 	}
 
 	list
@@ -1359,7 +1355,7 @@ menu
 			}
 		}
 
-		enabled "showOverview"
+		enabled "showOverview and characterViewable"
 		area 830 102 454 558
 		rowheight	dynamic
 		table		"listItems"
@@ -1372,7 +1368,7 @@ menu
 
 	text
 	{
-		enabled		"showClass"
+		enabled		"showClass and characterViewable"
 		area		830 102 454 558
 		text		lua "getClassString()"
 		text style  'normal'
@@ -1381,7 +1377,7 @@ menu
 
 	text
 	{
-		enabled		"showBiography"
+		enabled		"showBiography and characterViewable"
 		area		830 102 454 558
 		text		lua "Infinity_FetchString(characters[currentID].biography)"
 		text style  'normal'
@@ -1392,7 +1388,7 @@ menu
 
 	label
 	{
-		enabled		"showStatistics"
+		enabled		"showStatistics and characterViewable"
 		area		812 112 254 263
 		text		lua "getStatistics1()"
 		text style  'normal'
@@ -1401,7 +1397,7 @@ menu
 	}
 	label
 	{
-		enabled		"showStatistics"
+		enabled		"showStatistics and characterViewable"
 		area		1078 112 212 263
 		text		lua "getStatistics2()"
 		text style  'normal'
@@ -1410,7 +1406,7 @@ menu
 	}
 	label
 	{
-		enabled		"showStatistics"
+		enabled		"showStatistics and characterViewable"
 		area		806 386 290 270
 		text		lua "getStatistics3()"
 		text style  'normal'
@@ -1419,7 +1415,7 @@ menu
 	}
 	label
 	{
-		enabled		"showStatistics"
+		enabled		"showStatistics and characterViewable"
 		area		1100 386 106 270
 		text		lua "getStatistics4()"
 		text style  'normal'
@@ -1428,7 +1424,7 @@ menu
 	}
 	label
 	{
-		enabled		"showStatistics"
+		enabled		"showStatistics and characterViewable"
 		area		1206 386 98 270
 		text		lua "getStatistics5()"
 		text style  'normal'
