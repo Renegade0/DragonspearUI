@@ -11480,6 +11480,62 @@ menu
 	}
 }
 `
+function math.sign(value)
+	if value < 0 then return -1
+	elseif value > 0 then return 1
+	else return 0 end
+end
+
+SpellBook = {}
+
+function SpellBook:create()
+	local self = setmetatable({
+		page = 1,
+		columns = { {}, {} },
+		spells = {},
+	}, { __index = self })
+
+	return self
+end
+
+function SpellBook:update(spells)
+	self.spells = spells
+	self:setPage(self.page, true)
+end
+
+function SpellBook:canScroll(direction)
+	if direction < 0 then
+		return self.page > 1
+	elseif direction > 0 then
+		return 24 * self.page < #self.spells
+	end
+	return false
+end
+
+function SpellBook:scroll(direction, force)
+	local direction = math.sign(direction or -scrollDirection)
+	self:setPage(self.page + direction, force)
+end
+
+function SpellBook:setPage(page, force)
+	page = math.max(1, page)
+	page = math.min(page, math.ceil(#self.spells / 24))
+
+	-- force is used when the spell book is refreshed,
+	-- i.e. on spell level change or when a spell is erased
+	if page == self.page and not force then
+		return
+	end
+
+	-- split into 2 columns
+	self.columns = { {}, {} }
+	self.page = page
+	local offset = 1 + (page - 1) * 24
+
+	for i = offset, math.min(#self.spells, offset + 23) do
+		table.insert(self.columns[2 - i % 2], self.spells[i])
+	end
+end
 
 function magePageInfo()
 	if bookMode == 0 then -- Regular
@@ -11559,12 +11615,15 @@ function contingencyDoneButtonText()
 	end
 end
 
-function filterMemorizedMageSpells(level)
+function filterMemorizedSpells(spells, level)
 	local out = {}
-	currentSpellLevel = math.min(currentSpellLevel, 9)
-	level = level or currentSpellLevel
+	currentSpellLevel = math.min(currentSpellLevel, #spells)
 
-	for k,v in pairs(characters[id].mageSpells[level]) do
+	if level == 0 or level == nil then
+		level = currentSpellLevel
+	end
+
+	for k,v in pairs(spells[level]) do
 		for i=v.memorizedCount, 1, -1 do
 			local spell = deepcopy(v)
 			if(i <= v.castableCount) then
@@ -11642,11 +11701,12 @@ function refreshMageBook()
 		currentSpellLevel = 1
 	end
 	if bookMode == 0 then
+		local mageSpells = characters[id].mageSpells
+		bookSpells = mageSpells[currentSpellLevel]
 		if characters[id].hasMageBook then
-			bookSpells = characters[id].mageSpells[currentSpellLevel]
-			local spells = { current = filterMemorizedMageSpells() }
-			for i = 1, 9 do
-				spells[i] = filterMemorizedMageSpells(i)
+			local spells = {}
+			for i = 0, 9 do
+				spells[i] = filterMemorizedSpells(mageSpells, i)
 			end
 
 			if showMageMemorizationFlash == true then
@@ -11654,14 +11714,13 @@ function refreshMageBook()
 				showMageMemorizationFlash = false
 			end
 
-			bottomSpells = spells.current
+			bottomSpells = spells[0]
 			bottomSpellsPlaceHolder = makeBlankTable(characters[id].mageDetails[currentSpellLevel].maxMemorized)
 			for i = 1, 9 do
 				_G['bottomSpells' .. i] = spells[i]
 				_G['bottomSpellsPlaceHolder' .. i] = makeBlankTable(characters[id].mageDetails[i].maxMemorized)
 			end
 		else
-			bookSpells = characters[id].mageSpells[currentSpellLevel]
 			bottomSpells = {}
 			bottomSpellsPlaceHolder = {}
 			for i = 1, 9 do
@@ -11675,6 +11734,10 @@ function refreshMageBook()
 		bottomSpellsPlaceHolder = makeBlankTable(contingencyMaxSpells)
 		contingencyDescription = mageBookStrings[contingencyResRef].tip
 	end
+
+	-- hide description on book refresh
+	currentSpell = nil
+	MageBook:update(bookSpells)
 end
 
 function setMageBookLevel(num)
@@ -11682,10 +11745,8 @@ function setMageBookLevel(num)
 	currentBookSpell = 0
 	currentSpellLevel = num
 	mageScreen:SetSpellLevel(num-1)
+	MageBook:setPage(1)
 	refreshMageBook()
-
-	-- hide description on book page change
-	spellDescString = nil
 end
 
 function addMageBookLevel(value)
@@ -11783,11 +11844,13 @@ function unmemorizingMageSpell(resref)
 	createMageMemorizationSparkle(0, 0, 36, 36, 'memorizedListMage' .. level, sparkle)
 end
 
-function unmemorizeMageSpell(spell)
+function unmemorizeMageSpell(spell, book)
 	if spell then
 		showMageMemorizationFlash = false
 		mageScreen:UnmemorizeSpell( spell.level, spell.memorizedIndex )
 		Infinity_PlaySound('GAM_44')
+		-- scroll to the page that contains the spell
+		book:setPage(math.ceil((spell.index + 1) / 24))
 	end
 end
 
@@ -11812,9 +11875,9 @@ memorizationFlashes =
 	{false, 0, false}
 }
 
-Mage = {}
+MageBook = SpellBook:create()
 
-function Mage:unmemorizeSpell(level, spells, slot)
+function MageBook:unmemorizeSpell(level, spells, slot)
 	local spell = spells[slot]
 	if not spell then
 		return
@@ -11822,21 +11885,35 @@ function Mage:unmemorizeSpell(level, spells, slot)
 	setMageBookLevel(level)
 
 	if findMemorizedUncastable(spell.resref) == -1 and Infinity_GetOption(41, 9) ~= 0 then
-		popup2Button(11824, 'REMOVE_BUTTON', function() unmemorizeMageSpell(spell) end, 'CANCEL_BUTTON')
+		popup2Button(11824, 'REMOVE_BUTTON', function() unmemorizeMageSpell(spell, self) end, 'CANCEL_BUTTON')
 	else
-		unmemorizeMageSpell(spell)
+		unmemorizeMageSpell(spell, self)
 	end
 end
 
-function Mage:eraseSpell(index)
-	local spell = bookSpells[index]
-
-	if spell and bookMode == 0 and characters[id].hasSorcererBook == false then
+function MageBook:eraseCurrentSpell()
+	if currentSpell and bookMode == 0 and characters[id].hasSorcererBook == false then
 		popup2Button('63745', 'REMOVE_BUTTON', function()
-			mageScreen:EraseKnownSpell(spell.resref)
-			spellDescString = nil
+			mageScreen:EraseKnownSpell(currentSpell.resref)
+			currentSpell = nil
 		end)
 	end
+end
+
+function MageBook:memorizeSpell(spell, listName, index)
+	if not spell or #bottomSpells >= #bottomSpellsPlaceHolder then
+		return
+	end
+
+	if bookMode == 0 then
+		createMageMemorizationSparkle(0, 0, 38, 38, listName, index)
+		Infinity_PlaySound('GAM_24')
+		mageScreen:MemorizeSpell(spell.level, spell.index)
+	elseif bookMode == 1 then
+		mageScreen:SequenceSpell(spell.resref, spell.masterResref)
+	end
+
+	return spell
 end
 `
 menu
@@ -11865,13 +11942,13 @@ menu
 		Infinity_PopMenu('WORLD_QUICKLOOT');
 		"
 	onclose "
-		spellDescString = nil
+		currentSpell = nil
 		popSidebars()
 	"
 
 	button
 	{
-		enabled 	"spellDescString == nil and CurrentlyInGame()"
+		enabled 	"currentSpell == nil and CurrentlyInGame()"
 		on escape
 		action
 		"
@@ -11913,12 +11990,11 @@ menu
 		text lua	"mageBookAction()"
 		text style	"label"
 	}
-
 	button
 	{
-		area		691 184 47 45
+		area		691 184 48 45
 		--bam		RGSPNUM
---		highlightgroup	mgpage
+--		--highlightgroup	mgpage
 		--sequence	0
 		--text "1"
 		--text align center center
@@ -11931,9 +12007,9 @@ menu
 	}
 	button
 	{
-		area		691 239 49 45
+		area		691 239 48 45
 		--bam		RGSPNUM
---		highlightgroup	mgpage
+--		--highlightgroup	mgpage
 		--sequence	0
 		--text "2"
 		--text align center center
@@ -12054,16 +12130,28 @@ menu
 		area		491 168 34 44
 		bam		RGSPARR
 		sequence	1
-		enabled		"bookMode == 0"
-		action		"incrementMageBookLevel()"
+		enabled		"bookMode == 0 and (currentSpellLevel < maxMagePage or MageBook:canScroll(1))"
+		action		"
+			if MageBook:canScroll(1) then
+				MageBook:scroll(1)
+			else
+				incrementMageBookLevel()
+			end
+		"
 	}
 	button
 	{
 		area		280 168 38 44
 		bam		RGSPARR
 		sequence	0
-		enabled		"bookMode == 0"
-		action		"decrementMageBookLevel()"
+		enabled		"bookMode == 0 and (currentSpellLevel > 1 or MageBook:canScroll(-1))"
+		action		"
+			if MageBook:canScroll(-1) then
+				MageBook:scroll(-1)
+			else
+				decrementMageBookLevel()
+			end
+		"
 	}
 	label
 	{
@@ -12124,107 +12212,106 @@ menu
 	}
 
 
-
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 188 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder1" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder1" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 243 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder2" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder2" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 298 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder3" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder3" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 353 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder4" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder4" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 408 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder5" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder5" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 463 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder6" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder6" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 518 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder7" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder7" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 573 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder8" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder8" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 628 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder9" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder9" enabled "currentSpell == nil"
 	}
-
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells1[rowNumber].icon" align	center center greyscale lua "bottomSpells1[rowNumber].castable == 0" } }
 		area 740 188 512 36
-		name "memorizedListMage1" enabled 	"#bottomSpells1 ~= 0" rowwidth	36 table		"bottomSpells1" var		currentBottomSpell1 enabled "spellDescString == nil"
-		action "Mage:unmemorizeSpell(1, bottomSpells1, currentBottomSpell1)"
+		name "memorizedListMage1" enabled 	"#bottomSpells1 ~= 0" rowwidth	36 table		"bottomSpells1" var		currentBottomSpell1 enabled "currentSpell == nil"
+		action "MageBook:unmemorizeSpell(1, bottomSpells1, currentBottomSpell1)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells2[rowNumber].icon" align	center center greyscale lua "bottomSpells2[rowNumber].castable == 0" } }
 		area 740 243 512 36
-		name "memorizedListMage2" enabled 	"#bottomSpells2 ~= 0" rowwidth	36 table		"bottomSpells2" var		currentBottomSpell2 enabled "spellDescString == nil"
-		action "Mage:unmemorizeSpell(2, bottomSpells2, currentBottomSpell2)"
+		name "memorizedListMage2" enabled 	"#bottomSpells2 ~= 0" rowwidth	36 table		"bottomSpells2" var		currentBottomSpell2 enabled "currentSpell == nil"
+		action "MageBook:unmemorizeSpell(2, bottomSpells2, currentBottomSpell2)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells3[rowNumber].icon" align	center center greyscale lua "bottomSpells3[rowNumber].castable == 0" } }
 		area 740 298 512 36
-		name "memorizedListMage3" enabled 	"#bottomSpells3 ~= 0" rowwidth	36 table		"bottomSpells3" var		currentBottomSpell3 enabled "spellDescString == nil"
-		action "Mage:unmemorizeSpell(3, bottomSpells3, currentBottomSpell3)"
+		name "memorizedListMage3" enabled 	"#bottomSpells3 ~= 0" rowwidth	36 table		"bottomSpells3" var		currentBottomSpell3 enabled "currentSpell == nil"
+		action "MageBook:unmemorizeSpell(3, bottomSpells3, currentBottomSpell3)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells4[rowNumber].icon" align	center center greyscale lua "bottomSpells4[rowNumber].castable == 0" } }
 		area 740 353 512 36
-		name "memorizedListMage4" enabled 	"#bottomSpells4 ~= 0" rowwidth	36 table		"bottomSpells4" var		currentBottomSpell4 enabled "spellDescString == nil"
-		action "Mage:unmemorizeSpell(4, bottomSpells4, currentBottomSpell4)"
+		name "memorizedListMage4" enabled 	"#bottomSpells4 ~= 0" rowwidth	36 table		"bottomSpells4" var		currentBottomSpell4 enabled "currentSpell == nil"
+		action "MageBook:unmemorizeSpell(4, bottomSpells4, currentBottomSpell4)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells5[rowNumber].icon" align	center center greyscale lua "bottomSpells5[rowNumber].castable == 0" } }
 		area 740 408 512 36
-		name "memorizedListMage5" enabled 	"#bottomSpells5 ~= 0" rowwidth	36 table		"bottomSpells5" var		currentBottomSpell5 enabled "spellDescString == nil"
-		action "Mage:unmemorizeSpell(5, bottomSpells5, currentBottomSpell5)"
+		name "memorizedListMage5" enabled 	"#bottomSpells5 ~= 0" rowwidth	36 table		"bottomSpells5" var		currentBottomSpell5 enabled "currentSpell == nil"
+		action "MageBook:unmemorizeSpell(5, bottomSpells5, currentBottomSpell5)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells6[rowNumber].icon" align	center center greyscale lua "bottomSpells6[rowNumber].castable == 0" } }
 		area 740 463 512 36
-		name "memorizedListMage6" enabled 	"#bottomSpells6 ~= 0" rowwidth	36 table		"bottomSpells6" var		currentBottomSpell6 enabled "spellDescString == nil"
-		action "Mage:unmemorizeSpell(6, bottomSpells6, currentBottomSpell6)"
+		name "memorizedListMage6" enabled 	"#bottomSpells6 ~= 0" rowwidth	36 table		"bottomSpells6" var		currentBottomSpell6 enabled "currentSpell == nil"
+		action "MageBook:unmemorizeSpell(6, bottomSpells6, currentBottomSpell6)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells7[rowNumber].icon" align	center center greyscale lua "bottomSpells7[rowNumber].castable == 0" } }
 		area 740 518 512 36
-		name "memorizedListMage7" enabled 	"#bottomSpells7 ~= 0" rowwidth	36 table		"bottomSpells7" var		currentBottomSpell7 enabled "spellDescString == nil"
-		action "Mage:unmemorizeSpell(7, bottomSpells7, currentBottomSpell7)"
+		name "memorizedListMage7" enabled 	"#bottomSpells7 ~= 0" rowwidth	36 table		"bottomSpells7" var		currentBottomSpell7 enabled "currentSpell == nil"
+		action "MageBook:unmemorizeSpell(7, bottomSpells7, currentBottomSpell7)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells8[rowNumber].icon" align	center center greyscale lua "bottomSpells8[rowNumber].castable == 0" } }
 		area 740 573 512 36
-		name "memorizedListMage8" enabled 	"#bottomSpells8 ~= 0" rowwidth	36 table		"bottomSpells8" var		currentBottomSpell8 enabled "spellDescString == nil"
-		action "Mage:unmemorizeSpell(8, bottomSpells8, currentBottomSpell8)"
+		name "memorizedListMage8" enabled 	"#bottomSpells8 ~= 0" rowwidth	36 table		"bottomSpells8" var		currentBottomSpell8 enabled "currentSpell == nil"
+		action "MageBook:unmemorizeSpell(8, bottomSpells8, currentBottomSpell8)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells9[rowNumber].icon" align	center center greyscale lua "bottomSpells9[rowNumber].castable == 0" } }
 		area 740 628 512 36
-		name "memorizedListMage9" enabled 	"#bottomSpells9 ~= 0" rowwidth	36 table		"bottomSpells9" var		currentBottomSpell9 enabled "spellDescString == nil"
-		action "Mage:unmemorizeSpell(9, bottomSpells9, currentBottomSpell9)"
+		name "memorizedListMage9" enabled 	"#bottomSpells9 ~= 0" rowwidth	36 table		"bottomSpells9" var		currentBottomSpell9 enabled "currentSpell == nil"
+		action "MageBook:unmemorizeSpell(9, bottomSpells9, currentBottomSpell9)"
 	}
+
 	--list
 	--{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells[rowNumber].icon" align	center center greyscale lua "bottomSpells[rowNumber].castable == 0" } }
 	--	area 598 270 470 36
@@ -12276,7 +12363,7 @@ menu
 		text lua "Infinity_FetchString(11944)"
 		text style "rg_trajan"
 --		text color '5'
-		enabled "spellDescString == nil"
+		enabled "currentSpell == nil"
 		text align right center
 	}
 	label
@@ -12292,35 +12379,35 @@ menu
 	text
 	{
 		area		740 154 508 545
-		text		lua "Infinity_FetchString(spellDescString)"
+		text		lua "Infinity_FetchString(currentSpell.description)"
 		text style	"normal_parchment"
 		scrollbar	GUISCRP -- 'RGSCR3' is glitchy for me
-		enabled 	"spellDescString ~= nil"
+		enabled 	"currentSpell ~= nil"
 		--mosaic "RGPRDESC"
-		--action "spellDescString = null"
+		--action "currentSpell = nil"
 	}
 
 	button
 	{
 		on escape
 		area 1194 148 32 40
-		enabled "spellDescString ~= nil"
+		enabled "currentSpell ~= nil"
 		text "X"
 		text style "rg_trajan"
 		--text shadow 1
 		--text color lua "parchment"
-		action "spellDescString = nil"
+		action "currentSpell = nil"
 	}
 
 	button
 	{
 		area 1154 148 33 40
-		enabled "spellDescString ~= nil"
+		enabled "currentSpell and bookMode == 0 and not characters[id].hasSorcererBook"
 		text "Ø"
 		text style "rg_trajan"
 		--text shadow 1
 		--text color lua "parchment"
-		action "Mage:eraseSpell(spellDescIndex)"
+		action "MageBook:eraseCurrentSpell()"
 	}
 
 	list
@@ -12511,7 +12598,7 @@ menu
 		text '9'
 		text style "rg_trajan"
 		text align center center
-		enabled		"maxMagePage >= 8 and bookMode == 1"
+		enabled		"maxMagePage > 8 and bookMode == 1"
 		action		"setMageBookLevel(9)"
 	}
 
@@ -12615,227 +12702,46 @@ menu
 
 	}
 
-	label { area 134 225 36 36 bam	lua "bookSpells[1].icon" align center center }
-	label { area 396 225 36 36 bam	lua "bookSpells[2].icon" align center center }
-	label { area 134 263 36 36 bam	lua "bookSpells[3].icon" align center center }
-	label { area 396 263 36 36 bam	lua "bookSpells[4].icon" align center center }
-	label { area 134 301 36 36 bam	lua "bookSpells[5].icon" align center center }
-	label { area 396 301 36 36 bam	lua "bookSpells[6].icon" align center center }
-	label { area 134 339 36 36 bam	lua "bookSpells[7].icon" align center center }
-	label { area 396 339 36 36 bam	lua "bookSpells[8].icon" align center center }
-	label { area 134 377 36 36 bam	lua "bookSpells[9].icon" align center center }
-	label { area 396 377 36 36 bam	lua "bookSpells[10].icon" align center center }
-	label { area 134 415 36 36 bam	lua "bookSpells[11].icon" align center center }
-	label { area 396 415 36 36 bam	lua "bookSpells[12].icon" align center center }
-	label { area 134 453 36 36 bam	lua "bookSpells[13].icon" align center center }
-	label { area 396 453 36 36 bam	lua "bookSpells[14].icon" align center center }
-	label { area 134 491 36 36 bam	lua "bookSpells[15].icon" align center center }
-	label { area 396 491 36 36 bam	lua "bookSpells[16].icon" align center center }
-	label { area 134 529 36 36 bam	lua "bookSpells[17].icon" align center center }
-	label { area 396 529 36 36 bam	lua "bookSpells[18].icon" align center center }
-	label { area 134 567 36 36 bam	lua "bookSpells[19].icon" align center center }
-	label { area 396 567 36 36 bam	lua "bookSpells[20].icon" align center center }
-	label { area 134 605 36 36 bam	lua "bookSpells[21].icon" align center center }
-	label { area 396 605 36 36 bam	lua "bookSpells[22].icon" align center center }
-	label { area 134 643 36 36 bam	lua "bookSpells[23].icon" align center center }
-	label { area 396 643 36 36 bam	lua "bookSpells[24].icon" align center center }
+	list {
+		column {
+			width 100
+			-- list item borders + icon + spell name
+			label { area 0 0 -1 -1  bam "RGKNSLOT"  align left center }
+			label { area 0 1 36 36  bam lua "MageBook.columns[1][rowNumber].icon"  align center center }
+			label { area 5 0 -1 -1  text lua "Infinity_FetchString(MageBook.columns[1][rowNumber].name)"
+					pad 37 1 0 1  text style "normal_parchment"  align left center }
+		}
 
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[1].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[1].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 225 260 36	name	"bookSpellSlot1"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot1', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[1].level, bookSpells[1].index )	helpString = bookSpells[1].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[1].resref, bookSpells[1].masterResref )	helpString = bookSpells[1].description	end	"
-		actionEnter	"helpTextString = bookSpells[1].name" actionExit "helpTextString = ''" actionAlt "spellDescString = bookSpells[1].description spellDescIndex = 1"		}
+		hideHighlight
+		area        134 224 260 460
+		rowheight   38
+		name        "bookSpellsList1"
+		table       "MageBook.columns[1]"
+		var         "index"
+		action      "MageBook:memorizeSpell(MageBook.columns[1][index], 'bookSpellsList1', index)"
+		actionAlt   "currentSpell = MageBook.columns[1][index]"
+		actionScroll "MageBook:scroll()"
+	}
+	list {
+		column {
+			width 100
+			-- list item borders + icon + spell name
+			label { area 0 0 -1 -1  bam "RGKNSLOT"  align left center }
+			label { area 0 1 36 36  bam lua "MageBook.columns[2][rowNumber].icon"  align center center }
+			label { area 5 0 -1 -1  text lua "Infinity_FetchString(MageBook.columns[2][rowNumber].name)"
+					pad 37 1 0 1  text style "normal_parchment"  align left center }
+		}
 
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[2].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[2].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 225 260 36	name	"bookSpellSlot2"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot2', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[2].level, bookSpells[2].index )	helpString = bookSpells[2].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[2].resref, bookSpells[2].masterResref  )	helpString = bookSpells[2].description	end	"
-		actionEnter	"helpTextString = bookSpells[2].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[2].description spellDescIndex = 2"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[3].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[3].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 263 260 36	name	"bookSpellSlot3"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot3', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[3].level, bookSpells[3].index )	helpString = bookSpells[3].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[3].resref, bookSpells[3].masterResref  )	helpString = bookSpells[3].description	end	"
-		actionEnter	"helpTextString = bookSpells[3].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[3].description	spellDescIndex = 3"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[4].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[4].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 263 260 36	name	"bookSpellSlot4"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot4', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[4].level, bookSpells[4].index )	helpString = bookSpells[4].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[4].resref, bookSpells[4].masterResref  )	helpString = bookSpells[4].description	end	"
-		actionEnter	"helpTextString = bookSpells[4].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[4].description	spellDescIndex = 4"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[5].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[5].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 301 260 36	name	"bookSpellSlot5"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot5', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[5].level, bookSpells[5].index )	helpString = bookSpells[5].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[5].resref, bookSpells[5].masterResref  )	helpString = bookSpells[5].description	end	"
-		actionEnter	"helpTextString = bookSpells[5].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[5].description	spellDescIndex = 5"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[6].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[6].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 301 260 36	name	"bookSpellSlot6"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot6', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[6].level, bookSpells[6].index )	helpString = bookSpells[6].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[6].resref, bookSpells[6].masterResref  )	helpString = bookSpells[6].description	end	"
-		actionEnter	"helpTextString = bookSpells[6].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[6].description	spellDescIndex = 6"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[7].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[7].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 339 260 36	name	"bookSpellSlot7"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot7', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[7].level, bookSpells[7].index )	helpString = bookSpells[7].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[7].resref, bookSpells[7].masterResref  )	helpString = bookSpells[7].description	end	"
-		actionEnter	"helpTextString = bookSpells[7].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[7].description	spellDescIndex = 7"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[8].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[8].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 339 260 36	name	"bookSpellSlot8"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot8', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[8].level, bookSpells[8].index )	helpString = bookSpells[8].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[8].resref, bookSpells[8].masterResref  )	helpString = bookSpells[8].description	end	"
-		actionEnter	"helpTextString = bookSpells[8].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[8].description	spellDescIndex = 8"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[9].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[9].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 377 260 36	name	"bookSpellSlot9"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot9', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[9].level, bookSpells[9].index )	helpString = bookSpells[9].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[9].resref, bookSpells[9].masterResref  )	helpString = bookSpells[9].description	end	"
-		actionEnter	"helpTextString = bookSpells[9].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[9].description	spellDescIndex = 9"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[10].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[10].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 377 260 36	name	"bookSpellSlot10"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot10', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[10].level, bookSpells[10].index )	helpString = bookSpells[10].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[10].resref, bookSpells[10].masterResref  )	helpString = bookSpells[10].description	end	"
-		actionEnter	"helpTextString = bookSpells[10].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[10].description	spellDescIndex = 10"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[11].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[11].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 415 260 36	name	"bookSpellSlot11"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot11', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[11].level, bookSpells[11].index )	helpString = bookSpells[11].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[11].resref, bookSpells[11].masterResref  )	helpString = bookSpells[11].description	end	"
-		actionEnter	"helpTextString = bookSpells[11].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[11].description	spellDescIndex = 11"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[12].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[12].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 415 260 36	name	"bookSpellSlot12"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot12', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[12].level, bookSpells[12].index )	helpString = bookSpells[12].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[12].resref, bookSpells[12].masterResref  )	helpString = bookSpells[12].description	end	"
-		actionEnter	"helpTextString = bookSpells[12].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[12].description	spellDescIndex = 12"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[13].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[13].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 453 260 36	name	"bookSpellSlot13"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot13', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[13].level, bookSpells[13].index )	helpString = bookSpells[13].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[13].resref, bookSpells[13].masterResref  )	helpString = bookSpells[13].description	end	"
-		actionEnter	"helpTextString = bookSpells[13].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[13].description	spellDescIndex = 13"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[14].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[14].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 453 260 36	name	"bookSpellSlot14"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot14', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[14].level, bookSpells[14].index )	helpString = bookSpells[14].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[14].resref, bookSpells[14].masterResref  )	helpString = bookSpells[14].description	end	"
-		actionEnter	"helpTextString = bookSpells[14].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[14].description	spellDescIndex = 14"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[15].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[15].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 491 260 36	name	"bookSpellSlot15"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot15', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[15].level, bookSpells[15].index )	helpString = bookSpells[15].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[15].resref, bookSpells[15].masterResref  )	helpString = bookSpells[15].description	end	"
-		actionEnter	"helpTextString = bookSpells[15].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[15].description	spellDescIndex = 15"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[16].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[16].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 491 260 36	name	"bookSpellSlot16"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot16', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[16].level, bookSpells[16].index )	helpString = bookSpells[16].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[16].resref, bookSpells[16].masterResref  )	helpString = bookSpells[16].description	end	"
-		actionEnter	"helpTextString = bookSpells[16].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[16].description	spellDescIndex = 16"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[17].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[17].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 529 260 36	name	"bookSpellSlot17"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot17', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[17].level, bookSpells[17].index )	helpString = bookSpells[17].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[17].resref, bookSpells[17].masterResref  )	helpString = bookSpells[17].description	end	"
-		actionEnter	"helpTextString = bookSpells[17].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[17].description	spellDescIndex = 17"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[18].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[18].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 529 260 36	name	"bookSpellSlot18"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot18', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[18].level, bookSpells[18].index )	helpString = bookSpells[18].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[18].resref, bookSpells[18].masterResref  )	helpString = bookSpells[18].description	end	"
-		actionEnter	"helpTextString = bookSpells[18].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[18].description	spellDescIndex = 18"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[19].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[19].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 567 260 36	name	"bookSpellSlot19"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot19', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[19].level, bookSpells[19].index )	helpString = bookSpells[19].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[19].resref, bookSpells[19].masterResref  )	helpString = bookSpells[19].description	end	"
-		actionEnter	"helpTextString = bookSpells[19].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[19].description	spellDescIndex = 19"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[20].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[20].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 567 260 36	name	"bookSpellSlot20"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot20', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[20].level, bookSpells[20].index )	helpString = bookSpells[20].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[20].resref, bookSpells[20].masterResref  )	helpString = bookSpells[20].description	end	"
-		actionEnter	"helpTextString = bookSpells[20].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[20].description	spellDescIndex = 20"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[21].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[21].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 605 260 36	name	"bookSpellSlot21"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot21', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[21].level, bookSpells[21].index )	helpString = bookSpells[21].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[21].resref, bookSpells[21].masterResref  )	helpString = bookSpells[21].description	end	"
-		actionEnter	"helpTextString = bookSpells[21].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[21].description	spellDescIndex = 21"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[22].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[22].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 605 260 36	name	"bookSpellSlot22"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot22', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[22].level, bookSpells[22].index )	helpString = bookSpells[22].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[22].resref, bookSpells[22].masterResref  )	helpString = bookSpells[22].description	end	"
-		actionEnter	"helpTextString = bookSpells[22].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[22].description	spellDescIndex = 22"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[23].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[23].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	134 643 260 36	name	"bookSpellSlot23"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot23', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[23].level, bookSpells[23].index )	helpString = bookSpells[23].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[23].resref, bookSpells[23].masterResref  )	helpString = bookSpells[23].description	end	"
-		actionEnter	"helpTextString = bookSpells[23].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[23].description	spellDescIndex = 23"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "bookSpells[24].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( bookSpells[24].name)" pad 37 0 0 0 text style "normal_parchment" text align left center } }
-		area	396 643 260 36	name	"bookSpellSlot24"	rowwidth	260	table		"bookSpells"	align	center center	hideHighlight
-		action		"
-			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot24', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[24].level, bookSpells[24].index )	helpString = bookSpells[24].description
-			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[24].resref, bookSpells[24].masterResref  )	helpString = bookSpells[24].description	end	"
-		actionEnter	"helpTextString = bookSpells[24].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[24].description	spellDescIndex = 24"	}
-
---	list {	column 	{ 	width 100	label	{		area	0 0 -1 -1	bam "SPELFRMS"	sequence 0	align	center center	enabled "bookSpells[25].icon ~= null"	}	label	{	area	0 0 -1 -1	bam	lua "bookSpells[25].icon"	align	center center	}	}
---	area	208 592 200 36	name	"bookSpellSlot25"	rowheight	50	table		"bookSpells"	align	center center	tooltip lua "Infinity_FetchString( bookSpells[25].name)"
---		action		"
---			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot25', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[25].level, bookSpells[25].index )	helpString = bookSpells[25].description
---			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[25].resref, bookSpells[25].masterResref  )	helpString = bookSpells[25].description	end	"
---		actionEnter	"helpTextString = bookSpells[25].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[25].description	spellDescIndex = 25"	}
---
---	list {	column 	{ 	width 100	label	{		area	0 0 -1 -1	bam "SPELFRMS"	sequence 0	align	center center	enabled "bookSpells[26].icon ~= null"	}	label	{	area	0 0 -1 -1	bam	lua "bookSpells[26].icon"	align	center center	}	}
---	area	274 592 200 36	name	"bookSpellSlot26"	rowheight	50	table		"bookSpells"	align	center center	tooltip lua "Infinity_FetchString( bookSpells[26].name)"
---		action		"
---			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot26', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[26].level, bookSpells[26].index )	helpString = bookSpells[26].description
---			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[26].resref, bookSpells[26].masterResref  )	helpString = bookSpells[26].description	end	"
---		actionEnter	"helpTextString = bookSpells[26].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[26].description	spellDescIndex = 26"	}
---
---	list {	column 	{ 	width 100	label	{		area	0 0 -1 -1	bam "SPELFRMS"	sequence 0	align	center center	enabled "bookSpells[27].icon ~= null"	}	label	{	area	0 0 -1 -1	bam	lua "bookSpells[27].icon"	align	center center	}	}
---	area	340 592 200 36	name	"bookSpellSlot27"	rowheight	50	table		"bookSpells"	align	center center	tooltip lua "Infinity_FetchString( bookSpells[27].name)"
---		action		"
---			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot27', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[27].level, bookSpells[27].index )	helpString = bookSpells[27].description
---			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[27].resref, bookSpells[27].masterResref  )	helpString = bookSpells[27].description	end	"
---		actionEnter	"helpTextString = bookSpells[27].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[27].description	spellDescIndex = 27"	}
---
---	list {	column 	{ 	width 100	label	{		area	0 0 -1 -1	bam "SPELFRMS"	sequence 0	align	center center	enabled "bookSpells[28].icon ~= null"	}	label	{	area	0 0 -1 -1	bam	lua "bookSpells[28].icon"	align	center center	}	}
---	area	404 592 200 36	name	"bookSpellSlot28"	rowheight	50	table		"bookSpells"	align	center center	tooltip lua "Infinity_FetchString( bookSpells[28].name)"
---		action		"
---			if bookMode == 0 then	if #bottomSpells < #bottomSpellsPlaceHolder then	createMageMemorizationSparkle(1, 0, 40, 40, 'bookSpellSlot28', -1)	Infinity_PlaySound('GAM_24')	end	mageScreen:MemorizeSpell( bookSpells[28].level, bookSpells[28].index )	helpString = bookSpells[28].description
---			elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then	mageScreen:SequenceSpell( bookSpells[28].resref, bookSpells[28].masterResref  )	helpString = bookSpells[28].description	end	"
---		actionEnter	"helpTextString = bookSpells[28].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = bookSpells[28].description	spellDescIndex = 28"	}
-
+		hideHighlight
+		area        394 224 260 460
+		rowheight   38
+		name        "bookSpellsList2"
+		table       "MageBook.columns[2]"
+		var         "index"
+		action      "MageBook:memorizeSpell(MageBook.columns[2][index], 'bookSpellsList2', index)"
+		actionAlt   "currentSpell = MageBook.columns[2][index]"
+		actionScroll "MageBook:scroll()"
+	}
 	list
 	{
 		column
@@ -13160,18 +13066,21 @@ function refreshPriestBook()
 	if currentSpellLevel == nil then
 		currentSpellLevel = 1
 	end
+
+	local priestSpells = characters[id].priestSpells
+
 	if characters[id].hasClericBook then
-		local spells = { current = filterMemorizedPriestSpells() }
-		for i = 1, 7 do
-			spells[i] = filterMemorizedPriestSpells(i)
+		local spells = {}
+		for i = 0, 7 do
+			spells[i] = filterMemorizedSpells(priestSpells, i)
 		end
 
 		if showPriestMemorizationFlash == true then
-			createPriestMemorizationSparkle(0,0,36,36,"memorizedListPriest", findFirstDifferenceInSpellList(bottomSpells, spells.current))
+			createPriestMemorizationSparkle(0,0,36,36,"memorizedListPriest", findFirstDifferenceInSpellList(bottomSpells, spells[0]))
 			showPriestMemorizationFlash = false
 		end
 
-		bottomSpells = spells.current
+		bottomSpells = spells[0]
 		bottomSpellsPlaceHolder = makeBlankTable(characters[id].priestDetails[currentSpellLevel].maxMemorized)
 		for i = 1, 7 do
 			_G['bottomSpells' .. i] = spells[i]
@@ -13185,12 +13094,17 @@ function refreshPriestBook()
 			_G['bottomSpellsPlaceHolder' .. i] = {}
 		end
 	end
+
+	-- hide description on book refresh
+	currentSpell = nil
+	PriestBook:update(priestSpells[currentSpellLevel])
 end
 
 function setPriestBookLevel(num)
 	lastCurrentBookSpell = 0
 	currentBookSpell = 0
 	currentSpellLevel = num
+	PriestBook:setPage(1)
 	refreshPriestBook()
 end
 
@@ -13242,11 +13156,14 @@ function unmemorizingPriestSpell(resref)
 	createPriestMemorizationSparkle(0, 0, 36, 36, 'memorizedListPriest' .. level, sparkle)
 end
 
-function unmemorizePriestSpell(spell)
+function unmemorizePriestSpell(spell, book)
 	if spell then
 		showPriestMemorizationFlash = false
 		priestScreen:UnmemorizeSpell( spell.level, spell.memorizedIndex )
 		Infinity_PlaySound('GAM_44')
+
+		-- scroll to the page that contains the spell
+		self:setPage(math.ceil((spell.index + 1) / 24))
 	end
 end
 
@@ -13257,9 +13174,10 @@ function getPrSpellButtHighlight(num)
 	end
 end
 
-Priest = {}
 
-function Priest:unmemorizeSpell(level, spells, slot)
+PriestBook = SpellBook:create()
+
+function PriestBook:unmemorizeSpell(level, spells, slot)
 	local spell = spells[slot]
 	if not spell then
 		return
@@ -13267,10 +13185,22 @@ function Priest:unmemorizeSpell(level, spells, slot)
 	setPriestBookLevel(level)
 
 	if findMemorizedUncastable(spell.resref) == -1 and Infinity_GetOption(41, 9) ~= 0 then
-		popup2Button(11824, 'REMOVE_BUTTON', function() unmemorizePriestSpell(spell) end, 'CANCEL_BUTTON')
+		popup2Button(11824, 'REMOVE_BUTTON', function() unmemorizePriestSpell(spell, self) end, 'CANCEL_BUTTON')
 	else
-		unmemorizePriestSpell(spell)
+		unmemorizePriestSpell(spell, self)
 	end
+end
+
+function PriestBook:memorizeSpell(spell, listName, index)
+	if not spell or #bottomSpells >= #bottomSpellsPlaceHolder then
+		return
+	end
+
+	createPriestMemorizationSparkle(1, 0, 38, 38, listName, index)
+	Infinity_PlaySound('GAM_24')
+	priestScreen:MemorizeSpell( spell.level, spell.index )
+
+	return spell
 end
 `
 menu
@@ -13285,7 +13215,7 @@ menu
 		prpage = nil
 		setPriestBookLevel(1)
 		helpTextString = ''
-		--spellDescString = ''
+		--currentSpell = ''
 		currentAnimationID = 1
 		updateCounterMemorizationSparkles = 1
 		Infinity_PopMenu('WORLD_QUICKLOOT');
@@ -13293,12 +13223,12 @@ menu
 	onclose
 	"
 		popSidebars()
-		spellDescString = nil
+		currentSpell = nil
 	"
 
 	button
 	{
-		enabled "spellDescString == nil"
+		enabled "currentSpell == nil"
 		on escape
 		action
 		"
@@ -13349,7 +13279,7 @@ menu
 	}
 	button
 	{
-		area		691 184 47 45
+		area		691 184 48 45
 		--bam		GUIPRTC
 --		--highlightgroup	prpage
 		--sequence	0
@@ -13362,7 +13292,7 @@ menu
 	}
 	button
 	{
-		area		691 239 49 45
+		area		691 239 48 45
 		--bam		GUIPRTC
 --		--highlightgroup	prpage
 		--sequence	1
@@ -13443,14 +13373,28 @@ menu
 		area		491 168 34 44
 		bam		RGSPARR
 		sequence	1
-		action		"incrementPriestBookLevel()"
+		enabled		"currentSpellLevel < maxPriestPage or PriestBook:canScroll(1)"
+		action		"
+			if PriestBook:canScroll(1) then
+				PriestBook:scroll(1)
+			else
+				incrementPriestBookLevel()
+			end
+		"
 	}
 	button
 	{
 		area		280 168 34 44
 		bam		RGSPARR
 		sequence	0
-		action		"decrementPriestBookLevel()"
+		enabled		"currentSpellLevel > 1 or PriestBook:canScroll(-1)"
+		action		"
+			if PriestBook:canScroll(-1) then
+				PriestBook:scroll(-1)
+			else
+				decrementPriestBookLevel()
+			end
+		"
 	}
 	label
 	{
@@ -13495,277 +13439,125 @@ menu
 		"
 
 	}
-	label { area 134 225 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][1].icon" align center center }
-	label { area 396 225 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][2].icon" align center center }
-	label { area 134 263 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][3].icon" align center center }
-	label { area 396 263 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][4].icon" align center center }
-	label { area 134 301 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][5].icon" align center center }
-	label { area 396 301 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][6].icon" align center center }
-	label { area 134 339 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][7].icon" align center center }
-	label { area 396 339 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][8].icon" align center center }
-	label { area 134 377 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][9].icon" align center center }
-	label { area 396 377 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][10].icon" align center center }
-	label { area 134 415 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][11].icon" align center center }
-	label { area 396 415 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][12].icon" align center center }
-	label { area 134 453 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][13].icon" align center center }
-	label { area 396 453 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][14].icon" align center center }
-	label { area 134 491 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][15].icon" align center center }
-	label { area 396 491 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][16].icon" align center center }
-	label { area 134 529 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][17].icon" align center center }
-	label { area 396 529 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][18].icon" align center center }
-	label { area 134 567 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][19].icon" align center center }
-	label { area 396 567 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][20].icon" align center center }
-	label { area 134 605 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][21].icon" align center center }
-	label { area 396 605 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][22].icon" align center center }
-	label { area 134 643 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][23].icon" align center center }
-	label { area 396 643 36 36 bam	lua "characters[id].priestSpells[currentSpellLevel][24].icon" align center center }
 
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][1].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][1].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 225 260 36	name	"bookPriestSlot1"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot1', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][1].level, characters[id].priestSpells[currentSpellLevel][1].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][1].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][1].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][1].description"	}
+	list {
+		column {
+			width 100
+			-- list item borders + icon + spell name
+			label { area 0 0 -1 -1  bam "RGKNSLOT"  align left center }
+			label { area 0 1 36 36  bam lua "PriestBook.columns[1][rowNumber].icon"  align center center }
+			label { area 5 0 -1 -1  text lua "Infinity_FetchString(PriestBook.columns[1][rowNumber].name)"
+					pad 37 1 0 1  text style "normal_parchment"  align left center }
+		}
 
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][2].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][2].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 225 260 36	name	"bookPriestSlot2"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot2', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][2].level, characters[id].priestSpells[currentSpellLevel][2].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][2].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][2].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][2].description"	}
+		hideHighlight
+		area        134 224 260 460
+		rowheight   38
+		name        "bookSpellsList1"
+		table       "PriestBook.columns[1]"
+		var         "index"
+		action      "PriestBook:memorizeSpell(PriestBook.columns[1][index], 'bookSpellsList1', index)"
+		actionAlt   "currentSpell = PriestBook.columns[1][index]"
+		actionScroll "PriestBook:scroll()"
+	}
+	list {
+		column {
+			width 100
+			-- list item borders + icon + spell name
+			label { area 0 0 -1 -1  bam "RGKNSLOT"  align left center }
+			label { area 0 1 36 36  bam lua "PriestBook.columns[2][rowNumber].icon"  align center center }
+			label { area 5 0 -1 -1  text lua "Infinity_FetchString(PriestBook.columns[2][rowNumber].name)"
+					pad 37 1 0 1  text style "normal_parchment"  align left center }
+		}
 
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][3].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][3].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 263 260 36	name	"bookPriestSlot3"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot3', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][3].level, characters[id].priestSpells[currentSpellLevel][3].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][3].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][3].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][3].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][4].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][4].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 263 260 36	name	"bookPriestSlot4"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot4', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][4].level, characters[id].priestSpells[currentSpellLevel][4].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][4].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][4].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][4].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][5].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][5].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 301 260 36	name	"bookPriestSlot5"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot5', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][5].level, characters[id].priestSpells[currentSpellLevel][5].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][5].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][5].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][5].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][6].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][6].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 301 260 36	name	"bookPriestSlot6"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot6', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][6].level, characters[id].priestSpells[currentSpellLevel][6].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][6].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][6].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][6].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][7].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][7].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 339 260 36	name	"bookPriestSlot7"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot7', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][7].level, characters[id].priestSpells[currentSpellLevel][7].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][7].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][7].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][7].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][8].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][8].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 339 260 36	name	"bookPriestSlot8"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot8', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][8].level, characters[id].priestSpells[currentSpellLevel][8].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][8].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][8].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][8].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][9].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][9].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 377 260 36	name	"bookPriestSlot9"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot9', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][9].level, characters[id].priestSpells[currentSpellLevel][9].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][9].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][9].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][9].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][10].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][10].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 377 260 36	name	"bookPriestSlot10"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot10', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][10].level, characters[id].priestSpells[currentSpellLevel][10].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][10].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][10].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][10].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][11].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][11].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 415 260 36	name	"bookPriestSlot11"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot11', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][11].level, characters[id].priestSpells[currentSpellLevel][11].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][11].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][11].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][11].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][12].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][12].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 415 260 36	name	"bookPriestSlot12"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot12', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][12].level, characters[id].priestSpells[currentSpellLevel][12].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][12].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][12].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][12].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][13].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][13].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 453 260 36	name	"bookPriestSlot13"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot13', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][13].level, characters[id].priestSpells[currentSpellLevel][13].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][13].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][13].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][13].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][14].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][14].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 453 260 36	name	"bookPriestSlot14"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot14', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][14].level, characters[id].priestSpells[currentSpellLevel][14].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][14].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][14].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][14].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][15].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][15].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 491 260 36	name	"bookPriestSlot15"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot15', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][15].level, characters[id].priestSpells[currentSpellLevel][15].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][15].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][15].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][15].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][16].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][16].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 491 260 36	name	"bookPriestSlot16"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot16', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][16].level, characters[id].priestSpells[currentSpellLevel][16].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][16].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][16].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][16].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][17].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][17].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 529 260 36	name	"bookPriestSlot17"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot17', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][17].level, characters[id].priestSpells[currentSpellLevel][17].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][17].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][17].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][17].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][18].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][18].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 529 260 36	name	"bookPriestSlot18"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot18', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][18].level, characters[id].priestSpells[currentSpellLevel][18].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][18].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][18].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][18].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][19].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][19].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 567 260 36	name	"bookPriestSlot19"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot19', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][19].level, characters[id].priestSpells[currentSpellLevel][19].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][19].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][19].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][19].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][20].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][20].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 567 260 36	name	"bookPriestSlot20"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot20', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][20].level, characters[id].priestSpells[currentSpellLevel][20].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][20].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][20].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][20].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][21].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][21].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 605 260 36	name	"bookPriestSlot21"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot21', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][21].level, characters[id].priestSpells[currentSpellLevel][21].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][21].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][21].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][21].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][22].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][22].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 605 260 36	name	"bookPriestSlot22"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot22', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][22].level, characters[id].priestSpells[currentSpellLevel][22].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][22].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][22].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][22].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][23].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][23].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	134 643 260 36	name	"bookPriestSlot23"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot23', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][23].level, characters[id].priestSpells[currentSpellLevel][23].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][23].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][23].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][23].description"	}
-
-	list { column { width 100 label { area		0 0 -1 -1 bam "RGKNSLOT" align left center enabled "characters[id].priestSpells[currentSpellLevel][24].icon ~= null" } label { area		5 0 -1 -1 text lua "Infinity_FetchString( characters[id].priestSpells[currentSpellLevel][24].name)" pad 37 0 0 0  text style "normal_parchment" text align left center } }
-	area	396 643 260 36	name	"bookPriestSlot24"	rowwidth	260	table		"characters[id].priestSpells[currentSpellLevel]"	align	center center	hideHighlight
-		action		"
-			if true then	if #bottomSpells < #bottomSpellsPlaceHolder then	createPriestMemorizationSparkle(1, 0, 40, 40, 'bookPriestSlot24', -1)	Infinity_PlaySound('GAM_24')	end
-				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][24].level, characters[id].priestSpells[currentSpellLevel][24].index )	helpTextString = characters[id].priestSpells[currentSpellLevel][24].name	end	"
-		actionEnter	"helpTextString = characters[id].priestSpells[currentSpellLevel][24].name" actionExit "helpTextString = ''" actionAlt 	"spellDescString = characters[id].priestSpells[currentSpellLevel][24].description"	}
-
+		hideHighlight
+		area        394 224 260 460
+		rowheight   38
+		name        "bookSpellsList2"
+		table       "PriestBook.columns[2]"
+		var         "index"
+		action      "PriestBook:memorizeSpell(PriestBook.columns[2][index], 'bookSpellsList2', index)"
+		actionAlt   "currentSpell = PriestBook.columns[2][index]"
+		actionScroll "PriestBook:scroll()"
+	}
 
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 188 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder1" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder1" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 243 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder2" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder2" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 298 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder3" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder3" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 353 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder4" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder4" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 408 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder5" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder5" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 463 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder6" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder6" enabled "currentSpell == nil"
 	}
 	list
 	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
 		area 740 518 512 36
-		rowwidth	36 table		"bottomSpellsPlaceHolder7" enabled "spellDescString == nil"
+		rowwidth	36 table		"bottomSpellsPlaceHolder7" enabled "currentSpell == nil"
 	}
 
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells1[rowNumber].icon" align	center center greyscale lua "bottomSpells1[rowNumber].castable == 0" } }
 		area 740 188 512 36
-		name "memorizedListPriest1" enabled 	"#bottomSpells1 ~= 0" rowwidth	36 table		"bottomSpells1" var		currentBottomSpell1 enabled "spellDescString == nil"
-		action "Priest:unmemorizeSpell(1, bottomSpells1, currentBottomSpell1)"
+		name "memorizedListPriest1" enabled 	"#bottomSpells1 ~= 0" rowwidth	36 table		"bottomSpells1" var		currentBottomSpell1 enabled "currentSpell == nil"
+		action "PriestBook:unmemorizeSpell(1, bottomSpells1, currentBottomSpell1)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells2[rowNumber].icon" align	center center greyscale lua "bottomSpells2[rowNumber].castable == 0" } }
 		area 740 243 512 36
-		name "memorizedListPriest2" enabled 	"#bottomSpells2 ~= 0" rowwidth	36 table		"bottomSpells2" var		currentBottomSpell2 enabled "spellDescString == nil"
-		action "Priest:unmemorizeSpell(2, bottomSpells2, currentBottomSpell2)"
+		name "memorizedListPriest2" enabled 	"#bottomSpells2 ~= 0" rowwidth	36 table		"bottomSpells2" var		currentBottomSpell2 enabled "currentSpell == nil"
+		action "PriestBook:unmemorizeSpell(2, bottomSpells2, currentBottomSpell2)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells3[rowNumber].icon" align	center center greyscale lua "bottomSpells3[rowNumber].castable == 0" } }
 		area 740 298 512 36
-		name "memorizedListPriest3" enabled 	"#bottomSpells3 ~= 0" rowwidth	36 table		"bottomSpells3" var		currentBottomSpell3 enabled "spellDescString == nil"
-		action "Priest:unmemorizeSpell(3, bottomSpells3, currentBottomSpell3)"
+		name "memorizedListPriest3" enabled 	"#bottomSpells3 ~= 0" rowwidth	36 table		"bottomSpells3" var		currentBottomSpell3 enabled "currentSpell == nil"
+		action "PriestBook:unmemorizeSpell(3, bottomSpells3, currentBottomSpell3)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells4[rowNumber].icon" align	center center greyscale lua "bottomSpells4[rowNumber].castable == 0" } }
 		area 740 353 512 36
-		name "memorizedListPriest4" enabled 	"#bottomSpells4 ~= 0" rowwidth	36 table		"bottomSpells4" var		currentBottomSpell4 enabled "spellDescString == nil"
-		action "Priest:unmemorizeSpell(4, bottomSpells4, currentBottomSpell4)"
+		name "memorizedListPriest4" enabled 	"#bottomSpells4 ~= 0" rowwidth	36 table		"bottomSpells4" var		currentBottomSpell4 enabled "currentSpell == nil"
+		action "PriestBook:unmemorizeSpell(4, bottomSpells4, currentBottomSpell4)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells5[rowNumber].icon" align	center center greyscale lua "bottomSpells5[rowNumber].castable == 0" } }
 		area 740 408 512 36
-		name "memorizedListPriest5" enabled 	"#bottomSpells5 ~= 0" rowwidth	36 table		"bottomSpells5" var		currentBottomSpell5 enabled "spellDescString == nil"
-		action "Priest:unmemorizeSpell(5, bottomSpells5, currentBottomSpell5)"
+		name "memorizedListPriest5" enabled 	"#bottomSpells5 ~= 0" rowwidth	36 table		"bottomSpells5" var		currentBottomSpell5 enabled "currentSpell == nil"
+		action "PriestBook:unmemorizeSpell(5, bottomSpells5, currentBottomSpell5)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells6[rowNumber].icon" align	center center greyscale lua "bottomSpells6[rowNumber].castable == 0" } }
 		area 740 463 512 36
-		name "memorizedListPriest6" enabled 	"#bottomSpells6 ~= 0" rowwidth	36 table		"bottomSpells6" var		currentBottomSpell6 enabled "spellDescString == nil"
-		action "Priest:unmemorizeSpell(6, bottomSpells6, currentBottomSpell6)"
+		name "memorizedListPriest6" enabled 	"#bottomSpells6 ~= 0" rowwidth	36 table		"bottomSpells6" var		currentBottomSpell6 enabled "currentSpell == nil"
+		action "PriestBook:unmemorizeSpell(6, bottomSpells6, currentBottomSpell6)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells7[rowNumber].icon" align	center center greyscale lua "bottomSpells7[rowNumber].castable == 0" } }
 		area 740 518 512 36
-		name "memorizedListPriest7" enabled 	"#bottomSpells7 ~= 0" rowwidth	36 table		"bottomSpells7" var		currentBottomSpell7 enabled "spellDescString == nil"
-		action "Priest:unmemorizeSpell(7, bottomSpells7, currentBottomSpell7)"
+		name "memorizedListPriest7" enabled 	"#bottomSpells7 ~= 0" rowwidth	36 table		"bottomSpells7" var		currentBottomSpell7 enabled "currentSpell == nil"
+		action "PriestBook:unmemorizeSpell(7, bottomSpells7, currentBottomSpell7)"
 	}
 
 
@@ -13775,7 +13567,7 @@ menu
 		text lua "Infinity_FetchString(11944)"
 		text style "rg_trajan"
 --		text color '5'
-		enabled "spellDescString == nil"
+		enabled "currentSpell == nil"
 		text align right center
 	}
 	label
@@ -13790,24 +13582,24 @@ menu
 	text
 	{
 		area		740 154 508 545
-		text		lua "Infinity_FetchString(spellDescString)"
+		text		lua "Infinity_FetchString(currentSpell.description)"
 		text style	"normal_parchment"
-		scrollbar	'RGSCR3'
-		enabled 	"spellDescString ~= nil"
+		scrollbar	'GUISCRP'
+		enabled 	"currentSpell ~= nil"
 		--mosaic "RGPRDESC"
-		--action "spellDescString = null"
+		--action "currentSpell = null"
 	}
 
 	button
 	{
 		on escape
 		area 1194 148 32 40
-		enabled "spellDescString ~= nil"
+		enabled "currentSpell ~= nil"
 		text "X"
 		text style "rg_trajan"
 		--text shadow 1
 		--text color lua "parchment"
-		action "spellDescString = nil"
+		action "currentSpell = nil"
 	}
 
 	label
