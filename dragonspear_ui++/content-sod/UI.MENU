@@ -20669,7 +20669,7 @@ menu
 	edit
 	{
 		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 2"
-		clickable	"rolling == 0"
+		clickable lua "rolling == 0"
 		area		810 478 64 40
 		var			rollMinValue
 		text style 	"edit"
@@ -20700,7 +20700,7 @@ menu
 	edit
 	{
 		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 2"
-		clickable	"rolling == 0"
+		clickable lua "rolling == 0"
 		area		958 478 64 40
 		var			rollMaxValue
 		text style	"edit"
@@ -21092,6 +21092,7 @@ menu
 	button
 	{
 		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle > 0 and MethodToggle < 6 and rolling == 1"
+		on escape
 		area 914 656 200 40
 		bam GUIBUTNT
 		sequence 0
