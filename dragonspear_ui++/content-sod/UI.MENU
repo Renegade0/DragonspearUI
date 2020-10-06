@@ -11882,8 +11882,7 @@ function setMageBookLevel(num)
 	lastCurrentBookSpell = 0
 	currentBookSpell = 0
 	currentSpellLevel = num
-	mageScreen:SetSpellLevel(num-1)
-	MageBook:setPage(1)
+	MageBook.page = 1
 	refreshMageBook()
 end
 
@@ -11892,11 +11891,6 @@ function addMageBookLevel(value)
 
 	if level >= 1 and level <= 9 then
 		setMageBookLevel(level)
-		currentBookSpell = 0
-		currentSpellLevel = level
-		mageScreen:SetSpellLevel(level - 1)
-		getSpellButtHighlight(level)
-		refreshMageBook()
 	end
 end
 
@@ -13242,7 +13236,7 @@ function setPriestBookLevel(num)
 	lastCurrentBookSpell = 0
 	currentBookSpell = 0
 	currentSpellLevel = num
-	PriestBook:setPage(1)
+	PriestBook.page = 1
 	refreshPriestBook()
 end
 
@@ -13251,11 +13245,6 @@ function addPriestBookLevel(value)
 
 	if level >= 1 and level <= 7 then
 		setPriestBookLevel(level)
-		currentBookSpell = 0
-		currentSpellLevel = level
-		priestScreen:SetSpellLevel(level-1)
-		getPrSpellButtHighlight(level)
-		refreshPriestBook()
 	end
 end
 
