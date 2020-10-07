@@ -10673,7 +10673,7 @@ function magePageInfo()
 			return t("MEMORIZED_LABEL") .. ": " .. #bottomSpells .. "/" .. characters[id].mageDetails[currentSpellLevel].maxMemorized
 		end
 	elseif bookMode == 1 then -- Sequencer/Contingency
-		return t("SPELLS_LABEL") .. " :" .. #bottomSpells .. "/" .. #bottomSpellsPlaceHolder
+		return t("SPELLS_LABEL") .. ": " .. #bottomSpells .. "/" .. #bottomSpellsPlaceHolder
 
 	end
 	return ""
