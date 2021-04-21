@@ -2190,6 +2190,44 @@ menu
 `
 list_GUIREC_20_5_idx = 0
 doneEnabled = 0
+
+function compareCustomSound(s1, s2)
+	-- DEFAULT, then normal alphabetically, then AoN alphabetically (result must be strictly less than)
+	if (s1.sound == "DEFAULT") then
+		return s2.sound ~= "DEFAULT";
+	elseif (string.sub(s1.sound, 1, 4) == "BDTP") then
+		if (string.sub(s2.sound, 1, 4) ~= "BDTP") then
+			return false;
+		end
+	elseif (string.sub(s2.sound, 1, 4) == "BDTP") then
+		return true;
+	end
+	return s1.sound < s2.sound;
+end
+
+function prepareSounds(soundTable)
+	-- preserve original indices to return as selection
+	local i;
+	for i = 1, #soundTable, 1 do
+		local s = soundTable[i];
+		if (type(s) == "string") then
+			soundTable[i] = {
+				index = i,
+				sound = s
+			}
+		end
+	end
+
+	table.sort(soundTable, compareCustomSound)
+end
+
+function getSoundStringRef(rowNumber, tab)
+	if ( filenames_stringrefs[tab[rowNumber].sound] ~= nil ) then
+		return Infinity_FetchString(filenames_stringrefs[tab[rowNumber].sound][1])
+	else
+		return tab[rowNumber].sound
+	end
+end
 `
 menu
 {
@@ -2201,6 +2239,7 @@ menu
 		currentPanelID = const.SOUND_ID
 		Infinity_OnSoundItemSelect(0)
 		doneEnabled = characterScreen:IsDoneButtonClickable(currentID)
+		prepareSounds(list_GUIREC_20_5)
 	"
 	label
 	{
@@ -2215,7 +2254,7 @@ menu
 			label
 			{
 				area 0 0 -1 -1
-				text lua "getFileNameStringRef(rowNumber, list_GUIREC_20_5)"
+				text lua "getSoundStringRef(rowNumber, list_GUIREC_20_5)"
 				text style	"list"
 				pad 8 0 0 0
 			}
@@ -2227,7 +2266,7 @@ menu
 		scrollbar	'GUISCRC'
 		action
 		"
-			Infinity_OnSoundItemSelect(list_GUIREC_20_5_idx - 1)
+			Infinity_OnSoundItemSelect(list_GUIREC_20_5[list_GUIREC_20_5_idx].index - 1)
 			doneEnabled = characterScreen:IsDoneButtonClickable(currentID)
 		"
 	}
@@ -3549,6 +3588,7 @@ graphicsToggles = {
 {'SHOW_HEALTHBAR_LABEL',103192, 65, 0, 0, 0},
 {'SHOW_BLACK_SPACE_LABEL','SHOW_BLACK_SPACE_DESCRIPTION', 69, 0, 0, 0},
 {'NEAREST_NEIGHBOUR_LABEL','NEAREST_NEIGHBOUR_DESCRIPTION', 70, 0, 0, 0},
+{'AREA_MAP_ZOOM_TRANSITION_LABEL','AREA_MAP_ZOOM_TRANSITION_DESCRIPTION', 71, 0, 0, 0}
 }
 
 addedDirectx = false
@@ -4324,7 +4364,8 @@ feedbackToggles = {
 {'CLASSIC_MARKERS_LABEL',			'CLASSIC_MARKERS_HELP', 			45, 0, 0},
 {'ENABLE_CONFIRMATION_LABEL',		'ENABLE_CONFIRMATION_HELP', 		41, 0, 0},
 {'DISABLE_COSMETIC_ATTACKS_LABEL',	'DISABLE_COSMETIC_ATTACKS_HELP', 	43, 0, 0},
-{'JOURNAL_POPUPS_LABEL',			'JOURNAL_POPUPS_HELP', 				44, 0, 0}
+{'JOURNAL_POPUPS_LABEL',			'JOURNAL_POPUPS_HELP', 				44, 0, 0},
+{'EQUIPMENT_COMPARISON_LABEL',      'EQUIPMENT_COMPARISON_DESCRIPTION', 46, 0, 0}
 }
 
 messagesToggles = {
@@ -12947,7 +12988,11 @@ menu
 		var		"currentContingencySpell"
 		action		"
 			if (cellNumber == 7) and preparedSpells[currentContingencySpell].dispellable then
-				popup2Button(32665, 'YES_BUTTON', function() mageScreen:OnDispellButtonClick(currentContingencySpell) end, 'NO_BUTTON')
+				if Infinity_GetOption(41, 9) == 1 then
+					popup2Button(32665, 'YES_BUTTON', function() mageScreen:OnDispellButtonClick(currentContingencySpell) end, 'NO_BUTTON')
+				else
+					mageScreen:OnDispellButtonClick(currentContingencySpell)
+				end
 			end
 		"
 	}
@@ -13826,7 +13871,7 @@ menu
 	{
 		area 74 8 184 74
 		name "AREA_MAP_TITLE"
-		text "AREA_MAP_TITLE"
+		text lua "Infinity_FetchString(103241)"
 		text style title
 	}
 		label
@@ -22424,6 +22469,9 @@ menu
 	name 'CHARGEN_CUSTOMSOUNDS'
 	align center center
 	ignoreesc
+	onOpen "
+		prepareSounds(chargen.customSound)
+	"
 	label
 	{
 		area 0 0 1444 818
@@ -22443,7 +22491,7 @@ menu
 			label
 			{
 				area 0 0 384 20
-				text lua "getFileNameStringRef(rowNumber, chargen.customSound)"
+				text lua "getSoundStringRef(rowNumber, chargen.customSound)"
 				text style	"normal"
 				pad 8 0 0 0
 			}
@@ -22455,7 +22503,7 @@ menu
 		scrollbar	'GUISCRC'
 		action
 		"
-			createCharScreen:OnSoundItemSelect(currentChargenCustomSound-1)
+			createCharScreen:OnSoundItemSelect(chargen.customSound[currentChargenCustomSound].index-1)
 		"
 	}
 	text
@@ -23079,6 +23127,10 @@ menu
 				e:SelectEngine(startEngine)
 				Infinity_PopMenu()
 				startEngine:OnImportCharacterButtonClick()
+			end
+
+			if Infinity_GetCurrentScreenName() == 'CHARGEN' then
+				createCharScreen:OnMainBackButtonClick()
 			end
 		"
 	}
@@ -24703,12 +24755,12 @@ mpaCharacters =
 
 mpaPlayers =
 {
-	{name = "", id = 0, color = "0xfff600"},
-	{name = "", id = 0, color = "0xff0000"},
-	{name = "", id = 0, color = "0x000cff"},
-	{name = "", id = 0, color = "0x1eff00"},
-	{name = "", id = 0, color = "0x00fcff"},
-	{name = "", id = 0, color = "0xff00f6"}
+	{name = "", id = 0, color = "0x7a7aFF"},
+	{name = "", id = 0, color = "0xFFAF7A"},
+	{name = "", id = 0, color = "0x7aFFa3"},
+	{name = "", id = 0, color = "0x57F9FF"},
+	{name = "", id = 0, color = "0xF2F188"},
+	{name = "", id = 0, color = "0xFE97FF"}
 }
 
 function updateMultiplayerPlayerSlot(slot,setting,value)
@@ -29199,6 +29251,7 @@ menu
 			journalMode = const.JOURNAL_MODE_EDIT
 			journalNoteEdit = ''
 			journalNoteEditRef = nil
+			Infinity_FocusTextEdit('journalLarge_22')
 		"
 	}
 	button
@@ -29653,6 +29706,7 @@ menu
 			journalMode = const.JOURNAL_MODE_EDIT
 			journalNoteEdit = ''
 			journalNoteEditRef = nil
+			Infinity_FocusTextEdit('JournalSmall_23')
 		"
 	}
 	button
@@ -30401,6 +30455,7 @@ menu
 	ignoreEsc
 	onOpen
 	"
+		Infinity_PopMenu('ITEM_DESCRIPTION')
 		ClassicDialog = Infinity_GetINIValue('Game Options','ClassicDialog',0)
 		disableDialogOnSpace = Infinity_GetINIValue('Game Options', 'Disable Space Key In Conversations', 1)
 		WorldDialog:restore()
@@ -30663,7 +30718,7 @@ menu
 		action
 		"
 			--In confirm mode, just highlight the choice.
-			if(gameOptions.m_bConfirmDialog == true) then return end
+			if((gameOptions.m_bConfirmDialog == true) or (worldPlayerDialogSelection <= 0)) then return end
 			worldScreen:OnDialogReplyClick(worldPlayerDialogChoices[worldPlayerDialogSelection].marker)
 			worldPlayerDialogSelection = 0
 			alreadyAdded = 0
@@ -30742,6 +30797,7 @@ menu
 		action
 		"
 			if(gameOptions.m_bConfirmDialog == true and (#worldPlayerDialogChoices > 0)) then
+				if worldPlayerDialogSelection <= 0 then return end
 				-- if confirm dialog and choices available.
 				worldScreen:OnDialogReplyClick(worldPlayerDialogChoices[worldPlayerDialogSelection].marker)
 				worldPlayerDialogSelection = 0
