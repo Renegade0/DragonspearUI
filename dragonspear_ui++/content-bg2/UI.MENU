@@ -30218,8 +30218,8 @@ menu
 			WDHx = newX + 153
 			npcX = newX + 30
 			if newX < 0 then
-				xR = newX + 496
-				x2 = newX + 488
+				xR = newX + 488
+				x2 = newX + 496
 				PortPosition = 'Right'
 			elseif newX > screenWidth - 197 - w then
 				xL = newX - 112
