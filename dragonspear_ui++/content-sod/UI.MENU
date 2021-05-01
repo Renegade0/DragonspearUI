@@ -30360,6 +30360,10 @@ menu
 			Infinity_SetArea(('worldDialogPortraitArea'), x+496, nil, nil, nil)
 		end
 
+		SetPositionX(x)
+	end
+
+	function SetPositionX(x)
 		Infinity_SetArea('worldDialogBackground',x,nil,nil,nil)
 		Infinity_SetArea(('worldNPCDialog'), x+30,nil,nil,nil)
 		Infinity_SetArea(('worldDialogButton1'), x+340,nil,nil,nil)
@@ -30374,6 +30378,7 @@ menu
 		Infinity_SetArea(('worldDialogPortraitBackgroundR'), x+488, nil, nil, nil)
 		Infinity_SetArea(('worldDialogPortraitBackgroundL'), x-112, nil, nil, nil)
 	end
+
 	function SetBottomPosition()
 		local x,y,w,h = Infinity_GetArea()
 		local screenWidth, screenHeight = Infinity_GetScreenSize()
@@ -30386,20 +30391,6 @@ menu
 	end
 
 	WorldDialog = {
-		areas = {
-			'worldDialogBackground',
-			'worldDialogButton1',
-			'worldDialogButton2',
-			'worldDialogButton3',
-			'worldDialogConfirm',
-			'worldDialogHandle',
-			'worldDialogHandleDrag',
-			'worldDialogPortraitArea',
-			'worldDialogPortraitBackgroundL',
-			'worldDialogPortraitBackgroundR',
-			'worldNPCDialog',
-			'worldPlayerDialogChoicesList',
-		},
 		restored = false
 	}
 
@@ -30408,12 +30399,9 @@ menu
 			return
 		end
 
+		local x, y, w, h = Infinity_GetArea('worldDialogBackground')
+		Infinity_SetINIValue('WorldDialog', 'Position', x)
 		Infinity_SetINIValue('WorldDialog', 'PortPosition', PortPosition)
-
-		for _, key in ipairs(self.areas) do
-			local x, y, w, h = Infinity_GetArea(key)
-			Infinity_SetINIValue('WorldDialog', key, table.concat({x, y, w, h}, ':'))
-		end
 	end
 
 	function WorldDialog:restore()
@@ -30423,36 +30411,22 @@ menu
 		end
 		self.restored = true
 
-		-- various globals
+		-- get values from config
+		local x = tonumber(Infinity_GetINIString('WorldDialog', 'Position', ''))
 		local portPosition = Infinity_GetINIString('WorldDialog', 'PortPosition', '')
-		if portPosition == '' then
+		if x == nil or not (portPosition == 'Left' or portPosition == 'Right') then
 			return
 		end
 
-		-- restore areas
-		local areas = {}
-
-		for _, key in ipairs(self.areas) do
-			local area = Infinity_GetINIString('WorldDialog', key, '')
-			if area == '' then
-				return
-			end
-
-			local rect = {}
-			area:gsub('%-?%d+', function(n) table.insert(rect, tonumber(n)) end)
-			if #rect ~= 4 then
-				return
-			end
-
-			areas[key] = rect
-		end
-
 		-- everything is okay, finally set the variables
-		PortPosition = portPosition
-
-		for key, r in pairs(areas) do
-			Infinity_SetArea(key, r[1], r[2], r[3], r[4])
+		if portPosition == 'Left' then
+			Infinity_SetArea('worldDialogPortraitArea', x + 496, nil, nil, nil)
+		else
+			Infinity_SetArea('worldDialogPortraitArea', x - 100, nil, nil, nil)
 		end
+
+		SetPositionX(x)
+		PortPosition = portPosition
 	end
 `
 menu
