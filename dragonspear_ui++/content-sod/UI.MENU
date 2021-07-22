@@ -2193,16 +2193,18 @@ doneEnabled = 0
 
 function compareCustomSound(s1, s2)
 	-- DEFAULT, then normal alphabetically, then AoN alphabetically (result must be strictly less than)
-	if (s1.sound == "DEFAULT") then
-		return s2.sound ~= "DEFAULT";
-	elseif (string.sub(s1.sound, 1, 4) == "BDTP") then
-		if (string.sub(s2.sound, 1, 4) ~= "BDTP") then
-			return false;
-		end
-	elseif (string.sub(s2.sound, 1, 4) == "BDTP") then
-		return true;
+	if s1.sound == "DEFAULT" or s2.sound == "DEFAULT" then
+		return s2.sound ~= "DEFAULT"
 	end
-	return s1.sound < s2.sound;
+
+	local s1_is_aon = s1.sound:sub(1, 4) == "BDTP"
+	local s2_is_aon = s2.sound:sub(1, 4) == "BDTP"
+
+	if s1_is_aon ~= s2_is_aon then
+		return s2_is_aon
+	end
+
+	return s1.sound < s2.sound
 end
 
 function prepareSounds(soundTable)
