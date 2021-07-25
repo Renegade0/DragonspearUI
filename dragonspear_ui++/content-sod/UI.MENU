@@ -321,7 +321,7 @@ listItems = {}
 	table.insert(listItems, { nil, '^D' .. t('RESISTANCES_LABEL') .. ':' .. '^B' .. '^B'})
 	table.insert(listItems, { nil, characters[currentID].proficiencies.resistances})
 	--table.insert(listItems, { nil, '' })
-	table.insert(listItems, { nil, '^D' .. '\n' .. 'Ability bonuses:' .. '^B'})
+	table.insert(listItems, { nil, '^D' .. '\n' .. t('RG_ABILITY_BONUSES') .. ':^B'})
 	for k, v in ipairs(characters[currentID].proficiencies.ability) do
 		table.insert(listItems, {nil, v.current})
 	end
@@ -419,7 +419,7 @@ function updateAttrTable()
 	table.insert(listItems, { nil, '^D' .. t('RESISTANCES_LABEL') .. ':' .. '^B' .. '^B'})
 	table.insert(listItems, { nil, characters[currentID].proficiencies.resistances})
 	--table.insert(listItems, { nil, '' })
-	table.insert(listItems, { nil, '^D' .. '\n' .. 'Ability bonuses:' .. '^B'})
+	table.insert(listItems, { nil, '^D' .. '\n' .. t('RG_ABILITY_BONUSES') .. ':^B'})
 	for k, v in ipairs(characters[currentID].proficiencies.ability) do
 		table.insert(listItems, {nil, v.current})
 	end

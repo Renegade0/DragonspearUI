@@ -102,7 +102,7 @@ duiStrings = {
 	RG_UI_CHEAT1 = "Toggling this option on will enable cheating. Autoroller options in the character generation menu will be available, holding the 'Reveal Details' button will explore the area.",
 	RG_UI_QUICKLOOT = "Quickloot bar On/Off by default",
 	RG_UI_QUICKLOOT1 = "Toggling this option on will cause quickloot menu to be always on, when starting or loading the game.",
-	RG_RANDOM = "random character",
+	RG_RANDOM = "Random Character",
 	RG_PP_TOOLTIP = "Choose your portrait from the list. For more information about custom portraits, press the 'Custom' button.", 
 	RG_PP_TOOLTIP1 = "To use a custom portrait, place the desired portrait in 'Documents/Baldur's Gate - Enhanced Edition/portraits' (you may need to create the portraits folder). The image must be in 24-bit BMP format, and the file name must be no more than seven characters long.",
 	RG_PP_TOOLTIP2 = "Note that the standard dimensions for portraits are 210x330; images that are larger or smaller will be resized to fit the frame. No image may be larger than 1024 in either dimension.",
@@ -124,6 +124,7 @@ duiStrings = {
 	RG_UI_LPORTRAITS1 = "Toggling this option on will display bigger portraits on a main gameplay screen. Instead of default 64x91 pixels they will have 82x123 pixels. This option mainly suits unscaled interface.",
 	RG_UI_THIEFBUTT = "Permanent thieving button",
 	RG_UI_THIEFBUTT1 = "Toggling this option on will display a permanent thieving button in the bottom right section of the screen, tied to a hotkey 'f'. This is useful for Cleric / Thiefs.",
+	RG_ABILITY_BONUSES = 'Ability bonuses',
 }
 
 -- 0 = BGEE, 1 = BG2EE, 2 = IWDEE

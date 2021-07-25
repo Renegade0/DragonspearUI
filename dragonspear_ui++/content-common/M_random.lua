@@ -146,7 +146,7 @@ function randChar()
 		createCharScreen:OnRacialEnemySelectButtonClick(chargen.hatedRace[currentChargenHatedRace].id)
 		createCharScreen:OnDoneButtonClick()
 	end
-	chargen.information = "Random Character:" .. '\n\n' .. chargen.information
+	chargen.information = t("RG_RANDOM") .. ':\n\n' .. chargen.information
 end
 
 
