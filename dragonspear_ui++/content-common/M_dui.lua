@@ -49,9 +49,6 @@ function updateTable(first, second)
 	end
 end
 
--- load DUI strings using the language set in Baldur.lua
-dui_set_language()
-
 -- format: AABBGGRR
 fontcolors['W'] = 'FF134AF1' -- warning
 fontcolors['X'] = 'FF7D7D7D' -- gold yellow/orange

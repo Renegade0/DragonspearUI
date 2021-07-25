@@ -2,9 +2,14 @@
 --reload language
 if(uiTranslationFile) then
 	Infinity_DoFile("L_" .. uiTranslationFile)
+	dui_set_language(uiTranslationFile)
 else
 	Infinity_DoFile("L_en_us")
+
+	-- load DUI strings using the language set in Baldur.lua
+	dui_set_language()
 end
+
 listMetaInfo = {}
 combatLog = {}
 
