@@ -12297,54 +12297,63 @@ menu
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells1[rowNumber].icon" align	center center greyscale lua "bottomSpells1[rowNumber].castable == 0" } }
 		area 740 188 512 36
+		sound ""
 		name "memorizedListMage1" enabled 	"#bottomSpells1 ~= 0" rowwidth	36 table		"bottomSpells1" var		currentBottomSpell1 enabled "currentSpell == nil"
 		action "MageBook:unmemorizeSpell(1, bottomSpells1, currentBottomSpell1)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells2[rowNumber].icon" align	center center greyscale lua "bottomSpells2[rowNumber].castable == 0" } }
 		area 740 243 512 36
+		sound ""
 		name "memorizedListMage2" enabled 	"#bottomSpells2 ~= 0" rowwidth	36 table		"bottomSpells2" var		currentBottomSpell2 enabled "currentSpell == nil"
 		action "MageBook:unmemorizeSpell(2, bottomSpells2, currentBottomSpell2)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells3[rowNumber].icon" align	center center greyscale lua "bottomSpells3[rowNumber].castable == 0" } }
 		area 740 298 512 36
+		sound ""
 		name "memorizedListMage3" enabled 	"#bottomSpells3 ~= 0" rowwidth	36 table		"bottomSpells3" var		currentBottomSpell3 enabled "currentSpell == nil"
 		action "MageBook:unmemorizeSpell(3, bottomSpells3, currentBottomSpell3)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells4[rowNumber].icon" align	center center greyscale lua "bottomSpells4[rowNumber].castable == 0" } }
 		area 740 353 512 36
+		sound ""
 		name "memorizedListMage4" enabled 	"#bottomSpells4 ~= 0" rowwidth	36 table		"bottomSpells4" var		currentBottomSpell4 enabled "currentSpell == nil"
 		action "MageBook:unmemorizeSpell(4, bottomSpells4, currentBottomSpell4)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells5[rowNumber].icon" align	center center greyscale lua "bottomSpells5[rowNumber].castable == 0" } }
 		area 740 408 512 36
+		sound ""
 		name "memorizedListMage5" enabled 	"#bottomSpells5 ~= 0" rowwidth	36 table		"bottomSpells5" var		currentBottomSpell5 enabled "currentSpell == nil"
 		action "MageBook:unmemorizeSpell(5, bottomSpells5, currentBottomSpell5)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells6[rowNumber].icon" align	center center greyscale lua "bottomSpells6[rowNumber].castable == 0" } }
 		area 740 463 512 36
+		sound ""
 		name "memorizedListMage6" enabled 	"#bottomSpells6 ~= 0" rowwidth	36 table		"bottomSpells6" var		currentBottomSpell6 enabled "currentSpell == nil"
 		action "MageBook:unmemorizeSpell(6, bottomSpells6, currentBottomSpell6)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells7[rowNumber].icon" align	center center greyscale lua "bottomSpells7[rowNumber].castable == 0" } }
 		area 740 518 512 36
+		sound ""
 		name "memorizedListMage7" enabled 	"#bottomSpells7 ~= 0" rowwidth	36 table		"bottomSpells7" var		currentBottomSpell7 enabled "currentSpell == nil"
 		action "MageBook:unmemorizeSpell(7, bottomSpells7, currentBottomSpell7)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells8[rowNumber].icon" align	center center greyscale lua "bottomSpells8[rowNumber].castable == 0" } }
 		area 740 573 512 36
+		sound ""
 		name "memorizedListMage8" enabled 	"#bottomSpells8 ~= 0" rowwidth	36 table		"bottomSpells8" var		currentBottomSpell8 enabled "currentSpell == nil"
 		action "MageBook:unmemorizeSpell(8, bottomSpells8, currentBottomSpell8)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells9[rowNumber].icon" align	center center greyscale lua "bottomSpells9[rowNumber].castable == 0" } }
 		area 740 628 512 36
+		sound ""
 		name "memorizedListMage9" enabled 	"#bottomSpells9 ~= 0" rowwidth	36 table		"bottomSpells9" var		currentBottomSpell9 enabled "currentSpell == nil"
 		action "MageBook:unmemorizeSpell(9, bottomSpells9, currentBottomSpell9)"
 	}
@@ -12750,6 +12759,7 @@ menu
 		}
 
 		hideHighlight
+		sound       ""
 		area        134 224 260 460
 		rowheight   38
 		name        "bookSpellsList1"
@@ -12770,6 +12780,7 @@ menu
 		}
 
 		hideHighlight
+		sound       ""
 		area        394 224 260 460
 		rowheight   38
 		name        "bookSpellsList2"
@@ -13199,7 +13210,7 @@ function unmemorizePriestSpell(spell, book)
 		Infinity_PlaySound('GAM_44')
 
 		-- scroll to the page that contains the spell
-		self:setPage(math.ceil((spell.index + 1) / 24))
+		book:setPage(math.ceil((spell.index + 1) / 24))
 	end
 end
 
@@ -13487,6 +13498,7 @@ menu
 		}
 
 		hideHighlight
+		sound       ""
 		area        134 224 260 460
 		rowheight   38
 		name        "bookSpellsList1"
@@ -13507,6 +13519,7 @@ menu
 		}
 
 		hideHighlight
+		sound       ""
 		area        394 224 260 460
 		rowheight   38
 		name        "bookSpellsList2"
@@ -13556,42 +13569,49 @@ menu
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells1[rowNumber].icon" align	center center greyscale lua "bottomSpells1[rowNumber].castable == 0" } }
 		area 740 188 512 36
+		sound ""
 		name "memorizedListPriest1" enabled 	"#bottomSpells1 ~= 0" rowwidth	36 table		"bottomSpells1" var		currentBottomSpell1 enabled "currentSpell == nil"
 		action "PriestBook:unmemorizeSpell(1, bottomSpells1, currentBottomSpell1)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells2[rowNumber].icon" align	center center greyscale lua "bottomSpells2[rowNumber].castable == 0" } }
 		area 740 243 512 36
+		sound ""
 		name "memorizedListPriest2" enabled 	"#bottomSpells2 ~= 0" rowwidth	36 table		"bottomSpells2" var		currentBottomSpell2 enabled "currentSpell == nil"
 		action "PriestBook:unmemorizeSpell(2, bottomSpells2, currentBottomSpell2)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells3[rowNumber].icon" align	center center greyscale lua "bottomSpells3[rowNumber].castable == 0" } }
 		area 740 298 512 36
+		sound ""
 		name "memorizedListPriest3" enabled 	"#bottomSpells3 ~= 0" rowwidth	36 table		"bottomSpells3" var		currentBottomSpell3 enabled "currentSpell == nil"
 		action "PriestBook:unmemorizeSpell(3, bottomSpells3, currentBottomSpell3)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells4[rowNumber].icon" align	center center greyscale lua "bottomSpells4[rowNumber].castable == 0" } }
 		area 740 353 512 36
+		sound ""
 		name "memorizedListPriest4" enabled 	"#bottomSpells4 ~= 0" rowwidth	36 table		"bottomSpells4" var		currentBottomSpell4 enabled "currentSpell == nil"
 		action "PriestBook:unmemorizeSpell(4, bottomSpells4, currentBottomSpell4)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells5[rowNumber].icon" align	center center greyscale lua "bottomSpells5[rowNumber].castable == 0" } }
 		area 740 408 512 36
+		sound ""
 		name "memorizedListPriest5" enabled 	"#bottomSpells5 ~= 0" rowwidth	36 table		"bottomSpells5" var		currentBottomSpell5 enabled "currentSpell == nil"
 		action "PriestBook:unmemorizeSpell(5, bottomSpells5, currentBottomSpell5)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells6[rowNumber].icon" align	center center greyscale lua "bottomSpells6[rowNumber].castable == 0" } }
 		area 740 463 512 36
+		sound ""
 		name "memorizedListPriest6" enabled 	"#bottomSpells6 ~= 0" rowwidth	36 table		"bottomSpells6" var		currentBottomSpell6 enabled "currentSpell == nil"
 		action "PriestBook:unmemorizeSpell(6, bottomSpells6, currentBottomSpell6)"
 	}
 	list
 	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells7[rowNumber].icon" align	center center greyscale lua "bottomSpells7[rowNumber].castable == 0" } }
 		area 740 518 512 36
+		sound ""
 		name "memorizedListPriest7" enabled 	"#bottomSpells7 ~= 0" rowwidth	36 table		"bottomSpells7" var		currentBottomSpell7 enabled "currentSpell == nil"
 		action "PriestBook:unmemorizeSpell(7, bottomSpells7, currentBottomSpell7)"
 	}
