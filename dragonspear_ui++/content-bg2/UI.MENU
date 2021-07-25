@@ -6024,6 +6024,13 @@ menu
 
 	label
 	{
+		name 'leftSidebarBackground'
+		area 0 0 0 0
+		enabled "false"
+	}
+
+	label
+	{
 		enabled "showJournal ~= 1 and JournalSize ~= UIStrings.UI_Small"
 		area 0 0 119 116
 		mosaic RGGAM01
@@ -7248,6 +7255,13 @@ menu
 --			worldScreen:OnSelectionButtonClick()
 --		"
 --	}
+
+	label
+	{
+		name 'rightSidebarBackground'
+		area 0 0 0 0
+		enabled "false"
+	}
 
 	label
 	{
