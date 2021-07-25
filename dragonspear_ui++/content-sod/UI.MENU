@@ -18626,6 +18626,9 @@ faNot = 0
 fbNot = 0
 tSort = ""
 
+-- might be nil
+BGImages = BGImages or {}
+
 function PortraitContainsSearchString(rowNumber)
 
 	if(PortraitSearchString == nil or PortraitSearchString == "") then return 1 end --no search string, do nothing
