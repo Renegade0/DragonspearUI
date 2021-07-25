@@ -5189,6 +5189,7 @@ menu
 		action
 		"
 			-- done
+			dui_set_language(displayLanguages[language][1])
 			Infinity_SetLanguage(displayLanguages[language][1],showsubtitles)
 			Infinity_PopMenu()
 		"
