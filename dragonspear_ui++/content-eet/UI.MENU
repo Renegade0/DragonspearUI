@@ -30615,6 +30615,7 @@ menu
 		text style "gamelog"
 		scrollbar	'RGSCRBR'
 		scrollbar func "chatboxScroll"
+		scrollbar skipReset
 	}
 	handle
 	{
