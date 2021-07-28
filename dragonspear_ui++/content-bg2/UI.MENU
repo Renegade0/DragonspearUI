@@ -6017,6 +6017,8 @@ menu
 	"
 	label
 	{
+		name 'leftSidebarBackground'
+		enabled "false"
 		area 0 0 0 0
 	}
 }
@@ -6027,13 +6029,6 @@ menu
 --	offset 0 -22
 	--combined height of these buttons makes a menu with height = 231, menu is placed into lower left. y pos is offset from top of this menu.
 	ignoreEsc
-
-	label
-	{
-		name 'leftSidebarBackground'
-		area 0 0 0 0
-		enabled "false"
-	}
 
 	label
 	{
@@ -6919,6 +6914,14 @@ menu
 		Infinity_PopMenu('RIGHT_SIDEBAR_BOTTOM')
 		Infinity_PopMenu('WORLD_LEVEL_UP_BUTTONS')
 	"
+
+	label
+	{
+		name 'rightSidebarBackground'
+		enabled "false"
+		area 0 0 0 0
+	}
+
 	button
 	{
 		area 7 0 88 1
@@ -7261,13 +7264,6 @@ menu
 --			worldScreen:OnSelectionButtonClick()
 --		"
 --	}
-
-	label
-	{
-		name 'rightSidebarBackground'
-		area 0 0 0 0
-		enabled "false"
-	}
 
 	label
 	{
