@@ -10027,6 +10027,7 @@ menu
 		--hideHighlight
 		table		"startCampaignData"
 		var		selectedOpt
+		sound		""
 		scrollbar	'GUISCRP'
 		action		"
 			onCampaignButton(selectedOpt)
@@ -10055,6 +10056,7 @@ menu
 		text lua	"getEETDescription(highlightedCampaign)"
 		text style	"normal"
 		scrollbar	'GUISCRC'
+		scrollbar	hide lua 'true'
 	}
 	--label
 	--{
