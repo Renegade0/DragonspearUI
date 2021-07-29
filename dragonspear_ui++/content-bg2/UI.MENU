@@ -30414,7 +30414,6 @@ menu
 	end
 
 	function SetBottomPosition()
-		local x,y,w,h = Infinity_GetArea()
 		local screenWidth, screenHeight = Infinity_GetScreenSize()
 
 		Infinity_SetArea(('worldDialogBackgroundBottom'),(screenWidth/2)-432,screenHeight-353,nil,nil)
