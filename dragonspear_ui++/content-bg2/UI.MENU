@@ -7931,6 +7931,15 @@ function Inventory:create()
 		break
 	end
 
+	-- Optional equipment comparison
+	self.stats = { AC = '', THAC0 = '', damage = '', HP = '' }
+	self.compare_equipment = Infinity_GetINIValue('Game Options', 'Equipment Comparison', 1) ~= 0
+	self:updateStats()
+
+	-- set offhand color
+	self._patched_fontcolor = fontcolors['O']
+	fontcolors['O'] = 'AA96C8FF' -- dimmed ^D, default text color for stats
+
 	self.paused = false
 	self.name_to_idx = {}
 	self.idx_to_id = {}
@@ -8005,6 +8014,8 @@ function Inventory:deinit()
 		end
 		self._patched = {}
 	end
+
+	fontcolors['O'] = self._patched_fontcolor
 end
 
 function Inventory:slot(slot_idx, char_idx)
@@ -8033,6 +8044,8 @@ function Inventory:update()
 		else
 			Infinity_SetArea('slotsAreaCover', nil, nil, 0, 0)
 		end
+
+		self:updateStats()
 	end
 
 	if self.slotsHighlightScheduled then
@@ -8057,6 +8070,7 @@ function Inventory:select(i)
 	local key = self.keymap[i]
 	if key then
 		Infinity_PressKeyboardButton(key)
+		self:updateStats()
 	end
 end
 
@@ -8109,6 +8123,90 @@ function keybindingsForIds(keys)
 	end
 
 	return map
+end
+
+-- Same as getTempStat, but takes tempStats[key] as new not key
+-- and returns nil instead of "-" when there is no difference
+function Inventory.diffStats(old, new, coeff)
+	local score = coeff * (new - old)
+	if score < 0 then
+		return '^R' .. new .. '^-'
+	elseif score > 0 then
+		return '^G' .. new .. '^-'
+	end
+end
+
+function Inventory:updateStats()
+	local stats = self.stats
+	local character = characters[id]
+
+	if not character then
+		for key, _ in pairs(stats) do
+			stats[key] = ''
+		end
+		return
+	end
+
+	-- offhand color, modified below if tmp is not nil
+	local offhand_start, offhand_stop = '', ''
+	local HP = character.HP
+	local damage = character.damage
+
+	stats.AC = character.AC.current
+	stats.THAC0 = character.THAC0.current
+	stats.damage = ('%s - %s'):format(damage.min, damage.max)
+	stats.HP = ('%s / %s'):format(HP.current, HP.max)
+
+	local tmp = self.compare_equipment and tempStats[id]
+
+	if tmp then
+		local diff1, diff2
+		local fmt = '%s ^8| %s'
+
+		diff1 = self.diffStats(stats.AC, tmp.AC, -1)
+		if diff1 then
+			stats.AC = fmt:format(stats.AC, diff1, tmp.AC)
+		end
+
+		diff1 = self.diffStats(stats.THAC0, tmp.THAC0, -1)
+		if diff1 then
+			stats.THAC0 = fmt:format(stats.THAC0, diff1, tmp.THAC0)
+		end
+
+		diff1 = self.diffStats(damage.min, tmp.dmgMin, 1)
+		diff2 = self.diffStats(damage.max, tmp.dmgMax, 1)
+		if diff1 or diff2 then
+			stats.damage = ('%s - %s\n%s - %s'):format(
+				diff1 or tmp.dmgMin, diff2 or tmp.dmgMax,
+				damage.min, damage.max
+			)
+		end
+
+		diff1 = self.diffStats(HP.current, tmp.currentHP, 1)
+		diff2 = self.diffStats(HP.max, tmp.maxHP, 1)
+		if diff1 or diff2 then
+			stats.HP = ('%s / %s\n%s / %s'):format(
+				diff1 or tmp.currentHP, diff2 or tmp.maxHP,
+				HP.current, HP.max
+			)
+		end
+
+		offhand_start, offhand_stop = '^O', '^-'
+	end
+
+	if character.THAC0.offhand then
+		stats.THAC0 = ('%s\n%s%s%s'):format(
+			stats.THAC0, offhand_start, character.THAC0.offhand, offhand_stop
+		)
+	end
+
+	if damage.minOffhand and damage.maxOffhand then
+		stats.damage = ('%s\n%s%s - %s%s'):format(
+			stats.damage,
+			offhand_start, damage.minOffhand,
+			damage.maxOffhand, offhand_stop
+		)
+	end
 end
 `
 menu
@@ -8196,18 +8294,16 @@ menu
 
 	label
 	{
---		enabled		"tempStats[id] == nil"
-		area		82 646 92 51
-		text lua	"characters[id].AC.current"
+		area		79 640 92 51
+		text lua	"inventory.stats.AC"
 		text style	"label"
 		text color 'D'
 		align center center
 	}
 	label
 	{
---		enabled		"tempStats[id] == nil"
-		area		184 646 101 51
-		text lua	"characters[id].HP.current .. '/' .. characters[id].HP.max"
+		area		182 640 101 51
+		text lua	"inventory.stats.HP"
 		text style	"label"
 		text color 'D'
 		align center center
@@ -8215,9 +8311,16 @@ menu
 
 	label
 	{
---		enabled		"tempStats[id] == nil"
-		area		298 646 86 53
-		text lua	"getInventoryTHAC0()"
+		area		296 640 86 53
+		text lua	"inventory.stats.THAC0"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+	label
+	{
+		area		398 640 96 53
+		text lua	"inventory.stats.damage"
 		text style	"label"
 		text color 'D'
 		align center center
@@ -8225,16 +8328,7 @@ menu
 	label
 	{
 --		enabled		"tempStats[id] == nil"
-		area		398 646 96 53
-		text lua	"getInventoryDamage()"
-		text style	"label"
-		text color 'D'
-		align center center
-	}
-	label
-	{
---		enabled		"tempStats[id] == nil"
-		area		511 646 81 53
+		area		509 640 81 53
 		text lua	"characters[id].proficiencies.numAttacks.current"
 		text style	"label"
 		text color 'D'
