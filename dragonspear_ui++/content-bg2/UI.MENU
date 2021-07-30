@@ -9145,7 +9145,13 @@ menu
 			CloseAll_Small()
 			findQuestPopUp()
 			local tf = next(textflashes)
-			setSelectedQuest(textflashes[tf][5])
+			local id = textflashes[tf][5]
+			if not quests[entryToQuest[id]] then
+				journalMode = const.JOURNAL_MODE_JOURNAL
+				selectedJournal = tf
+			else
+				setSelectedQuest(id)
+			end
 			CheckForOpenedQuests_Small()
 		"
 	}
@@ -28365,11 +28371,15 @@ menu
 			Infinity_PopMenu('WORLD_ACTIONBAR');
 		elseif JournalSize == UIStrings.UI_Small then
 			positionSmallJournal()
-			QFilter = 0
+			QFilter = QFilter ~= 3 and QFilter or 0
 		end
 	"
 	onclose
 	"
+		if saveQFilter and QFilter ~= 3 then
+			Infinity_SetINIValue('Journal', 'Quest Filter', QFilter)
+			saveQFilter = nil
+		end
 		unHideLargeJournal()
 		if JournalSize == UIStrings.UI_Large then
 			worldScreen:TogglePauseGame(true)
@@ -29573,7 +29583,7 @@ menu
 		"
 			CloseAll_Small()
 			CheckForOpenedQuests_Small()
-			QFilter = 0
+			setQuestFilter(0)
 		"
 	}
 	button
@@ -29588,7 +29598,7 @@ menu
 		"
 			CloseAll_Small()
 			CheckForOpenedQuests_Small()
-			QFilter = 1
+			setQuestFilter(1)
 		"
 	}
 	button
@@ -29603,7 +29613,7 @@ menu
 		"
 			CloseAll_Small()
 			CheckForOpenedQuests_Small()
-			QFilter = 2
+			setQuestFilter(2)
 		"
 	}
 	button
@@ -31929,7 +31939,12 @@ function getObjectiveText_Small(row)
 	return text
 end
 
-QFilter = 0
+QFilter = Infinity_GetINIValue('Journal', 'Quest Filter', 0)
+
+function setQuestFilter(value)
+	QFilter = value
+	saveQFilter = true
+end
 
 function highlightFilter_Small(text)
 	if QFilter == 0 and text == 'All' then
