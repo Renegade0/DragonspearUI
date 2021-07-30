@@ -13431,6 +13431,9 @@ menu
 		"
 	}
 }
+`
+singleClickTravel = Infinity_GetINIValue('Game Options', 'Single Click Travel', 0) ~= 0
+`
 menu
 {
 	name "WORLD_MAP"
@@ -13464,6 +13467,9 @@ menu
 		action
 		"
 			worldMapScreen:OnMapMouseDown(eventXCoord,eventYCoord)
+			if singleClickTravel and worldMapScreen:IsTravelButtonClickable() then
+				worldMapScreen:TravelToSelected()
+			end
 		"
 		actionDbl
 		"
