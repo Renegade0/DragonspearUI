@@ -27656,7 +27656,7 @@ menu
 		bam RGGBUT
 		sequence 2
 		frame lua "rggbuttHighlight3()"
-		tooltip lua "getTooltipWithHotkey(3,24359)"
+		tooltip lua "getTooltipWithHotkey(3,16308)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		glow lua "showJournal == 1"
@@ -27683,7 +27683,7 @@ menu
 		bam RGGBUT
 		sequence 1
 		frame lua "rggbuttHighlight4()"
-		tooltip lua "getTooltipWithHotkey(0,24358)"
+		tooltip lua "getTooltipWithHotkey(0,16307)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		glow lua "highlightSidebarButton(inventoryScreen)"
@@ -27711,7 +27711,7 @@ menu
 		bam RGGBUT
 		sequence 3
 		frame lua "rggbuttHighlight5()"
-		tooltip lua "getTooltipWithHotkey(1,24356)"
+		tooltip lua "getTooltipWithHotkey(1,16306)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		glow lua "highlightSidebarButton(characterScreen)"
@@ -27739,7 +27739,7 @@ menu
 		bam RGGBUT
 		sequence 4
 		frame lua "rggbuttHighlight6()"
-		tooltip lua "getTooltipWithHotkey(5,24360)"
+		tooltip lua "getTooltipWithHotkey(5,16309)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		glow lua "highlightSidebarButton(mageScreen)"
@@ -27767,7 +27767,7 @@ menu
 		bam RGGBUT
 		sequence 5
 		frame lua "rggbuttHighlight7()"
-		tooltip lua "getTooltipWithHotkey(6,24357)"
+		tooltip lua "getTooltipWithHotkey(6,14930)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		glow lua "highlightSidebarButton(priestScreen)"
@@ -27809,7 +27809,7 @@ menu
 		area 1 55 57 57
 		bam RGGLOGO1
 		ScaleToClip
-		tooltip lua "getTooltipWithHotkey(2,24364)"
+		tooltip lua "getTooltipWithHotkey(2,16313)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 --		glow lua "highlightSidebarButton(worldScreen)"
@@ -27841,7 +27841,7 @@ menu
 		on 'o'
 		area 0 0 48 47
 		bam RGGOPT
-		tooltip lua "getTooltipWithHotkey(7,24362)"
+		tooltip lua "getTooltipWithHotkey(7,16311)"
 		tooltip force lua "sidebarForceTooltips == 1"
 		tooltip force top
 		glow lua "highlightSidebarButton(optionsScreen)"
