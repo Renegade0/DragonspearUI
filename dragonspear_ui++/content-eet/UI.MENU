@@ -7936,6 +7936,9 @@ function Inventory:create()
 			-- result = 1: item picked up, 2: put down
 			local result = f(...)
 
+			-- update equipment comparison info
+			self:updateStats()
+
 			if result == 1 and needsWorkaround then
 				-- The returned mouse position is weird, I think it's relative
 				-- to the center of some parent element, probably inventory window.
@@ -8021,7 +8024,6 @@ function Inventory:select(i)
 	local key = self.keymap[i]
 	if key then
 		Infinity_PressKeyboardButton(key)
-		self:updateStats()
 	end
 end
 
