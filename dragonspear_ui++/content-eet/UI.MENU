@@ -388,7 +388,7 @@ function updateAttrTable()
 		table.insert(listItems, { nil, '^D' .. t('STATUS_EFFECTS_LABEL') .. ':' .. '^B'})
 	end
 	for k, v in pairs(characters[currentID].statusEffects) do
-		table.insert(listItems, {v.current, '    ' .. Infinity_FetchString(v.strRef)})
+		table.insert(listItems, {v.current, '    ' .. Infinity_FetchString(v.strRef), bam = v.bam})
 	end
 	if statusEffects[1] ~= nil then
 		table.insert(listItems, { nil, '' })
@@ -1345,7 +1345,7 @@ menu
 			label
 			{
 				area        0 5 -1 -1 -- '5' aligns the icon with the text
-				bam         'STATES'
+				bam         lua "listItems[rowNumber].bam"
 				sequence    lua "listItems[rowNumber][1]"
 				enabled     "listItems[rowNumber][1] ~= nil"
 			}
@@ -7195,6 +7195,7 @@ menu
 		tooltip lua "Infinity_GetPortraitTooltip(5)"
 		clickable lua "sidebarsGreyed ~= 1"
 	}
+
 }
 menu
 {
