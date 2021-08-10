@@ -244,3 +244,19 @@ COPY_EXISTING + ~M_BG.lua~ ~override~
 }~
 		END
 	END
+
+/////////////////////////////////////////////////////////////////////////////////
+///  BLURRY PORTRAITS FIX
+/////////////////////////////////////////////////////////////////////////////////
+
+BEGIN @1009
+
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
+
+ACTION_DEFINE_ARRAY blurry_portraits BEGIN schael coran hephern END
+ACTION_PHP_EACH blurry_portraits AS _ => v BEGIN
+	ACTION_IF (FILE_EXISTS_IN_GAME ~%v%l.bmp~) BEGIN
+		COPY_EXISTING ~%v%l.bmp~ ~override/%v%s.bmp~
+		COPY_EXISTING ~%v%l.bmp~ ~override/%v%m.bmp~
+	END
+END
