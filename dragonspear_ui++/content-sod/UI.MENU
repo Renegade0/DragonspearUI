@@ -5380,15 +5380,16 @@ menu
 		bam			GUIBUTNT
 		sequence	6
 		area		138 289 201 40
-		clickable	lua "itemRequestAmt > 0"
+		-- the edit only permits to enter numbers or nothing at all, so this should be enough
+		clickable	lua "itemRequestAmt ~= '' and itemRequestAmt ~= 0"
 		text  "DONE_BUTTON"
 		text style	"button"
 		action
 		"
 			local cnt = tonumber(itemRequestAmt)
 			Infinity_PopMenu('POPUP_REQUESTER')
-			if(cnt and cnt > 0 and cnt <= requester.requesterMax) then
-				requester.requesterFunc(cnt)
+			if cnt and cnt > 0 then
+				requester.requesterFunc(math.min(cnt, requester.requesterMax))
 			end
 			requestAmt = 0
 			itemRequestAmt = 1
