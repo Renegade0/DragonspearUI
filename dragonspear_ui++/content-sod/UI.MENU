@@ -19051,7 +19051,7 @@ menu
 	align center center
 	ignoreesc
 	onopen "
-		MultiPortraitPicker = Infinity_GetINIValue('Game Options','MultiPortraitPicker',0)
+		MultiPortraitPicker = Infinity_GetINIValue('Game Options','MultiPortraitPicker',1)
 		if MultiPortraitPicker == 1 then
 			IncPortraitArray()
 		end
