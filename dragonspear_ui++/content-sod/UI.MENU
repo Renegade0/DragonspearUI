@@ -18755,6 +18755,22 @@ tSort = ""
 -- might be nil
 BGImages = BGImages or {}
 
+function getAvailablePortraits()
+	local seen = {}
+
+	while true do
+		local portrait = createCharScreen:GetCurrentPortrait()
+		local key = portrait:lower()
+		if seen[key] then
+			break
+		end
+		seen[key] = portrait
+		createCharScreen:IncCurrentPortrait()
+	end
+
+	return seen
+end
+
 function PortraitContainsSearchString(rowNumber)
 
 	if(PortraitSearchString == nil or PortraitSearchString == "") then return 1 end --no search string, do nothing
@@ -18821,12 +18837,12 @@ end
 function UpdatePortraitPicker()
 	PortraitPicker = {}
 	if toggleSort == 0 then
-		AddBGImages()
 		Addportraits()
+		AddBGImages()
 		tSort = PPStrings.PP_SORTDC
 	elseif toggleSort == 1 then
-		Addportraits()
 		AddBGImages()
+		Addportraits()
 		tSort = PPStrings.PP_SORTCD
 	end
 end
@@ -18834,7 +18850,7 @@ end
 function AddBGImages()
 	for i=1,#BGImages,1 do
 		local name = BGImages[i][1]
-		local fname = BGImages[i][3]
+		local fname = BGImages[i][3]:lower()
 		if BGImages[i][2] == 'F' then
 			BGgender = 'F'
 		elseif BGImages[i][2] == 'M' then
@@ -18843,7 +18859,9 @@ function AddBGImages()
 			BGgender = 'D'
 		end
 
-		table.insert(PortraitPicker, i, {name,BGgender,string.lower(fname)})
+		if duiAvailablePortraits[fname] then
+			table.insert(PortraitPicker, {name, BGgender, fname})
+		end
 	end
 end
 
@@ -18860,7 +18878,9 @@ function Addportraits()
 			BGgender = 'M'
 		end
 
-		table.insert(PortraitPicker, i, {name,BGgender,fname})
+		if duiAvailablePortraits[fname:lower()] then
+			table.insert(PortraitPicker, {name, BGgender, fname})
+		end
 	end
 end
 
@@ -19078,7 +19098,12 @@ menu
 		else
 			togS = PPStrings.PP_CHAR_MALE
 		end
+
+		duiAvailablePortraits = getAvailablePortraits()
 		UpdatePortraitPicker()
+	"
+	onclose "
+		duiAvailablePortraits = nil
 	"
 
 	label
