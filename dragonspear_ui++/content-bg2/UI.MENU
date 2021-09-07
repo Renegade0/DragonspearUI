@@ -21141,8 +21141,8 @@ function proficiencyOrGeneralHelp()
 				return chargen.levelInfo
 			end
 		else
-		return Infinity_FetchString(24315)
-	end
+			return Infinity_FetchString(9588)
+		end
 	end
 end
 
