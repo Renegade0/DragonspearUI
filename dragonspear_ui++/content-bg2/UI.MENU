@@ -21545,9 +21545,13 @@ function chooseSpellOrGeneralHelp()
 	end
 end
 function rgUnlearnDefault()
-	if randomCharacter == 0 then
+	-- randomCharacter might be 0 when leveling up, if we went through the chargen
+	-- and haven't restarted the game yet, so the global variable is still there
+	if randomCharacter == 0 and not chargen.levelingUp then
 		for i, spell in pairs(chargen.choose_spell) do
-			if spell.known or spell.enabled then
+			-- make sure that we don't accidently click on a known spell, we can't unlearn it,
+			-- but can lose spell slots if we do click on it
+			if spell.enabled and not spell.known then
 				createCharScreen:OnLearnMageSpellButtonClick(i)
 			end
 		end
