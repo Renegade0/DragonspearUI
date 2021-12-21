@@ -3,8 +3,13 @@ for _,v in ipairs(portraits) do
 	hash[v[1]] = true
 end
 
+local exists = {}
+for _, v in pairs(Infinity_GetFilesOfType("bmp")) do
+	exists[v[1]:upper()] = true
+end
+
 function addPortrait(name, gender)
-	if (hash[name] == nil) then
+	if not hash[name] and exists[name .. 'L'] then
 		table.insert(portraits, {name, gender})
 	end
 end
