@@ -29522,8 +29522,15 @@ menu
 		local WDB3x,WDB3y,WDB3w,WDB3h = Infinity_GetArea('worldDialogButton3')
 		local screenWidth,screenHeight = Infinity_GetScreenSize()
 
-		if (choicesHeight + npcH + 100) > (screenHeight * (8/10)) then
-			choicesHeight = (screenHeight * (8/10)) - 100 - npcH
+		-- assume screenHeight >= 129, i.e. maxHeight >= 3
+		local maxHeight = math.floor(screenHeight * 8 / 10) - 100
+		if choicesHeight + npcH > maxHeight then
+			if maxHeight < npcH then
+				choicesHeight = math.min(50, choicesHeight - 40, math.floor(maxHeight / 3))
+				npcH = maxHeight - choicesHeight
+			else
+				choicesHeight = maxHeight - npcH
+			end
 			desiredHeight = choicesHeight + 100 + npcH
 		end
 
@@ -29723,6 +29730,21 @@ menu
 		if x == nil or not (portPosition == 'Left' or portPosition == 'Right') then
 			return
 		end
+
+		-- TODO swap Left and Right
+		-- TODO: make worldNPCDialogPortrait either nil or valid string
+		-- window might have been resized, make sure we don't overflow
+
+		local wd = select(3, Infinity_GetArea('worldDialogBackground'))
+		local wp = select(3, Infinity_GetArea('worldDialogPortraitArea'))
+		local portrait = portPosition == 'Left' and worldNPCDialogPortrait or ''
+		if portrait == '' or portrait == 'NONE' then
+			wp = 0
+		end
+
+		-- margin + dialog + dialog portrait + portraits panel
+		local w = 5 + wd + wp + (LargePortraits == 1 and 86 or 68)
+		x = math.min(x, math.max(0, Infinity_GetScreenSize() - w))
 
 		-- everything is okay, finally set the variables
 		if portPosition == 'Left' then
