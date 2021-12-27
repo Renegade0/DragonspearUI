@@ -1,0 +1,134 @@
+menu
+{
+	name 'CHARGEN_MEMORIZE_MAGE'
+	align center center
+	ignoreesc
+	onOpen "
+		table.sort(chargen.choose_spell, sortByMageSpellName)
+		currentChargenMemorizeMageSpell = nil
+		"
+	label
+	{
+		area 0 0 1444 818
+		mosaic RGCGWDE
+	}
+	label
+	{
+		area 378 78 686 52
+		text lua "chargen.title"
+		text style "title"
+	}
+	list
+	{
+		column
+		{
+			width 18
+
+			label
+			{
+				bam GUIBTBUT
+				area 0 0 52 52
+				align center center
+				icon lua "mageSpells[chargen.currentSpellLevelChoice][chargen.choose_spell[rowNumber].key].groundicon"
+				frame lua "specialistFrame(rowNumber)"
+				count lua "chargen.choose_spell[rowNumber].count"
+			}
+		}
+		column
+		{
+			width 56
+			label
+			{
+				area 4 0 -1 -1
+				text lua "Infinity_FetchString(mageSpells[chargen.currentSpellLevelChoice][chargen.choose_spell[rowNumber].key].name)"
+				text style "normal"
+
+				glow lua "chargen.choose_spell[rowNumber].enabled"
+				align left center
+
+			}
+		}
+		column
+		{
+			width 13
+			label
+			{
+				area 0 4 45 42
+				bam GUIOSW
+				frame lua "currentCellCheck(3)"
+				sequence 0
+			}
+		}
+		column
+		{
+			width 13
+			label
+			{
+				area 0 4 45 42
+				bam GUIOSW
+				frame lua "currentCellCheck(4)"
+				sequence 1
+
+			}
+		}
+
+
+		scrollbar	'GUISCRC'
+		rowheight 52
+		hideHighlight
+		area 352 182 352 438
+		table "chargen.choose_spell"
+		var currentChargenMemorizeMageSpell
+		action "
+			if cellNumber == 3 then
+				createCharScreen:OnMemorizeMageSpellButtonClick(currentChargenMemorizeMageSpell, 1)
+			elseif cellNumber == 4 then
+				createCharScreen:OnMemorizeMageSpellButtonClick(currentChargenMemorizeMageSpell, -1)
+			end
+			cellNumber = nil
+		"
+	}
+	text
+	{
+		area 748 182 342 515
+		text lua "mageMemorizeSpellOrGeneralHelp()"
+		text style "normal"
+		scrollbar	'GUISCRC'
+	}
+
+	label
+	{
+		area 480 649 176 48
+		text "SPELLS_REMAINING_NORMAL"
+		text style "normal"
+		text align right center
+	}
+	label
+	{
+		area 664 649 36 48
+		text lua "chargen.extraSpells"
+		text style "normal"
+		text align center center
+	}
+
+	button
+	{
+		on escape
+		area 416 724 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu(); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		area 808 724 230 40
+		bam GUIBUTMT
+		text lua "nextOrDone()"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action "createCharScreen:OnDoneButtonClick()"
+	}
+
+}

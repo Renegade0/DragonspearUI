@@ -1,0 +1,157 @@
+menu
+{
+	name 'POPUP_REQUESTER'
+	align center center
+	modal
+	onOpen
+	"
+		if requester.selling == false then
+			itemRequestAmt = 0
+			requestAmt = 0
+		elseif requester.selling < 10 then
+			itemRequestAmt = 1
+			requestAmt = 1
+		else
+			itemRequestAmt = requester.requesterMax
+			requestAmt = requester.requestMax
+
+		end
+	"
+
+	label
+	{
+		area 0 0 465 500
+		mosaic GUIERR
+	}
+	label
+	{
+		area	132 84 208 47
+		text	"CHOOSE_AMT_LABEL"
+		text align center center
+		text style "label"
+	}
+	edit
+	{
+		area		147 142 86 48
+		var			itemRequestAmt
+		text style	"edit"
+		align center center
+		maxlines	1
+		fill            112 111 111 64
+		action
+		"
+			-- only permit numbers as letters.
+			-- character limit of 4
+			if((tonumber(letter_pressed) ~= nil and #tostring(itemRequestAmt) < 4) or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
+	}
+	button
+	{
+		on escape
+		bam			GUIBUTNT
+		sequence	6
+		area		138 345 201 40
+		text  "CANCEL_BUTTON"
+		text style	"button"
+		action
+		"
+			Infinity_PopMenu('POPUP_REQUESTER')
+			requestAmt = 0
+			itemRequestAmt = 1
+		"
+	}
+	button
+	{
+		bam			GUIBUTNT
+		sequence	6
+		area		138 289 201 40
+		-- the edit only permits to enter numbers or nothing at all, so this should be enough
+		clickable	lua "itemRequestAmt ~= '' and itemRequestAmt ~= 0"
+		text  "DONE_BUTTON"
+		text style	"button"
+		action
+		"
+			local cnt = tonumber(itemRequestAmt)
+			Infinity_PopMenu('POPUP_REQUESTER')
+			if cnt and cnt > 0 then
+				requester.requesterFunc(math.min(cnt, requester.requesterMax))
+			end
+			requestAmt = 0
+			itemRequestAmt = 1
+		"
+	}
+	slider
+	{
+		area 130 227 212 39
+		position "requestAmt"
+		bam	 'SLDRSTAR'
+		mosaic RGSCALE
+		sequence 0
+		frame	 1
+		settings 	21
+		pad 4 0 6 0
+		enabled "requester.requesterMax > 10"
+		action
+		"
+			selectedOpt = 0
+			selectedSL = 0
+			itemRequestAmt = math.floor(requestAmt * requester.requesterMax / 20)
+		"
+	}
+
+	button	{	enabled "requester.requesterMax > 10"	sequence	6	area	118 190 46 38	text	"0"	text style	"button"	text point 	10
+		action	"	local amt = tonumber(itemRequestAmt)	itemRequestAmt = 0	"	}
+	button	{	enabled "requester.requesterMax > 10"	sequence	6	area	164 190 46 38	text lua	"math.floor(requester.requesterMax/4)"	text style	"button"	text point 10
+		action	"	local amt = tonumber(itemRequestAmt)	itemRequestAmt = math.floor(requester.requesterMax/4)	"	}
+	button	{	enabled "requester.requesterMax > 10"	sequence	6	area	210 190 52 38	text lua	"math.floor(requester.requesterMax/2)"	text style	"button"	text point 10
+		action	"	local amt = tonumber(itemRequestAmt)	itemRequestAmt = math.floor(requester.requesterMax/2)	"	}
+	button	{	enabled "requester.requesterMax > 10"	sequence	6	area	262 190 46 38	text lua	"math.floor(3*requester.requesterMax/4)"	text style	"button"	text point 10
+		action	"	local amt = tonumber(itemRequestAmt)	itemRequestAmt = math.floor(3*requester.requesterMax/4)	"	}
+	button	{	enabled "requester.requesterMax > 10"	sequence	6	area	311 190 42 38	text lua	"math.floor(requester.requesterMax)"	text style	"button"	text point 10
+		action	"	local amt = tonumber(itemRequestAmt)	itemRequestAmt = math.floor(requester.requesterMax)	"	}
+
+	button
+	{
+		bam GUIOSW
+		area 242 146 44 44
+		sequence 0
+		action
+		"
+			local amt = tonumber(itemRequestAmt)
+			if(amt < requester.requesterMax) then
+				itemRequestAmt = amt + 1
+			end
+		"
+		actionHold
+		"
+			local amt = tonumber(itemRequestAmt)
+			if(amt < requester.requesterMax) then
+				itemRequestAmt = amt + 1
+			end
+		"
+	}
+	button
+	{
+		bam GUIOSW
+		area 290 146 44 44
+		sequence 1
+		action
+		"
+			local amt = tonumber(itemRequestAmt)
+			if(amt > 1) then
+				itemRequestAmt = amt - 1
+			end
+		"
+		actionHold
+		"
+			local amt = tonumber(itemRequestAmt)
+			if(amt > 1) then
+				itemRequestAmt = amt - 1
+			end
+		"
+	}
+}

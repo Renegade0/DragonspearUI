@@ -1,0 +1,47 @@
+menu
+{
+	name 'POPUP_TWOBUTTON'
+	align center center
+	modal
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label
+	{
+		area 29 21 580 126
+		text lua "getStringFromAmbiguousSource(Popup2Button.info)"
+		text style	"label"
+		text align center center
+	}
+	button
+	{
+		on escape
+		area 79 170 230 40
+		bam GUIBUTMT
+		text lua "t(Popup2Button.cancelText or 'CANCEL_BUTTON')"
+		text style	"button"
+		action
+		"
+			Infinity_PopMenu('POPUP_TWOBUTTON')
+			if (Popup2Button.cancelFunc) then
+				Popup2Button.cancelFunc()
+			end
+		"
+	}
+	button
+	{
+		area 343 170 230 40
+		bam GUIBUTMT
+		text style	"button"
+		text lua "t(Popup2Button.okText or 'DONE_BUTTON')"
+		action
+		"
+			Infinity_PopMenu('POPUP_TWOBUTTON')
+			if (Popup2Button.okFunc) then
+				Popup2Button.okFunc()
+			end
+		"
+	}
+}

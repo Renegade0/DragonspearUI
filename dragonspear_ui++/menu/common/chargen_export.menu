@@ -1,0 +1,83 @@
+menu
+{
+	name 'CHARGEN_EXPORT'
+	modal
+	align center center
+	ignoreesc
+	onopen "chargenExportListId = 0"
+	label
+	{
+		area 0 0 864 710
+		mosaic 'GUIPOP46'
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 -1
+				text lua "list_GUICG_21_2[rowNumber]"
+				text style "list"
+				pad 8 0 0 0
+			}
+		}
+		area 42 100 312 282
+		rowheight	18
+		table		"list_GUICG_21_2"
+		var			"chargenExportListId"
+		scrollbar	'GUISCRC'
+		action
+		"
+			createCharScreen:OnCharacterExportItemSelect(chargenExportListId - 1)
+		"
+	}
+	text
+	{
+		area 362 100 466 498
+		text `REF_CHARGEN_EXPORT_TEXT`
+		text style "normal"
+
+	}
+	label
+	{
+		area		42 382 312 23
+		text		"EXPORT_FILENAME_LABEL"
+		text style	"label"
+		text color 3
+	}
+	label
+	{
+		area		42 405 312 51
+		rectangle	0
+	}
+	edit
+	{
+		name		"chargenExportCharacterEditArea"
+		area		48 416 298 30
+		var			chargenExportCharacterEdit
+		text style	"edit"
+		maxlines	1
+		fill            112 111 111 64
+	}
+	button
+	{
+		on escape
+		area 196 650 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu('CHARGEN_EXPORT'); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		area 438 650 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu('CHARGEN_EXPORT'); createCharScreen:OnDoneButtonClick()"
+	}
+
+}

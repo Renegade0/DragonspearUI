@@ -1,0 +1,120 @@
+menu
+{
+	name 'RIGHT_SIDEBAR'
+	align right top
+	ignoreEsc
+	onOpen
+	"
+		if(sidebarVisible.RIGHT == 1) then
+			Infinity_PushMenu('RIGHT_SIDEBAR_BOTTOM')
+		else
+			Infinity_PopMenu('RIGHT_SIDEBAR')
+			Infinity_PushMenu('RIGHT_SIDEBAR_HIDDEN')
+		end
+		if(worldScreen == e:GetActiveEngine() and game:GetPartyAI()) then aiButtonToggle = 1 end
+		if(worldScreen == e:GetActiveEngine()) then Infinity_PushMenu('WORLD_LEVEL_UP_BUTTONS') end
+		if QuicklootStartPref == UIStrings.UI_Visible and groundItemsButtonToggle == 1 then
+			worldScreen:StartGroundItems()
+			groundItemsButtonToggle = 1
+		elseif QuicklootStartPref == UIStrings.UI_Visible and groundItemsButtonToggle == 0 then
+			worldScreen:StopGroundItems()
+			groundItemsButtonToggle = 0
+		elseif QuicklootStartPref == UIStrings.UI_Hidden and groundItemsButtonToggle == 1 then
+			worldScreen:StartGroundItems()
+			groundItemsButtonToggle = 1
+		elseif QuicklootStartPref == UIStrings.UI_Hidden and groundItemsButtonToggle == 0 then
+			worldScreen:StopGroundItems()
+			groundItemsButtonToggle = 0
+		end
+	"
+	onClose
+	"
+		Infinity_PopMenu('RIGHT_SIDEBAR_BOTTOM')
+		Infinity_PopMenu('WORLD_LEVEL_UP_BUTTONS')
+	"
+
+	label
+	{
+		name 'rightSidebarBackground'
+		enabled "false"
+		area 0 0 0 0
+	}
+
+	button
+	{
+		area 7 0 88 1
+		text lua "hidePortraits()"
+	}
+
+
+
+#for i = 0, 5 do
+#local y = 10 + 98 * i
+	label
+	{
+		name "portrait`i + 1`ShadowSmall"
+		enabled "Infinity_GetNumCharacters() > `i` and rgEscPortrait ~= 1 and LargePortraits == 0"
+		area 22 `y` 68 99
+		mosaic RGGFRM4
+	}
+	button
+	{
+		name "portrait`i + 1`ButtonSmall"
+		area 24 `y + 4` 64 91
+		portrait `i`
+		bam RGGFRM3
+		enabled "Infinity_GetNumCharacters() > `i` and rgEscPortrait ~= 1 and LargePortraits == 0"
+		glow lua "draggedPortrait and draggedPortrait ~= `i`"
+		action "Infinity_OnPortraitLClick(`i`)"
+		actionAlt "Infinity_OnPortraitRClick(`i`)"
+		actionDbl "Infinity_OnPortraitDblClick(`i`)"
+		actiondrag "Infinity_SwapWithPortrait(`i`)"
+		actionEnter "mouseOverPortrait = `i`"
+		actionExit "mouseOverPortrait = -1"
+		actionSimpleDrag "draggedPortrait = `i`"
+		actionSimpleDrop "swapPortraits(`i`)"
+		tooltip lua "Infinity_GetPortraitTooltip(`i`)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+#end
+
+
+#for i = 0, 5 do
+#local y = 10 + 130 * i
+	label
+	{
+		name "portrait`i + 1`ShadowBig"
+		enabled "Infinity_GetNumCharacters() > `i` and rgEscPortrait ~= 1 and LargePortraits == 1"
+	#if GAME_VERSION == 'sod' then
+		area 2 `y` 86 131
+	#else
+		area 2 `y` 0 0
+	#end
+		mosaic RGGFRM6
+	}
+	button
+	{
+		name "portrait`i + 1`ButtonBig"
+	#if GAME_VERSION == 'sod' then
+		area 4 `y + 4` 82 123
+	#else
+		area 4 `y + 4` 0 0
+	#end
+		portrait `i`
+		bam RGGFRM5
+		enabled "Infinity_GetNumCharacters() > `i` and rgEscPortrait ~= 1 and LargePortraits == 1"
+		glow lua "draggedPortrait and draggedPortrait ~= `i`"
+		action "Infinity_OnPortraitLClick(`i`)"
+		actionAlt "Infinity_OnPortraitRClick(`i`)"
+		actionDbl "Infinity_OnPortraitDblClick(`i`)"
+		actiondrag "Infinity_SwapWithPortrait(`i`)"
+		actionEnter "mouseOverPortrait = `i`"
+		actionExit "mouseOverPortrait = -1"
+		actionSimpleDrag "draggedPortrait = `i`"
+		actionSimpleDrop "swapPortraits(`i`)"
+		tooltip lua "Infinity_GetPortraitTooltip(`i`)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+#end
+
+}

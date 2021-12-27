@@ -1,0 +1,30 @@
+menu
+{
+	name 'LEFT_SIDEBAR'
+	align left top
+	ignoreEsc
+	onOpen
+	"
+		if(sidebarVisible.LEFT == 1) then
+			Infinity_PushMenu('LEFT_SIDEBAR_BOTTOM')
+		else
+			Infinity_PopMenu('LEFT_SIDEBAR')
+			Infinity_PushMenu('LEFT_SIDEBAR_HIDDEN')
+		end
+		if(showJournal == 1) then
+			Infinity_PushMenu('JOURNAL')
+		end
+		sidebarForceTooltips = 0
+	"
+	onClose
+	"
+		Infinity_PopMenu('LEFT_SIDEBAR_BOTTOM')
+		Infinity_PopMenu('JOURNAL')
+	"
+	label
+	{
+		name 'leftSidebarBackground'
+		enabled "false"
+		area 0 0 0 0
+	}
+}

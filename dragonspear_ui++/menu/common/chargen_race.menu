@@ -1,0 +1,81 @@
+menu
+{
+	name 'CHARGEN_RACE'
+--	modal
+	align center center
+	ignoreesc
+	onopen "currentChargenRace = nil"
+	label
+	{
+		area 0 0 1444 818
+		mosaic RGCGWDE
+	}
+	label
+	{
+		area 342 82 744 44
+		text "RACE_TITLE"
+		text style "title"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 		0 0 310 42
+				mosaic lua  'getRaceBackground(rowNumber)'
+				respectClipping
+				align		center center
+			}
+			label
+			{
+				area 0 0 310 42
+				text lua "Infinity_FetchString(chargen.races[rowNumber].name)"
+				text style "list"
+				text align center center
+				pad -8 0 0 0
+				text lower
+
+			}
+		}
+		action "
+			if chargen.races[currentChargenRace] then
+				createCharScreen:OnRaceSelectButtonClick(chargen.races[currentChargenRace].id)
+			end
+			"
+		rowheight 42
+		hideHighlight
+		area 376 180 318 518
+		table "chargen.races"
+		var currentChargenRace
+		scrollbar	'GUISCRC'
+	}
+	text
+	{
+		area 748 180 344 518
+		text lua "raceOrGeneralHelp()"
+		text style "normal"
+		scrollbar	'GUISCRC'
+	}
+	button
+	{
+		on escape
+		area 420 726 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu(); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		area 806 726 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action "Infinity_PopMenu(); createCharScreen:OnDoneButtonClick(); chargen.selectedRace = chargen.races[ currentChargenRace ].id;"
+	}
+
+}

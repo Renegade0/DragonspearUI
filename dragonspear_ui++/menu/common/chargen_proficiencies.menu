@@ -1,0 +1,354 @@
+menu
+{
+	name 'CHARGEN_PROFICIENCIES'
+--	modal
+	align center center
+	ignoreesc
+	onopen "currentChargenProficiency = nil; currentChargenThiefSkill = nil; ticksPassed = 0; ticksStarting = 0"
+	label
+	{
+		area 0 0 1444 818
+		mosaic RGLEVEL
+	}
+	label
+	{
+		area 247 33 948 42
+		text lua "getProficienciesTitle()"
+		text style "title"
+	}
+	label
+	{
+		area 106 171 244 44
+		text "PROF_SLOTS_LABEL"
+		text style "label"
+	}
+	label
+	{
+		area 364 171 196 44
+		text lua "chargen.extraProficiencySlots"
+		text style "label"
+	}
+	label
+	{
+		area 592 171 198 44
+		text "SKILLS_LABEL"
+		text style "label"
+	}
+	label
+	{
+		area 800 171 157 44
+		text lua "chargen.extraSkillPoints"
+		text style "label"
+	}
+
+	list
+	{
+		column
+		{
+			width 60
+			label
+			{
+				area 0 0 235 44
+				text lua "Infinity_FetchString(chargen.proficiency[rowNumber].name)"
+				text style "normal"
+				align right center
+
+			}
+		}
+		column
+		{
+			width 4
+			label
+			{
+				bam GUIPFC
+				area 0 13 16 16
+				align center center
+				enabled "chargen.proficiency[rowNumber].value > 4"
+			}
+		}
+		column
+		{
+			width 4
+			label
+			{
+				bam GUIPFC
+				area 0 13 16 16
+				align center center
+				enabled "chargen.proficiency[rowNumber].value > 3"
+			}
+		}
+		column
+		{
+			width 4
+			label
+			{
+				bam GUIPFC
+				area 0 13 16 16
+				align center center
+				enabled "chargen.proficiency[rowNumber].value > 2"
+			}
+		}
+		column
+		{
+			width 4
+			label
+			{
+				bam GUIPFC
+				area 0 13 16 16
+				align center center
+				enabled "chargen.proficiency[rowNumber].value > 1"
+			}
+		}
+		column
+		{
+			width 4
+			label
+			{
+				bam GUIPFC
+				area 0 13 16 16
+				align center center
+				enabled "chargen.proficiency[rowNumber].value > 0"
+			}
+		}
+
+		column
+		{
+			width 10
+			label
+			{
+				area 2 0 45 44
+				bam GUIOSW
+				frame lua "getPlusFrame(7)"
+				sequence 0
+				align center center
+			}
+		}
+		column
+		{
+			width 10
+			label
+			{
+				area 0 0 45 44
+				bam GUIOSW
+				sequence 1
+				frame lua "getMinusFrame(8)"
+
+				align center center
+			}
+		}
+
+		action
+		"
+			currentChargenThiefSkill = nil
+			if ticksStarting < 10 then
+				if cellNumber == 7 and plusButtonClickable(currentChargenProficiency) then
+					createCharScreen:OnProficiencyPlusMinusButtonClick(chargen.proficiency[currentChargenProficiency].id, true)
+				elseif cellNumber == 8 and minusButtonClickable(currentChargenProficiency) then
+					createCharScreen:OnProficiencyPlusMinusButtonClick(chargen.proficiency[currentChargenProficiency].id, false)
+				end
+			end
+			cellNumber = nil
+			ticksPassed = 0
+			ticksStarting = 0
+		"
+		actionUpdate
+		"
+			currentChargenThiefSkill = nil
+			ticksStarting = ticksStarting + 1
+			if ticksStarting > 10 then
+				ticksPassed = ticksPassed + 1
+				if ticksPassed > 7 then
+					if cellNumber == 7 and plusButtonClickable(currentChargenProficiency) then
+						createCharScreen:OnProficiencyPlusMinusButtonClick(chargen.proficiency[currentChargenProficiency].id, true)
+					elseif cellNumber == 8 and minusButtonClickable(currentChargenProficiency) then
+						createCharScreen:OnProficiencyPlusMinusButtonClick(chargen.proficiency[currentChargenProficiency].id, false)
+					end
+					ticksPassed = 0
+				end
+			end
+		"
+
+		rowheight 44
+		area 100 228 458 474
+		table "chargen.proficiency"
+		var currentChargenProficiency
+		scrollbar	'GUISCRC'
+
+	}
+	list
+	{
+		column
+		{
+			width 63
+			label
+			{
+				area 0 0 180 54
+				text lua "Infinity_FetchString(chargen.thief_skill[rowNumber].name)"
+				text style "normal"
+				text align right center
+
+			}
+		}
+		column
+		{
+			width 13
+			label
+			{
+				area 0 0 40 54
+				text lua "chargen.thief_skill[rowNumber].value"
+				text style "normal"
+				text align left center
+
+			}
+		}
+		column
+		{
+			width 12
+			label
+			{
+				area 0 6 45 42
+				bam GUIOSW
+				enabled "createCharScreen:IsThiefSkillPlusMinusButtonClickable()"
+				frame lua "currentCellCheck(3)"
+				sequence 0
+			}
+		}
+		column
+		{
+			width 12
+			label
+			{
+				area 0 6 45 42
+				bam GUIOSW
+				enabled "createCharScreen:IsThiefSkillPlusMinusButtonClickable()"
+				frame lua "currentCellCheck(4)"
+				sequence 1
+
+			}
+		}
+
+		action
+		"
+			currentChargenProficiency = nil
+			if ticksStarting < 10 then
+				if createCharScreen:IsThiefSkillPlusMinusButtonClickable() then
+					if cellNumber == 3 then
+						createCharScreen:OnThiefSkillPlusMinusButtonClick(chargen.thief_skill[currentChargenThiefSkill].id, true)
+					elseif cellNumber == 4 then
+						createCharScreen:OnThiefSkillPlusMinusButtonClick(chargen.thief_skill[currentChargenThiefSkill].id, false)
+					end
+				end
+			end
+			cellNumber = nil
+			ticksPassed = 0
+			ticksStarting = 0
+		"
+		actionUpdate
+		"
+			currentChargenProficiency = nil
+			if createCharScreen:IsThiefSkillPlusMinusButtonClickable() then
+				ticksStarting = ticksStarting + 1
+				if ticksStarting > 10 then
+					ticksPassed = ticksPassed + 1
+					if ticksPassed > 2 then
+						if cellNumber == 3 then
+							createCharScreen:OnThiefSkillPlusMinusButtonClick(chargen.thief_skill[currentChargenThiefSkill].id, true)
+						elseif cellNumber == 4 then
+							createCharScreen:OnThiefSkillPlusMinusButtonClick(chargen.thief_skill[currentChargenThiefSkill].id, false)
+						end
+						ticksPassed = 0
+					end
+				end
+			end
+		"
+
+		rowheight 54
+		area 592 228 365 474
+		table "chargen.thief_skill"
+		var currentChargenThiefSkill
+		scrollbar	'GUISCRC'
+	}
+
+	text
+	{
+		area 996 166 342 536
+		text lua "proficiencyOrGeneralHelp()"
+		text style "normal"
+		scrollbar	'GUISCRC'
+	}
+
+	button
+	{
+		enabled "chargen.levelingUp"
+		area 990 730 230 40
+		bam GUIBUTMT
+		text "INFORMATION_BUTTON"
+		text style "button"
+		toggle "levelUpInfoToggle"
+		action
+		"
+			currentChargenProficiency = nil
+		"
+	}
+#if GAME_VERSION ~= 'sod' then
+	button
+	{
+		enabled "chargen.levelingUp"
+		area 736 730 230 40
+		bam GUIBUTMT
+		text "HIGH_LEVEL_ABILITIES_BUTTON"
+		text style "button"
+		toggle "levelUpInfoToggle"
+		clickable lua "createCharScreen:IsHighLevelAbilitiesButtonClickable()"
+		action
+		"
+			createCharScreen:OnHighLevelAbilitiesButtonClick()
+		"
+	}
+#end
+	button
+	{
+		on escape
+		area 236 730 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		clickable lua "isChargenProficienciesBackButtonClickable()"
+		action "createCharScreen:OnCancelButtonClick();"
+	}
+	button
+	{
+		on return
+#if GAME_VERSION == 'sod' then
+		area 618 730 230 40
+#else
+		area 486 730 230 40
+#end
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action "createCharScreen:OnDoneButtonClick();"
+	}
+	label
+	{
+		area		332 86 778 40
+		text		lua "characters[currentID].name"
+		text style  	'normal'
+		text align	center center
+		enabled	"chargen.levelingUp"
+	}
+	label
+	{
+		area		1230 56 64 90
+		bam GUIRSP10
+		enabled	"chargen.levelingUp"
+	}
+	label
+	{
+		area		1235 59 54 85
+		bitmap		lua "characters[currentID].portrait"
+		enabled	"chargen.levelingUp"
+	}
+
+}

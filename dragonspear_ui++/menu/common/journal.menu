@@ -1,0 +1,1642 @@
+menu
+{
+	name 'JOURNAL'
+	align center center
+	modal lua "JournalSize == UIStrings.UI_Large"
+	onopen
+	"
+		reinitQuests()
+		buildQuestDisplay()
+		chapter = math.max(0,Infinity_GetMaxChapterPage())
+		questOpened = 0
+		journalOpen = 1
+		if JournalSize == UIStrings.UI_Large then
+			unHideLargeJournal()
+			getSidebarButtons_Large()
+			PauseJournal()
+			Infinity_PopMenu('WORLD_QUICKLOOT');
+			Infinity_PopMenu('WORLD_MESSAGES');
+			Infinity_PopMenu('WORLD_ACTIONBAR');
+		elseif JournalSize == UIStrings.UI_Small then
+			positionSmallJournal()
+			QFilter = QFilter ~= 3 and QFilter or 0
+		end
+	"
+	onclose
+	"
+		if saveQFilter and QFilter ~= 3 then
+			Infinity_SetINIValue('Journal', 'Quest Filter', QFilter)
+			saveQFilter = nil
+		end
+		unHideLargeJournal()
+		if JournalSize == UIStrings.UI_Large then
+			worldScreen:TogglePauseGame(true)
+			Infinity_PushMenu('WORLD_MESSAGES')
+			Infinity_PushMenu('WORLD_ACTIONBAR')
+		end
+		journalOpen = 0
+	"
+	label
+	{
+		name "journalLarge_1"
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		area 0 0 1364 756
+		mosaic "RGJRNL"
+	}
+	label
+	{
+		name "journalLeftBack1"
+		enabled "JournalSize == UIStrings.UI_Large"
+		area 0 0 119 116
+		mosaic RGGAM01
+	}
+	label
+	{
+		name "journalLeftBack2"
+		enabled "JournalSize == UIStrings.UI_Large"
+		area 0 0 400 53
+		mosaic RGGAM02
+	}
+	label
+	{
+		name "journalRightBack1"
+		enabled "JournalSize == UIStrings.UI_Large"
+		area 0 0 119 116
+		mosaic RGGAM11
+	}
+	label
+	{
+		name "journalRightBack2"
+		enabled "JournalSize == UIStrings.UI_Large"
+		area 0 0 400 53
+		mosaic RGGAM12
+	}
+	button
+	{
+		enabled "JournalSize == UIStrings.UI_Large"
+		name "journalLeftButton2"
+		on 'm'
+		area 0 0 48 47
+		bam RGGBUT
+		sequence 0
+		frame lua "rggbuttHighlight2()"
+		tooltip lua "getTooltipWithHotkey(4,15418)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+		glow lua "highlightSidebarButton(mapScreen)"
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+			e:GetActiveEngine():OnLeftPanelButtonClick(1)
+		"
+		actionhold
+		"
+			worldMapScreen:StartWorldMap(0)
+			e:SelectEngine(worldMapScreen)
+		"
+		actionEnter
+		"
+			rgHighlightMap = 1
+		"
+		actionExit
+		"
+			rgHighlightMap = 0
+		"
+	}
+	button
+	{
+		enabled "JournalSize == UIStrings.UI_Large"
+		name "journalLeftButton3"
+		on 'J'
+		area 0 0 48 47
+		bam RGGBUT
+		sequence 2
+		frame lua "rggbuttHighlight3()"
+		tooltip lua "getTooltipWithHotkey(3,`REF_TOOLTIP_JOURNAL_TOGGLE`)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+		glow lua "showJournal == 1"
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+		"
+		actionEnter
+		"
+			rgHighlightJou = 1
+		"
+		actionExit
+		"
+			rgHighlightJou = 0
+		"
+	}
+	button
+	{
+		enabled "JournalSize == UIStrings.UI_Large"
+		name "journalLeftButton4"
+		on 'i'
+		area 0 0 48 47
+		bam RGGBUT
+		sequence 1
+		frame lua "rggbuttHighlight4()"
+		tooltip lua "getTooltipWithHotkey(0,`REF_TOOLTIP_INVENTORY_TOGGLE`)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+		glow lua "highlightSidebarButton(inventoryScreen)"
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+			e:GetActiveEngine():OnLeftPanelButtonClick(3)
+		"
+		actionEnter
+		"
+			rgHighlightInv = 1
+		"
+		actionExit
+		"
+			rgHighlightInv = 0
+		"
+	}
+	button
+	{
+		enabled "JournalSize == UIStrings.UI_Large"
+		name "journalLeftButton5"
+		on 'r'
+		area 0 0 48 47
+		bam RGGBUT
+		sequence 3
+		frame lua "rggbuttHighlight5()"
+		tooltip lua "getTooltipWithHotkey(1,`REF_TOOLTIP_CHARACTER_TOGGLE`)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+		glow lua "highlightSidebarButton(characterScreen)"
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+			e:GetActiveEngine():OnLeftPanelButtonClick(4)
+		"
+		actionEnter
+		"
+			rgHighlightRec = 1
+		"
+		actionExit
+		"
+			rgHighlightRec = 0
+		"
+	}
+	button
+	{
+		enabled "JournalSize == UIStrings.UI_Large"
+		name "journalLeftButton6"
+		on 'w'
+		area 0 0 48 47
+		bam RGGBUT
+		sequence 4
+		frame lua "rggbuttHighlight6()"
+		tooltip lua "getTooltipWithHotkey(5,`REF_TOOLTIP_MAGE_BOOK_TOGGLE`)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+		glow lua "highlightSidebarButton(mageScreen)"
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+			e:GetActiveEngine():OnLeftPanelButtonClick(5)
+		"
+		actionEnter
+		"
+			rgHighlightMag = 1
+		"
+		actionExit
+		"
+			rgHighlightMag = 0
+		"
+	}
+	button
+	{
+		enabled "JournalSize == UIStrings.UI_Large"
+		name "journalLeftButton7"
+		on 'p'
+		area 0 0 48 47
+		bam RGGBUT
+		sequence 5
+		frame lua "rggbuttHighlight7()"
+		tooltip lua "getTooltipWithHotkey(6,`REF_TOOLTIP_PRIEST_BOOK_TOGGLE`)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+		glow lua "highlightSidebarButton(priestScreen)"
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+			e:GetActiveEngine():OnLeftPanelButtonClick(6)
+		"
+		actionEnter
+		"
+			rgHighlightPri = 1
+		"
+		actionExit
+		"
+			rgHighlightPri = 0
+		"
+	}
+	label
+	{
+		name "journalLeftButton8"
+		enabled "JournalSize == UIStrings.UI_Large"
+		area 0 48 64 68
+		bam "CGEAR"
+		frame lua "timer:GetCurrentTime()"
+	}
+	label
+	{
+		name "journalLeftButton9"
+		enabled "JournalSize == UIStrings.UI_Large"
+		area 0 48 64 68
+		mosaic RGCLOCK
+	}
+	button
+	{
+	#if GAME_VERSION == 'eet' then
+		enabled "JournalSize == UIStrings.UI_Large"
+		name "journalLeftButton1a"
+		on escape
+		area 1 55 57 57
+		bam RGGLOGO1
+		ScaleToClip
+	#else
+		enabled "JournalSize == UIStrings.UI_Large and startEngine:GetCampaign() == const.START_CAMPAIGN_BG"
+		name "journalLeftButton1a"
+		on escape
+		area 0 51 58 59
+		bam RGGLOGO
+		sequence 0
+		frame lua "rggbuttHighlight1()"
+		tooltip lua "getTooltipWithHotkey(2,`REF_TOOLTIP_LOG_TOGGLE`)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+--		glow lua "highlightSidebarButton(worldScreen)"
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+		"
+		actionEnter
+		"
+			rgHighlightLog = 1
+		"
+		actionExit
+		"
+			rgHighlightLog = 0
+		"
+	}
+	button
+	{
+		enabled "JournalSize == UIStrings.UI_Large and startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
+		name "journalLeftButton1b"
+		on escape
+		area 1 52 58 59
+		bam RGGLOGO
+		sequence 1
+		frame lua "rggbuttHighlight1()"
+		tooltip lua "getTooltipWithHotkey(2,`REF_TOOLTIP_LOG_TOGGLE`)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+--		glow lua "highlightSidebarButton(worldScreen)"
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+		"
+		actionEnter
+		"
+			rgHighlightLog = 1
+		"
+		actionExit
+		"
+			rgHighlightLog = 0
+		"
+	}
+	button
+	{
+		enabled "JournalSize == UIStrings.UI_Large and startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
+		name "journalLeftButton1c"
+		on escape
+		area 1 51 58 59
+		bam RGGLOGO
+		sequence 2
+		frame lua "rggbuttHighlight1()"
+	#end
+		tooltip lua "getTooltipWithHotkey(2,`REF_TOOLTIP_LOG_TOGGLE`)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+--		glow lua "highlightSidebarButton(worldScreen)"
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+		"
+		actionEnter
+		"
+			rgHighlightLog = 1
+		"
+		actionExit
+		"
+			rgHighlightLog = 0
+		"
+	}
+	button
+	{
+		name "journalLeftButton10"
+		enabled "JournalSize == UIStrings.UI_Large"
+		area 379 10 21 52
+		bam RGGHID
+	}
+	button
+	{
+		enabled "JournalSize == UIStrings.UI_Large"
+		name "journalRightButton7"
+		on 'o'
+		area 0 0 48 47
+		bam RGGOPT
+		tooltip lua "getTooltipWithHotkey(7,`REF_TOOLTIP_OPTIONS_TOGGLE`)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+		glow lua "highlightSidebarButton(optionsScreen)"
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+			e:GetActiveEngine():OnLeftPanelButtonClick(7)
+		"
+	}
+	button
+	{
+		enabled "JournalSize == UIStrings.UI_Large"
+		name "journalRightButton10"
+		area 0 0 48 47
+		bam RGGBUT
+		sequence 7
+		frame lua "rggbuttHighlight10()"
+		tooltip lua "getTooltipWithHotkey(31,11942)"
+		tooltip force lua "sidebarForceTooltips == 1"
+		tooltip force top
+		clickable lua "sidebarsGreyed ~= 1"
+		action
+		"
+			e:GetActiveEngine():OnRestButtonClick()
+		"
+		actionEnter
+		"
+			rgHighlightRes = 1
+		"
+		actionExit
+		"
+			rgHighlightRes = 0
+		"
+	}
+	button
+	{
+		name "journalRightButton8"
+		area 40 69 48 47
+		enabled "JournalSize == UIStrings.UI_Large"
+		bam RGGBUT
+		sequence 17
+	}
+	button
+	{
+		name "journalRightButton9"
+		area 86 69 48 47
+		enabled "JournalSize == UIStrings.UI_Large"
+		bam RGGBUT
+		sequence 15
+	}
+	button
+	{
+		name "journalRightButton11"
+		area 185 69 48 47
+		enabled "JournalSize == UIStrings.UI_Large"
+		bam RGGBUT
+		sequence 14
+	}
+	button
+	{
+		name "journalRightButton12"
+		area 233 69 48 47
+		enabled "JournalSize == UIStrings.UI_Large"
+		bam RGGBUT
+		sequence 16
+	}
+	button
+	{
+		name "journalRightButton13"
+		area 278 68 48 47
+		enabled "JournalSize == UIStrings.UI_Large"
+		bam RGGBUT
+		sequence 18
+	}
+	button
+	{
+		name "journalRightButton14"
+		enabled "JournalSize == UIStrings.UI_Large"
+		area 379 10 21 52
+		bam RGGHID
+		sequence 1
+	}
+	--button
+	--{
+	--	name "journalRightButton1"
+	--	area 8 14 64 90
+	--	portrait 0
+	--	mosaic RGGFRM2
+	--	enabled "Infinity_GetNumCharacters() > 0 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 0"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton1a"
+	--	area 5 10 69 97
+	--	bam RGGFRM
+	--	enabled "Infinity_GetNumCharacters() > 0 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 0"
+	--	action "Infinity_OnPortraitLClick(0)"
+	--	actionAlt "e:GetActiveEngine():OnLeftPanelButtonClick(2)"
+	--	actionDbl "Infinity_OnPortraitDblClick(0)"
+	--	actiondrag "Infinity_SwapWithPortrait(0)"
+	--	actionEnter "mouseOverPortrait = 0"
+	--	actionExit "mouseOverPortrait = -1"
+	--	actionSimpleDrag "draggedPortrait = 0"
+	--	actionSimpleDrop "swapPortraits(0)"
+	--	tooltip lua "Infinity_GetPortraitTooltip(0)"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton2"
+	--	area 8 112 64 90
+	--	portrait 1
+	--	mosaic RGGFRM2
+	--	enabled "Infinity_GetNumCharacters() > 1 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 1"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton2a"
+	--	area 5 108 69 97
+	--	bam RGGFRM
+	--	enabled "Infinity_GetNumCharacters() > 1 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 1"
+	--	action "Infinity_OnPortraitLClick(1)"
+	--	actionAlt "e:GetActiveEngine():OnLeftPanelButtonClick(2)"
+	--	actionDbl "Infinity_OnPortraitDblClick(1)"
+	--	actiondrag "Infinity_SwapWithPortrait(1)"
+	--	actionEnter "mouseOverPortrait = 1"
+	--	actionExit "mouseOverPortrait = -1"
+	--	actionSimpleDrag "draggedPortrait = 1"
+	--	actionSimpleDrop "swapPortraits(1)"
+	--	tooltip lua "Infinity_GetPortraitTooltip(1)"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton3"
+	--	area 8 210 64 90
+	--	portrait 2
+	--	mosaic RGGFRM2
+	--	enabled "Infinity_GetNumCharacters() > 2 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 2"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton3a"
+	--	area 5 206 69 97
+	--	bam RGGFRM
+	--	enabled "Infinity_GetNumCharacters() > 2 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 2"
+	--	action "Infinity_OnPortraitLClick(2)"
+	--	actionAlt "e:GetActiveEngine():OnLeftPanelButtonClick(2)"
+	--	actionDbl "Infinity_OnPortraitDblClick(2)"
+	--	actiondrag "Infinity_SwapWithPortrait(2)"
+	--	actionEnter "mouseOverPortrait = 2"
+	--	actionExit "mouseOverPortrait = -1"
+	--	actionSimpleDrag "draggedPortrait = 2"
+	--	actionSimpleDrop "swapPortraits(2)"
+	--	tooltip lua "Infinity_GetPortraitTooltip(2)"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton4"
+	--	area 8 308 64 90
+	--	portrait 3
+	--	mosaic RGGFRM2
+	--	enabled "Infinity_GetNumCharacters() > 3 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 3"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton4a"
+	--	area 5 304 69 97
+	--	bam RGGFRM
+	--	enabled "Infinity_GetNumCharacters() > 3 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 3"
+	--	action "Infinity_OnPortraitLClick(3)"
+	--	actionAlt "e:GetActiveEngine():OnLeftPanelButtonClick(2)"
+	--	actionDbl "Infinity_OnPortraitDblClick(3)"
+	--	actiondrag "Infinity_SwapWithPortrait(3)"
+	--	actionEnter "mouseOverPortrait = 3"
+	--	actionExit "mouseOverPortrait = -1"
+	--	actionSimpleDrag "draggedPortrait = 3"
+	--	actionSimpleDrop "swapPortraits(3)"
+	--	tooltip lua "Infinity_GetPortraitTooltip(3)"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton5"
+	--	area 8 406 64 90
+	--	portrait 4
+	--	mosaic RGGFRM2
+	--	enabled "Infinity_GetNumCharacters() > 4 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 4"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton5a"
+	--	area 5 402 69 97
+	--	bam RGGFRM
+	--	enabled "Infinity_GetNumCharacters() > 4 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 4"
+	--	action "Infinity_OnPortraitLClick(4)"
+	--	actionAlt "e:GetActiveEngine():OnLeftPanelButtonClick(2)"
+	--	actionDbl "Infinity_OnPortraitDblClick(4)"
+	--	actiondrag "Infinity_SwapWithPortrait(4)"
+	--	actionEnter "mouseOverPortrait = 4"
+	--	actionExit "mouseOverPortrait = -1"
+	--	actionSimpleDrag "draggedPortrait = 4"
+	--	actionSimpleDrop "swapPortraits(4)"
+	--	tooltip lua "Infinity_GetPortraitTooltip(4)"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton6"
+	--	area 8 504 64 90
+	--	portrait 5
+	--	mosaic RGGFRM2
+	--	enabled "Infinity_GetNumCharacters() > 5 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 5"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	--button
+	--{
+	--	name "journalRightButton6a"
+	--	area 5 500 69 97
+	--	bam RGGFRM
+	--	enabled "Infinity_GetNumCharacters() > 5 and rgEscPortrait ~= 1 and JournalSize == UIStrings.UI_Large"
+	--	glow lua "draggedPortrait and draggedPortrait ~= 5"
+	--	action "Infinity_OnPortraitLClick(5)"
+	--	actionAlt "e:GetActiveEngine():OnLeftPanelButtonClick(2)"
+	--	actionDbl "Infinity_OnPortraitDblClick(5)"
+	--	actiondrag "Infinity_SwapWithPortrait(5)"
+	--	actionEnter "mouseOverPortrait = 5"
+	--	actionExit "mouseOverPortrait = -1"
+	--	actionSimpleDrag "draggedPortrait = 5"
+	--	actionSimpleDrop "swapPortraits(5)"
+	--	tooltip lua "Infinity_GetPortraitTooltip(5)"
+	--	clickable lua "sidebarsGreyed ~= 1"
+	--}
+	label
+	{
+		name "journalLarge_2"
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		area 205 31 954 44
+		text "JOURNAL_LABEL"
+		text style "title"
+	}
+	button
+	{
+		name "journalLarge_3"
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		area 879 82 52 44
+--		text "JOURNAL_LABEL"
+--		text style "label_parchment"
+--		text point 16
+		bam "RGQBUT1"
+		sequence 1
+		glow lua "journalMode == const.JOURNAL_MODE_JOURNAL"
+		action "journalMode = const.JOURNAL_MODE_JOURNAL"
+	}
+	button
+	{
+		name "journalLarge_4"
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		area 437 82 52 44
+--		text "QUESTS_LABEL"
+--		text style "label_parchment"
+--		text point 16
+		bam "RGQBUT1"
+		sequence 0
+		glow lua "journalMode == const.JOURNAL_MODE_QUESTS"
+		action "journalMode = const.JOURNAL_MODE_QUESTS"
+	}
+	button
+	{
+		name "journalLarge_5"
+		area 122 90 230 44
+		enabled "journalMode == const.JOURNAL_MODE_QUESTS"
+		text 'RG_CURRENT_QUESTS'
+		text style "label_parchment"
+		text point 16
+		action
+		"
+			CloseAll(1)
+		"
+	}
+	button
+	{
+		name "journalLarge_6"
+		area 1012 90 234 44
+		enabled "journalMode == const.JOURNAL_MODE_QUESTS"
+		text 'RG_FINISHED_QUESTS'
+		text style "label_parchment"
+		text point 16
+		action
+		"
+			CloseAll(2)
+		"
+	}
+	label
+	{
+		area 122 90 230 44
+		name "journalLarge_7"
+		enabled "journalMode == const.JOURNAL_MODE_JOURNAL"
+		text "JOURNAL_LABEL"
+		text style "label_parchment"
+		text point 16
+	}
+	label
+	{
+		area 1012 90 230 44
+		name "journalLarge_26"
+		enabled "journalMode == const.JOURNAL_MODE_JOURNAL"
+		text lua "string.sub(JFStrings.JF_Notes, 1, string.len(JFStrings.JF_Notes) - 1)"
+		text style "label_parchment"
+		text point 16
+	}
+	button -- Chapter
+	{
+		name "journalLarge_8"
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		area 582 83 200 40
+		text lua "chapterText()"
+		text style "label"
+		bam "GUIBUTNT"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+			if JournalSize == UIStrings.UI_Large then
+				JournalSize = UIStrings.UI_Small
+			else
+				JournalSize = UIStrings.UI_Large
+			end
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+		"
+	}
+	button --prev chapter
+	{
+		name "journalLarge_9"
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		area		538 73 39 65
+		bam "GUIPRC"
+		sequence 3
+
+		action
+		"
+			incrChapter(-1);
+		"
+	}
+	button
+	{
+		name "journalLarge_10"
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		area		788 73 42 65
+		bam "GUIPRC"
+		sequence 2
+
+		action
+		"
+			incrChapter(1);
+		"
+	}
+	--[Bug #20368] Recent events button cut for now.
+	--
+	--button
+	--{
+	--	enabled "journalMode == const.JOURNAL_MODE_QUESTS"
+	--	area 278 616 162 47
+	--	bam "PAPERBUT"
+	--	sequence 1
+	--	text "RECENT_EVENTS_LABEL"
+	--	text style "button_parchment"
+	--	action
+	--	"
+	--		Infinity_PushMenu('JOURNAL_RECENT_EVENTS')
+	--	"
+	--}
+	label
+	{
+		name "journalLarge_11"
+		enabled "journalMode == const.JOURNAL_MODE_JOURNAL"
+		area 122 140 200 32
+		fill 50 50 50 150
+	}
+	edit
+	{
+		name "journalLarge_12"
+		enabled "journalMode == const.JOURNAL_MODE_JOURNAL"
+		area 124 144 192 29
+		var journalSearchString
+		placeholder "ENTER_SEARCH_TERM_NORMAL"
+		text style "edit"
+		maxlines 1
+	}
+	list
+	{
+		column
+		{
+			width 5
+			label
+			{
+				area 0 0 31 31
+				enabled "getArrowEnabled(rowNumber) and hideFinished(rowNumber)"
+				bam "PCHEV"
+				frame lua "getArrowFrame(rowNumber)"
+				text style "label_parchment"
+				align top center
+			}
+		}
+		column {
+			width 95
+			label
+			{
+				enabled "questEnabled(rowNumber) and hideFinished(rowNumber)"
+				area 0 0 400 38
+				mosaic RGQBACK
+			}
+			label
+			{
+				enabled "questEnabled(rowNumber) and hideFinished(rowNumber)"
+				area 16 0 400 38
+				text lua "getQuestText(rowNumber)"
+				text style "normal_parchment"
+				--text color '5'
+				align left center
+			}
+			label
+			{
+				enabled "objectiveEnabled(rowNumber) and hideFinished(rowNumber)"
+				area 16 0 -1 -1
+				pad 0 10 0 10
+				text lua "getObjectiveText(rowNumber)"
+				text style "normal_parchment"
+			}
+			label
+			{
+				enabled "entryEnabled(rowNumber) and hideFinished(rowNumber)"
+				area 16 0 -1 -1
+--				pad 0 10 0 10
+				text lua "getEntryText(rowNumber)"
+				text style "normal_parchment"
+				text color M
+			}
+		}
+		name "journalLarge_13"
+		enabled "journalMode == const.JOURNAL_MODE_QUESTS"
+		rowheight	dynamic
+		hidehighlight
+		seperator "showObjectiveSeperator(rowNumber)"
+		table		"questDisplay"
+		var			selectedQuest
+		scrollbar	'GUISCRP'
+		area		122 141 534 534
+		action
+		"
+			if(questDisplay[selectedQuest].expanded) then
+				questDisplay[selectedQuest].expanded = nil
+			else
+				questDisplay[selectedQuest].expanded = 1
+			end
+		"
+
+	}
+	list
+	{
+		column
+		{
+			width 5
+			label
+			{
+				area 0 0 31 31
+				enabled "getArrowEnabled(rowNumber) and hideUnfinished(rowNumber)"
+				bam "PCHEV"
+				frame lua "getArrowFrame(rowNumber)"
+				text style "label_parchment"
+				align top center
+			}
+		}
+		column {
+			width 95
+			label
+			{
+				enabled "questEnabled(rowNumber) and hideUnfinished(rowNumber)"
+				area 0 0 400 38
+				mosaic RGQBACK
+			}
+			label
+			{
+				enabled "questEnabled(rowNumber) and hideUnfinished(rowNumber)"
+				area 16 0 400 38
+				text lua "getQuestText(rowNumber)"
+				text style "normal_parchment"
+				align left center
+			}
+			label
+			{
+				enabled "objectiveEnabled(rowNumber) and hideUnfinished(rowNumber)"
+				area 16 0 -1 -1
+				pad 0 10 0 10
+				text lua "getObjectiveText(rowNumber)"
+				text style "normal_parchment"
+			}
+			label
+			{
+				enabled "entryEnabled(rowNumber) and hideUnfinished(rowNumber)"
+				area 16 0 -1 -1
+--				pad 0 10 0 10
+				text lua "getEntryText(rowNumber)"
+				text style "normal_parchment"
+				text color M
+			}
+		}
+		name "journalLarge_14"
+		enabled "journalMode == const.JOURNAL_MODE_QUESTS"
+		rowheight	dynamic
+		hidehighlight
+		seperator "showObjectiveSeperator(rowNumber)"
+		table		"questDisplay"
+		var			selectedQuest
+		scrollbar	'GUISCRP'
+		area		712 141 534 540
+		action
+		"
+			if(questDisplay[selectedQuest].expanded) then
+				questDisplay[selectedQuest].expanded = nil
+			else
+				questDisplay[selectedQuest].expanded = 1
+			end
+		"
+
+	}
+
+	list --journal
+	{
+		column
+		{
+			width 100
+			--light
+			label
+			{
+				enabled "getJournalTitleEnabled(rowNumber) and not getJournalDarken(rowNumber) and NotMyNotes(rowNumber)"
+				area 0 0 -1 -1
+				pad 0 16 0 0
+				text lua "getJournalTitleText(rowNumber)"
+				text style "label_parchment"
+				text color 0 120 0 255
+			}
+			label
+			{
+				enabled "getJournalEntryEnabled(rowNumber) and NotMyNotes(rowNumber) and not getJournalDarken(rowNumber)"
+				area 0 0 -1 -1
+				pad 8 16 0 16
+				text lua "getJournalEditedColours(getJournalEntryText(rowNumber))"
+				text style "normal_parchment"
+			}
+
+			--dark
+			label
+			{
+				enabled "NotMyNotes(rowNumber) and getJournalDarken(rowNumber) and (getJournalTitleEnabled(rowNumber) or getJournalEntryEnabled(rowNumber))"
+				area 0 0 -1 -1
+				fill 0 0 0 150
+			}
+			label
+			{
+				enabled "getJournalTitleEnabled(rowNumber) and getJournalDarken(rowNumber) and NotMyNotes(rowNumber)"
+				area 0 0 -1 -1
+				pad 0 16 0 0
+				text lua "getJournalTitleText(rowNumber)"
+				text style "label_parchment"
+				text color 255 100 100 255
+			}
+			label
+			{
+				enabled "getJournalEntryEnabled(rowNumber) and getJournalDarken(rowNumber) and NotMyNotes(rowNumber)"
+				area 0 0 -1 -1
+				pad 8 16 0 16
+				text lua "getJournalEditedColours(getJournalEntryText(rowNumber))"
+				text style "normal_parchment"
+				text color 'B'
+			}
+
+
+		}
+		name "journalLarge_15"
+		enabled "journalMode == const.JOURNAL_MODE_JOURNAL"
+		seperator "getJournalEntryEnabled(rowNumber)"
+		rowheight	dynamic
+		hidehighlight
+		table		"journalDisplay"
+		var			selectedJournal
+		scrollbar	'GUISCRP'
+		area		122 173 538 502
+		actionDbl
+		"
+			LargeEditAction()
+		"
+	}
+	list --journal
+	{
+		column
+		{
+			width 100
+			--light
+			label
+			{
+				enabled "getJournalTitleEnabled(rowNumber) and not getJournalDarken(rowNumber) and myNotes(rowNumber)"
+				area 0 0 -1 -1
+				pad 0 16 0 0
+				text lua "getJournalTitleText(rowNumber)"
+				text style "label_parchment"
+				text color 0 120 0 255
+			}
+			label
+			{
+				enabled "getJournalEntryEnabled(rowNumber) and not getJournalDarken(rowNumber) and myNotes(rowNumber)"
+				area 0 0 -1 -1
+				pad 8 16 0 16
+				text lua "string.sub(getJournalEntryText(rowNumber),string.len(JFStrings.JF_Notes)+2)"
+				text style "normal_parchment"
+			}
+
+			--dark
+			label
+			{
+				enabled "myNotes(rowNumber) and getJournalDarken(rowNumber) and (getJournalTitleEnabled(rowNumber) or getJournalEntryEnabled(rowNumber))"
+				area 0 0 -1 -1
+				fill 0 0 0 150
+			}
+			label
+			{
+				enabled "getJournalTitleEnabled(rowNumber) and getJournalDarken(rowNumber) and myNotes(rowNumber)"
+				area 0 0 -1 -1
+				pad 0 16 0 0
+				text lua "getJournalTitleText(rowNumber)"
+				text style "label_parchment"
+				text color 255 100 100 255
+			}
+			label
+			{
+				enabled "getJournalEntryEnabled(rowNumber) and getJournalDarken(rowNumber) and myNotes(rowNumber)"
+				area 0 0 -1 -1
+				pad 8 16 0 16
+				text lua "string.sub(getJournalEntryText(rowNumber),string.len(JFStrings.JF_Notes)+2)"
+				text style "normal_parchment"
+				text color 'B'
+			}
+
+
+		}
+		name "journalLarge_16"
+		enabled "journalMode == const.JOURNAL_MODE_JOURNAL"
+		seperator "getJournalEntryEnabled(rowNumber)"
+		rowheight	dynamic
+		hidehighlight
+		table		"journalDisplay"
+		var			selectedJournal
+		scrollbar	'GUISCRP'
+		area		712 173 534 502
+		actionDbl
+		"
+			LargeEditAction()
+		"
+	}
+	button
+	{
+		name "journalLarge_17"
+		enabled "journalMode == const.JOURNAL_MODE_JOURNAL"
+		area 327 128 162 47
+		bam "PAPERBUT"
+		sequence 1
+		text "ADD_ENTRY_LABEL"
+		text style "button_parchment"
+		action
+		"
+			journalMode = const.JOURNAL_MODE_EDIT
+			journalNoteEdit = ''
+			journalNoteEditRef = nil
+			Infinity_FocusTextEdit('journalLarge_22')
+		"
+	}
+	button
+	{
+		name "journalLarge_18"
+		enabled "journalMode == const.JOURNAL_MODE_JOURNAL"
+		clickable lua "journalEntryClickable(selectedJournal)"
+		area 489 128 162 47
+		bam "PAPERBUT"
+		sequence 1
+		text "EDIT_ENTRY_LABEL"
+		text style "button_parchment"
+		action
+		"
+			LargeEditAction()
+		"
+	}
+
+
+	label
+	{
+		name "journalLarge_19"
+		enabled "journalMode == const.JOURNAL_MODE_EDIT"
+		area 122 148 534 36
+		text style "normal_parchment"
+		text "WRITE_ENTRY_TEXT"
+
+	}
+	label
+	{
+		name "journalLarge_20"
+		enabled "journalMode == const.JOURNAL_MODE_EDIT"
+		area 122 185 534 4
+		fill 10 71 1 255
+	}
+	label
+	{
+		name "journalLarge_21"
+		enabled "journalMode == const.JOURNAL_MODE_EDIT"
+		area 122 189 534 42
+		text style "label"
+		text color 0 120 0 255
+		text lua "Infinity_GetTimeString()"
+	}
+	edit
+	{
+		name "journalLarge_22"
+		enabled "journalMode == const.JOURNAL_MODE_EDIT"
+		area		122 231 534 379
+		text style	"edit_parchment"
+		var			journalNoteEdit
+		scrollbar	'GUISCRP'
+	}
+
+	button
+	{
+		name "journalLarge_23"
+		enabled "journalMode == const.JOURNAL_MODE_EDIT"
+		area 426 610 162 47
+		bam "PAPERBUT"
+		sequence 1
+		text "CANCEL_BUTTON"
+		text style "button_parchment"
+		action
+		"
+			journalMode = const.JOURNAL_MODE_JOURNAL
+		"
+	}
+	button
+	{
+		name "journalLarge_24"
+		enabled "journalMode == const.JOURNAL_MODE_EDIT and journalNoteEdit ~= ''"
+		area 190 610 162 47
+		bam "PAPERBUT"
+		sequence 1
+		text "DONE_BUTTON"
+		text style "button_parchment"
+		action
+		"
+			if (journalNoteEditRef == nil) then
+				journalNoteEdit = JFStrings.JF_Notes .. '\n\n' .. journalNoteEdit .. '\n - ' .. Infinity_GetTimeString()
+				Infinity_OnAddUserEntry(journalNoteEdit)
+			else
+				if string.find(string.lower(journalNoteOld),string.lower(JFStrings.JF_Notes)) then
+					journalNoteEdit = JFStrings.JF_Notes .. '\n\n' .. journalNoteEdit .. '\n - ' .. Infinity_GetTimeString()
+				else
+					journalNoteEdit = JFStrings.JF_Edited .. '\n\n' .. journalNoteEdit .. '\n -' .. Infinity_GetTimeString()
+				end
+				Infinity_OnEditUserEntry(journalNoteEditRef, journalNoteEdit)
+			end
+			journalMode = const.JOURNAL_MODE_JOURNAL
+		"
+	}
+	button
+	{
+		name 		"journalLarge_25"
+		enabled 	"journalMode == const.JOURNAL_MODE_EDIT and string.find(string.lower(journalNoteOld),string.lower(JFStrings.JF_Notes))"
+		area 		626 196 30 26
+		text 		"X"
+		text style 	"button_parchment"
+		text align 	center center
+		text color	R
+		action
+		"
+			journalNoteEditRef = getJournalEntryRef_Small(selectedJournal)
+			journalNoteOld = Infinity_FetchString(journalNoteEditRef)
+
+			if string.find(string.lower(journalNoteOld),string.lower(JFStrings.JF_Notes)) then
+				journalNoteEditRef = getJournalEntryRef_Small(selectedJournal)
+				journalNoteEdit = ''
+			end
+			Infinity_OnEditUserEntry(journalNoteEditRef, journalNoteEdit)
+			journalMode = const.JOURNAL_MODE_JOURNAL
+		"
+	}
+
+-- JOURNALSIZE is SMALL
+
+	label --background background
+	{
+		name 		"JournalSmall_Background"
+		enabled 	"JournalSize == UIStrings.UI_Small"
+		area 		0 0 501 756
+		mosaic 		"QUESTBAK"
+	}
+	label --Background
+	{
+		name 		"JournalSmall_1"
+		enabled 	"JournalSize == UIStrings.UI_Small"
+		area  		0 0 485 747
+		bam 		"QUESTBG"
+		sequence 	0
+		frame lua 	"getJournalBackgroundFrame_Small()"
+	}
+	handle
+	{
+		name 		"JournalSmall_2"
+		enabled 	"JournalSize == UIStrings.UI_Small"
+		area 		0 0 472 80
+		actionDrag
+		"
+			dragJournal(motionX,motionY)
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_3"
+		enabled 	"JournalSize == UIStrings.UI_Small"
+		area		218 18 136 42
+		text 		"JOURNAL_LABEL"
+		text style 	"label_parchment"
+		text point 	16
+		action
+		"
+		CloseAll_Small()
+		CheckForOpenedQuests_Small()
+		journalMode = const.JOURNAL_MODE_JOURNAL
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_4"
+		enabled 	"JournalSize == UIStrings.UI_Small"
+		area 		34 18 136 42
+		text 		"QUESTS_LABEL"
+		text style 	"label_parchment"
+		text point 	16
+		action
+		"
+		CloseAll_Small()
+		CheckForOpenedQuests_Small()
+		journalMode = const.JOURNAL_MODE_QUESTS
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_6"
+		area 		84 140 118 35
+		enabled 	"journalMode == const.JOURNAL_MODE_QUESTS and JournalSize == UIStrings.UI_Small"
+		text lua 	"highlightFilter_Small(t(JFStrings.JF_All))"
+		text style 	"label_parchment"
+		text point 	12
+		action
+		"
+			CloseAll_Small()
+			CheckForOpenedQuests_Small()
+			setQuestFilter(0)
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_7"
+		area 		202 140 118 35
+		enabled 	"journalMode == const.JOURNAL_MODE_QUESTS and JournalSize == UIStrings.UI_Small"
+		text lua 	"highlightFilter_Small(t(JFStrings.JF_Active))"
+		text style 	"label_parchment"
+		text point 	12
+		action
+		"
+			CloseAll_Small()
+			CheckForOpenedQuests_Small()
+			setQuestFilter(1)
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_8"
+		area 		320 140 120 35
+		enabled 	"journalMode == const.JOURNAL_MODE_QUESTS and JournalSize == UIStrings.UI_Small"
+		text lua 	"highlightFilter_Small(t(JFStrings.JF_Completed))"
+		text style 	"label_parchment"
+		text point 	12
+		action
+		"
+			CloseAll_Small()
+			CheckForOpenedQuests_Small()
+			setQuestFilter(2)
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_9"
+		enabled 	"JournalSize == UIStrings.UI_Small"
+		area 		419 13 66 67
+		on esc
+		bam 		"XBUTT"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+		"
+	}
+	button -- Chapter
+	{
+		name 		"JournalSmall_10"
+		enabled 	"JournalSize == UIStrings.UI_Small"
+		area 		170 80 146 60
+		text lua 	"chapterText()"		-- Not small specific
+		text style 	"label_parchment"
+		mosaic 		"PCHAPTER"
+		action
+		"
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+			if JournalSize == UIStrings.UI_Large then
+				JournalSize = UIStrings.UI_Small
+			else
+				JournalSize = UIStrings.UI_Large
+			end
+			e:GetActiveEngine():OnLeftPanelButtonClick(2)
+		"
+	}
+	button --prev chapter
+	{
+		name 		"JournalSmall_11"
+		enabled 	"JournalSize == UIStrings.UI_Small"
+		area		134 80 41 60
+		bam 		"PARROW"
+		sequence 	0
+		action
+		"
+			incrChapter(-1)
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_12"
+		enabled 	"JournalSize == UIStrings.UI_Small"
+		area		306 80 41 60
+		bam 		"PARROW"
+		sequence 	1
+		action
+		"
+			incrChapter(1)
+		"
+	}
+	--[Bug #20368] Recent events button cut for now.
+	--
+	--button
+	--{
+	--	enabled "journalMode == const.JOURNAL_MODE_QUESTS and JournalSize == UIStrings.UI_Small"
+	--	area 278 616 162 47
+	--	bam "PAPERBUT"
+	--	sequence 1
+	--	text "RECENT_EVENTS_LABEL"
+	--	text style "button_parchment"
+	--	action
+	--	"
+	--		Infinity_PushMenu('JOURNAL_RECENT_EVENTS_Small')
+	--	"
+	--}
+	label
+	{
+		name 		"JournalSmall_13"
+		enabled 	"journalMode == const.JOURNAL_MODE_JOURNAL and JournalSize == UIStrings.UI_Small"
+		area 		44 175 382 29
+		fill 		50 50 50 150
+	}
+	edit
+	{
+		name 		"JournalSmall_14"
+		enabled 	"journalMode == const.JOURNAL_MODE_JOURNAL and JournalSize == UIStrings.UI_Small"
+		area 		62 180 357 20
+		var 		journalSearchString
+		placeholder "ENTER_SEARCH_TERM_NORMAL"
+		text style 	"edit"
+		maxlines 	1
+	}
+	list
+	{
+		column
+		{
+			width 10
+			label
+			{
+				area 		0 0 31 31
+				enabled 	"getArrowEnabled_Small(rowNumber) and JournalSize == UIStrings.UI_Small"
+				bam 		"PCHEV"
+				frame lua 	"getArrowFrame_Small(rowNumber)"
+				text style 	"label_parchment"
+				align 		top center
+			}
+		}
+		column {
+			width 90
+			label
+			{
+				enabled 	"questEnabled_Small(rowNumber) and JournalSize == UIStrings.UI_Small"
+				area 		0 0 -1 -1
+				mosaic 		rgjback
+			}
+			label
+			{
+				enabled 	"questEnabled_Small(rowNumber) and JournalSize == UIStrings.UI_Small"
+				area 		8 0 -1 -1
+				text lua 	"getQuestText_Small(rowNumber)"
+				text style 	"label"
+				align 		left center
+			}
+			label
+			{
+				enabled 	"objectiveEnabled_Small(rowNumber) and JournalSize == UIStrings.UI_Small"
+				area 		16 0 -1 -1
+				pad 		0 10 0 10
+				text lua 	"getObjectiveText_Small(rowNumber)"
+				text style 	"normal_parchment"
+			}
+			label
+			{
+				enabled 	"entryEnabled_Small(rowNumber) and JournalSize == UIStrings.UI_Small"
+				area 		16 0 -1 -1
+				pad 		0 10 0 10
+				text lua 	"getEntryText_Small(rowNumber)"
+				text style 	"normal_parchment"
+				text color 	M
+			}
+		}
+		name 		"JournalSmall_15"
+		enabled 	"journalMode == const.JOURNAL_MODE_QUESTS and JournalSize == UIStrings.UI_Small"
+		rowheight	dynamic
+		hidehighlight
+		seperator 	"showObjectiveSeperator_Small(rowNumber)"
+		table		"questDisplay"
+		var			selectedQuest
+		scrollbar	'GUISCRP'
+		area		44 174 396 490
+		action
+		"
+			if(questDisplay[selectedQuest].expanded) then
+				questDisplay[selectedQuest].expanded = nil
+			else
+				questDisplay[selectedQuest].expanded = 1
+			end
+			CheckForOpenedQuests_Small()
+		"
+
+	}
+
+	list --journal
+	{
+		column
+		{
+			width 100
+			--light
+			label
+			{
+				enabled 	"getJournalTitleEnabled_Small(rowNumber) and not getJournalDarken_Small(rowNumber) and JournalSize == UIStrings.UI_Small"
+				area 		0 0 -1 -1
+				pad 		0 16 0 0
+				text lua 	"getJournalTitleText_Small(rowNumber)"
+				text style 	"label_parchment"
+				text color 	0 60 0 255
+			}
+			label
+			{
+				enabled 	"getJournalEntryEnabled_Small(rowNumber) and not getJournalDarken_Small(rowNumber) and JournalSize == UIStrings.UI_Small"
+				area 		0 0 -1 -1
+				pad 		8 16 0 16
+				text lua 	"getJournalEditedColours(getJournalEntryText_Small(rowNumber))"
+				text style 	"normal_parchment"
+			}
+
+			--dark
+			label
+			{
+				enabled 	"(getJournalTitleEnabled_Small(rowNumber) or getJournalEntryEnabled_Small(rowNumber)) and getJournalDarken_Small(rowNumber) and JournalSize == UIStrings.UI_Small"
+				area 		0 0 -1 -1
+				fill 		0 0 0 150
+			}
+			label
+			{
+				enabled 	"getJournalTitleEnabled_Small(rowNumber) and getJournalDarken_Small(rowNumber) and JournalSize == UIStrings.UI_Small"
+				area 		0 0 -1 -1
+				pad 		0 16 0 0
+				text lua 	"getJournalTitleText_Small(rowNumber)"
+				text style 	"label_parchment"
+				text color 	255 100 100 255
+			}
+			label
+			{
+				enabled 	"getJournalEntryEnabled_Small(rowNumber) and getJournalDarken_Small(rowNumber) and JournalSize == UIStrings.UI_Small"
+				area 		0 0 -1 -1
+				pad 		8 16 0 16
+				text lua 	"getJournalEditedColours(getJournalEntryText_Small(rowNumber))"
+				text style 	"normal_parchment"
+				text color 	'B'
+			}
+
+
+		}
+		name 		"JournalSmall_16"
+		enabled 	"journalMode == const.JOURNAL_MODE_JOURNAL and JournalSize == UIStrings.UI_Small"
+		seperator 	"getJournalEntryEnabled_Small(rowNumber)"
+		rowheight	dynamic
+		hidehighlight
+		table		"journalDisplay"
+		var			selectedJournal
+		scrollbar	'GUISCRP'
+		area		44 208 396 488
+		actionDbl
+		"
+			SmallEditAction()
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_17"
+		enabled 	"journalMode == const.JOURNAL_MODE_JOURNAL and JournalSize == UIStrings.UI_Small"
+		area 		44 140 132 35
+		text 		"ADD_ENTRY_LABEL"
+		text style "button_parchment"
+		action
+		"
+			journalMode = const.JOURNAL_MODE_EDIT
+			journalNoteEdit = ''
+			journalNoteEditRef = nil
+			Infinity_FocusTextEdit('JournalSmall_23')
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_18"
+		enabled 	"journalMode == const.JOURNAL_MODE_JOURNAL and JournalSize == UIStrings.UI_Small"
+		clickable 	lua "journalEntryClickable_Small(selectedJournal)"
+		area 		176 140 132 35
+		text 		"EDIT_ENTRY_LABEL"
+		text style 	"button_parchment"
+		action
+		"
+			SmallEditAction()
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_19"
+		enabled 	"journalMode == const.JOURNAL_MODE_JOURNAL and JournalSize == UIStrings.UI_Small"
+		area 		308 140 132 35
+		sequence 	1
+		text lua	"JFStrings.JF_Notes"
+		text style "button_parchment"
+		action
+		"
+			if journalSearchString == JFStrings.JF_Notes then
+				journalSearchString = ''
+			else
+				journalSearchString = JFStrings.JF_Notes
+			end
+		"
+	}
+	label
+	{
+		name 		"JournalSmall_20"
+		enabled 	"journalMode == const.JOURNAL_MODE_EDIT and JournalSize == UIStrings.UI_Small"
+		area 		58 154 382 26
+		text style 	"normal_parchment"
+		text 		"WRITE_ENTRY_TEXT"
+
+	}
+	label
+	{
+		name 		"JournalSmall_21"
+		enabled 	"journalMode == const.JOURNAL_MODE_EDIT and JournalSize == UIStrings.UI_Small"
+		area 		58 200 382 4
+		fill 		10 71 1 255
+	}
+	label
+	{
+		name 		"JournalSmall_22"
+		enabled 	"journalMode == const.JOURNAL_MODE_EDIT and JournalSize == UIStrings.UI_Small"
+		area 		58 204 382 26
+		text style 	"label"
+		text color 	0 120 0 255
+		text lua 	"Infinity_GetTimeString()"
+	}
+	edit
+	{
+		name 		"JournalSmall_23"
+		enabled 	"journalMode == const.JOURNAL_MODE_EDIT and JournalSize == UIStrings.UI_Small"
+		area		58 230 382 411
+		text style	"edit_parchment"
+		var			journalNoteEdit
+		scrollbar	'GUISCRP'
+
+	}
+
+	button
+	{
+		on escape
+		name 		"JournalSmall_24"
+		enabled 	"journalMode == const.JOURNAL_MODE_EDIT and JournalSize == UIStrings.UI_Small"
+		area 		58 641 162 47
+		bam 		"PAPERBUT"
+		sequence	1
+		text 		"CANCEL_BUTTON"
+		text style 	"button_parchment"
+		action
+		"
+			journalMode = const.JOURNAL_MODE_JOURNAL
+		"
+	}
+	button
+	{
+		name "JournalSmall_25"
+		enabled "journalMode == const.JOURNAL_MODE_EDIT and JournalSize == UIStrings.UI_Small and journalNoteEdit ~= ''"
+		area 260 641 162 47
+		bam "PAPERBUT"
+		sequence 1
+		text "DONE_BUTTON"
+		text style "button_parchment"
+		action
+		"
+			if (journalNoteEditRef == nil) then
+				journalNoteEdit = JFStrings.JF_Notes .. '\n\n' .. journalNoteEdit .. '\n - ' .. Infinity_GetTimeString()
+				Infinity_OnAddUserEntry(journalNoteEdit)
+			else
+				if string.find(string.lower(journalNoteOld),string.lower(JFStrings.JF_Notes)) then
+					journalNoteEdit = JFStrings.JF_Notes .. '\n\n' .. journalNoteEdit .. '\n - ' .. Infinity_GetTimeString()
+				else
+					journalNoteEdit = JFStrings.JF_Edited .. '\n\n' .. journalNoteEdit .. '\n -' .. Infinity_GetTimeString()
+				end
+				Infinity_OnEditUserEntry(journalNoteEditRef, journalNoteEdit)
+			end
+			journalMode = const.JOURNAL_MODE_JOURNAL
+		"
+	}
+	button
+	{
+		name 		"JournalSmall_26"
+		enabled 	"journalMode == const.JOURNAL_MODE_EDIT and JournalSize == UIStrings.UI_Small and string.find(string.lower(journalNoteOld),string.lower(JFStrings.JF_Notes))"
+		area 		400 204 30 26
+		text 		"X"
+		text style 	"button_parchment"
+		text align 	center center
+		text color	R
+		action
+		"
+			journalNoteEditRef = getJournalEntryRef_Small(selectedJournal)
+			journalNoteOld = Infinity_FetchString(journalNoteEditRef)
+
+			if string.find(string.lower(journalNoteOld),string.lower(JFStrings.JF_Notes)) then
+				journalNoteEditRef = getJournalEntryRef_Small(selectedJournal)
+				journalNoteEdit = ''
+			end
+			Infinity_OnEditUserEntry(journalNoteEditRef, journalNoteEdit)
+			journalMode = const.JOURNAL_MODE_JOURNAL
+		"
+	}
+}

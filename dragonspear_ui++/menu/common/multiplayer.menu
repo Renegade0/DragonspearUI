@@ -1,0 +1,1383 @@
+menu
+{
+	name 'MULTIPLAYER'
+	align center center
+	ignoreesc
+	onOpen
+	"
+		existingDifficulty = Infinity_GetOption(12, 8) + 1;
+		multiplayerFromInGame = multiplayerScreen:GetEngineState() == 2
+	"
+	label
+	{
+		mosaic 'GUISMBM'
+		area 0 0 1024 768
+	}
+	label
+	{
+		area 162 16 700 44
+		text "ARBITRATION_TITLE"
+		text style "title"
+	}
+
+	label
+	{
+		area 514 70 492 618
+		fill 0 0 0 255
+	}
+	label
+	{
+		area 504 60 512 638
+		rectangle 3
+	}
+
+	label
+	{
+		area 524 112 471 93
+		fill 100 25 25 180
+	}
+	label
+	{
+		area 524 207 471 93
+		fill 50 50 50 180
+	}
+	label
+	{
+		area 524 302 471 93
+		fill 100 25 25 180
+	}
+	label
+	{
+		area 524 397 471 93
+		fill 50 50 50 180
+	}
+	label
+	{
+		area 524 492 471 93
+		fill 100 25 25 180
+	}
+	label
+	{
+		area 524 587 471 93
+		fill 50 50 50 180
+	}
+
+	label
+	{
+		area 524 80 136 22
+		text lua "t('PLAYER_LABEL')"
+		text style "label"
+		align center center
+	}
+	label
+	{
+		area 660 80 228 22
+		text lua "t('CHARACTER_LABEL')"
+		text style "label"
+		align center center
+	}
+	label
+	{
+		area 888 80 107 22
+		text lua "t('READY_TO_PLAY_LABEL')"
+		text style "label"
+		align center center
+	}
+	list -- character list
+	{
+		column --player
+		{
+			width 32
+			label
+			{
+				area 		6 5 140 44
+				text lua	"getMultiplayerPlayerName(mpaCharacters[rowNumber]['player'],true,true)"
+				text style 	"label"
+				enabled 	"multiplayerLocalPlayerID == 1 and rowNumber ~= 1"
+			}
+			label
+			{
+				area 		6 0 140 95
+				text lua	"getMultiplayerPlayerName(mpaCharacters[rowNumber]['player'],true,true)"
+				text style 	"label"
+				enabled 	"multiplayerLocalPlayerID ~= 1 or rowNumber == 1"
+			}
+			label
+			{
+				area		6 55 140 31
+				bam 		'GUIBUTNS'
+				sequence 	1
+				frame lua 	"currentCellCheck(1)"
+				align 		center center
+				enabled 	"multiplayerLocalPlayerID == 1 and rowNumber ~= 1"
+				text lua	"t('MULTIPLAYER_CHANGE_PLAYER_BUTTON')"
+				text style 	"button"
+			}
+
+		}
+		column --portrait
+		{
+			width 15
+			label
+			{
+				area		0 0 -1 -1
+				bam 		'GUIRSP10'
+				sequence 	1
+				align 		center center
+			}
+			label
+			{
+				area		6 5 56 85
+				bitmap lua	'mpaCharacters[rowNumber]["portrait"]'
+				sequence 	1
+				align 		center center
+			}
+		}
+		column --character
+		{
+			width 45
+			label
+			{
+				area 		2 0 195 44
+				text lua 	"getMultiplayerCharacterName(rowNumber, true, true)"
+				text style 	"label"
+				enabled 	"getMultiplayerCharacterButtonText(rowNumber) ~= ''"
+			}
+			label
+			{
+				area 		2 0 195 95
+				text lua 	"getMultiplayerCharacterName(rowNumber, true, true)"
+				text style 	"label"
+				enabled 	"getMultiplayerCharacterButtonText(rowNumber) == ''"
+			}
+			label
+			{
+				area		2 52 195 40
+				bam 		'GUIBUTNT'
+				sequence 	1
+				frame lua 	"currentCellCheck(3)"
+				align 		center center
+				enabled 	"getMultiplayerCharacterButtonText(rowNumber) ~= ''"
+			}
+			label
+			{
+				area		2 50 195 44
+				text lua 	"getMultiplayerCharacterButtonText(rowNumber)"
+				text style 	"button"
+			}
+			label
+			{
+				area		2 50 195 44
+				fill 		0 0 0 170
+				enabled 	"shouldGreyscaleEditButton(rowNumber)"
+			}
+
+		}
+		column --ready
+		{
+			width 13
+			label
+			{
+				area 		0 50 50 44
+				text lua	"getMultiplayerCharacterReadyText(rowNumber)"
+				text style 	"label"
+			}
+
+		}
+
+		area 				520 112 475 570
+
+		rowheight			95
+		table				"mpaCharacters"
+		var					selectedCharacter
+		scrollbar			'GUISCRC'
+		hidehighlight
+		action
+		"
+			if cellNumber == 1 then
+				cellNumber = nil
+				if multiplayerLocalPlayerID == 1 and selectedCharacter ~= 1 then
+					if multiplayerFromInGame == false then
+						multiplayerScreen:SetModifiedCharacterSlot(selectedCharacter - 1)
+						currentMultiplayerSelectPlayer = mpaCharacters[selectedCharacter]['player']
+						Infinity_PushMenu('MP_PICKPLAYER')
+					elseif shouldGreyscaleEditButton(selectedCharacter) == false then
+						multiplayerScreen:OnModifyButtonClick()
+					end
+				end
+			elseif cellNumber == 2 then
+				cellNumber = nil
+			elseif cellNumber == 3 then
+				cellNumber = nil
+				if shouldGreyscaleEditButton(selectedCharacter) == false then
+					if getMultiplayerCharacterButtonText(selectedCharacter) == t('MULTIPLAYER_VIEW_DETAILS_BUTTON') then
+						multiplayerScreen:OnPortraitButtonClick(selectedCharacter-1)
+					elseif getMultiplayerCharacterButtonText(selectedCharacter) == t('CREATE_CHAR_BUTTON') then
+						if multiplayerFromInGame == false then
+							multiplayerScreen:SetModifiedCharacterSlot(selectedCharacter-1)
+							multiplayerScreen:UpdateModifyCharacterPanel()
+						elseif shouldGreyscaleEditButton(selectedCharacter) == false then
+							multiplayerScreen:OnModifyButtonClick()
+						end
+					elseif getMultiplayerCharacterButtonText(selectedCharacter) == t('MULTIPLAYER_EDIT_CHAR_BUTTON') then
+						if multiplayerFromInGame == false then
+							mpModifyingCharacter = selectedCharacter - 1
+							Infinity_PushMenu('MP_MODIFYCHARACTER')
+						elseif shouldGreyscaleEditButton(selectedCharacter) == false then
+							multiplayerScreen:OnModifyButtonClick()
+						end
+					end
+				end
+			elseif cellNumber == 4 then
+				cellNumber = nil
+			end
+		"
+		actionAlt
+		"
+			cellNumber = nil
+		"
+	}
+
+	--ready buttons
+	button
+	{
+		area 942 112 50 50
+		bam 		'4CHECK'
+		sequence lua "get4CheckFrame(1)"
+		align 		center center
+		tooltip lua "getMultiplayerReadyTooltip(1)"
+		action
+		"
+			if multiplayerFromInGame == false then
+				if multiplayerLocalPlayerID == mpaCharacters[1]['player'] then
+					multiplayerScreen:OnReadyButtonClick(1-1)
+				end
+			end
+		"
+	}
+	button
+	{
+		area 942 207 50 50
+		bam 		'4CHECK'
+		sequence lua "get4CheckFrame(2)"
+		align 		center center
+		action
+		"
+			if multiplayerFromInGame == false then
+				if multiplayerLocalPlayerID == mpaCharacters[2]['player'] then
+					multiplayerScreen:OnReadyButtonClick(2-1)
+				end
+			end
+		"
+	}
+	button
+	{
+		area 942 304 50 50
+		bam 		'4CHECK'
+		sequence lua "get4CheckFrame(3)"
+		align 		center center
+		action
+		"
+			if multiplayerFromInGame == false then
+				if multiplayerLocalPlayerID == mpaCharacters[3]['player'] then
+					multiplayerScreen:OnReadyButtonClick(3-1)
+				end
+			end
+		"
+	}
+	button
+	{
+		area 942 397 50 50
+		bam 		'4CHECK'
+		sequence lua "get4CheckFrame(4)"
+		align 		center center
+		action
+		"
+			if multiplayerFromInGame == false then
+				if multiplayerLocalPlayerID == mpaCharacters[4]['player'] then
+					multiplayerScreen:OnReadyButtonClick(4-1)
+				end
+			end
+		"
+	}
+	button
+	{
+		area 942 492 50 50
+		bam 		'4CHECK'
+		sequence lua "get4CheckFrame(5)"
+		align 		center center
+		action
+		"
+			if multiplayerFromInGame == false then
+				if multiplayerLocalPlayerID == mpaCharacters[5]['player'] then
+					multiplayerScreen:OnReadyButtonClick(5-1)
+				end
+			end
+		"
+	}
+	button
+	{
+		area 942 587 50 50
+		bam 		'4CHECK'
+		sequence lua "get4CheckFrame(6)"
+		align 		center center
+		action
+		"
+			if multiplayerFromInGame == false then
+				if multiplayerLocalPlayerID == mpaCharacters[6]['player'] then
+					multiplayerScreen:OnReadyButtonClick(6-1)
+				end
+			end
+		"
+	}
+
+	label
+	{
+		area 40 308 454 25
+		fill 125 125 125 180
+	}
+	label
+	{
+		area 40 343 454 47
+		fill 50 50 50 180
+	}
+	label
+	{
+		area 40 394 454 47
+		fill 50 50 50 180
+	}
+	label
+	{
+		area 40 445 454 47
+		fill 50 50 50 180
+	}
+	label
+	{
+		area 40 496 454 47
+		fill 50 50 50 180
+	}
+	label
+	{
+		area 40 547 454 47
+		fill 50 50 50 180
+	}
+	label
+	{
+		area 40 598 454 47
+		fill 50 50 50 180
+	}
+	label
+	{
+		area 40 308 207 25
+		text lua "t('PLAYERS_LABEL')"
+		text style "label"
+		align center center
+	}
+	label
+	{
+		area 247 308 187 25
+		text lua "t('PARTY_SLOTS_LABEL')"
+		text style "label"
+		align center center
+	}
+	label
+	{
+		area 434 308 60 25
+		text lua "t('RULES_LABEL')"
+		text style "label"
+		align center center
+	}
+	list -- player list
+	{
+		column -- kick
+		{
+			width lua "getPlayerKickWidth(rowNumber)"
+			label
+			{
+				area		6 5 45 45
+			}
+		}
+		column --player
+		{
+			width lua "getPlayerNameWidth(rowNumber)"
+			label
+			{
+				area 		0 0 195 55
+				text lua	"getMultiplayerPlayerName(rowNumber, false, true)"
+				text style 	"label"
+				align 		left center
+				enabled 	"getPlayerKickWidth(rowNumber) == 0"
+			}
+			label
+			{
+				area 		0 0 150 55
+				text lua	"getMultiplayerPlayerName(rowNumber, false, true)"
+				text style 	"label"
+				align 		left center
+				enabled 	"getPlayerKickWidth(rowNumber) ~= 0"
+			}
+
+		}
+		column --portraits
+		{
+			width 45
+			label
+			{
+				area		6 5 25 38
+			}
+		}
+		column -- permissions
+		{
+			width 10
+			label
+			{
+				area		6 5 45 45
+			}
+		}
+
+		area 				52 339 442 306
+
+		rowheight			51
+		table				"mpaPlayers"
+		var					selectedPlayer
+		scrollbar			'GUISCRC'
+		hidehighlight
+		action
+		"
+			if cellNumber == 1 and selectedPlayer > 1 then
+				cellNumber = 0
+			elseif cellNumber == 2 then
+				cellNumber = 0
+			elseif cellNumber == 3 then
+				cellNumber = 0
+			elseif cellNumber == 4 and selectedPlayer > 1  then
+				cellNumber = 0
+			end
+		"
+	}
+
+	--kick
+	button
+	{
+		area		40 395 46 45
+		bam 			GUMPBUTX
+		sequence 		4
+		clickable lua	"mpaPlayers[2]['name'] ~= ''"
+		align 		center center
+		enabled 	"multiplayerLocalPlayerID == 1"
+		tooltip lua	"t('MULTIPALYER_KICK_TOOLTIP')"
+		action
+		"
+			if mpaPlayers[2]['name'] ~= '' then
+				multiplayerScreen:OnKickPlayerButtonClick(2-1)
+			end
+		"
+	}
+	button
+	{
+		area		40 446 46 45
+		bam 			GUMPBUTX
+		sequence 		4
+		clickable lua	"mpaPlayers[3]['name'] ~= ''"
+		align 		center center
+		enabled 	"multiplayerLocalPlayerID == 1"
+		tooltip lua	"t('MULTIPALYER_KICK_TOOLTIP')"
+		action
+		"
+			if mpaPlayers[3]['name'] ~= '' then
+				multiplayerScreen:OnKickPlayerButtonClick(3-1)
+			end
+		"
+	}
+	button
+	{
+		area		40 497 46 45
+		bam 			GUMPBUTX
+		sequence 		4
+		clickable lua	"mpaPlayers[4]['name'] ~= ''"
+		align 		center center
+		enabled 	"multiplayerLocalPlayerID == 1"
+		tooltip lua	"t('MULTIPALYER_KICK_TOOLTIP')"
+		action
+		"
+			if mpaPlayers[4]['name'] ~= '' then
+				multiplayerScreen:OnKickPlayerButtonClick(4-1)
+			end
+		"
+	}
+	button
+	{
+		area		40 548 46 45
+		bam 			GUMPBUTX
+		sequence 		4
+		clickable lua	"mpaPlayers[5]['name'] ~= ''"
+		align 		center center
+		enabled 	"multiplayerLocalPlayerID == 1"
+		tooltip lua	"t('MULTIPALYER_KICK_TOOLTIP')"
+		action
+		"
+			if mpaPlayers[5]['name'] ~= '' then
+				multiplayerScreen:OnKickPlayerButtonClick(5-1)
+			end
+		"
+	}
+	button
+	{
+		area		40 599 46 45
+		bam 			GUMPBUTX
+		sequence 		4
+		clickable lua	"mpaPlayers[6]['name'] ~= ''"
+		align 		center center
+		enabled 	"multiplayerLocalPlayerID == 1"
+		tooltip lua	"t('MULTIPALYER_KICK_TOOLTIP')"
+		action
+		"
+			if mpaPlayers[6]['name'] ~= '' then
+				multiplayerScreen:OnKickPlayerButtonClick(6-1)
+			end
+		"
+	}
+
+	--permissions
+	button
+	{
+		area		446 395 46 45
+		bam 			GUMPBUTX
+		sequence 		3
+		clickable lua	"mpaPlayers[2]['name'] ~= '' and multiplayerLocalPlayerID == 1"
+		align 		center center
+		tooltip lua	"t('MULTIPALYER_PERMISSION_TOOLTIP')"
+		action
+		"
+			if mpaPlayers[2]['name'] ~= '' then
+				multiplayerInPermission = true
+				multiplayerInPermissionForPlayer = 2
+				Infinity_PushMenu('MP_PERMISSIONS')
+			end
+		"
+	}
+	button
+	{
+		area		446 446 46 45
+		bam 			GUMPBUTX
+		sequence 		3
+		clickable lua	"mpaPlayers[3]['name'] ~= '' and multiplayerLocalPlayerID == 1"
+		align 		center center
+		tooltip lua	"t('MULTIPALYER_PERMISSION_TOOLTIP')"
+		action
+		"
+			if mpaPlayers[3]['name'] ~= '' then
+				multiplayerInPermission = true
+				multiplayerInPermissionForPlayer = 3
+				Infinity_PushMenu('MP_PERMISSIONS')
+			end
+		"
+	}
+	button
+	{
+		area		446 497 46 45
+		bam 			GUMPBUTX
+		sequence 		3
+		clickable lua	"mpaPlayers[4]['name'] ~= '' and multiplayerLocalPlayerID == 1"
+		align 		center center
+		tooltip lua	"t('MULTIPALYER_PERMISSION_TOOLTIP')"
+		action
+		"
+			if mpaPlayers[4]['name'] ~= '' then
+				multiplayerInPermission = true
+				multiplayerInPermissionForPlayer = 4
+				Infinity_PushMenu('MP_PERMISSIONS')
+			end
+		"
+	}
+	button
+	{
+		area		446 548 46 45
+		bam 			GUMPBUTX
+		sequence 		3
+		clickable lua	"mpaPlayers[5]['name'] ~= '' and multiplayerLocalPlayerID == 1"
+		align 		center center
+		tooltip lua	"t('MULTIPALYER_PERMISSION_TOOLTIP')"
+		action
+		"
+			if mpaPlayers[5]['name'] ~= '' then
+				multiplayerInPermission = true
+				multiplayerInPermissionForPlayer = 5
+				Infinity_PushMenu('MP_PERMISSIONS')
+			end
+		"
+	}
+	button
+	{
+		area		446 599 46 45
+		bam 			GUMPBUTX
+		sequence 		3
+		clickable lua	"mpaPlayers[6]['name'] ~= '' and multiplayerLocalPlayerID == 1"
+		align 		center center
+		tooltip lua	"t('MULTIPALYER_PERMISSION_TOOLTIP')"
+		action
+		"
+			if mpaPlayers[6]['name'] ~= '' then
+				multiplayerInPermission = true
+				multiplayerInPermissionForPlayer = 6
+				Infinity_PushMenu('MP_PERMISSIONS')
+			end
+		"
+	}
+
+	--character drag/drop
+	--player 1
+	button
+	{
+		area 247 348 180 38
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(1)
+		"
+	}
+	button
+	{
+		area 				247 348 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(1,1)'
+		sequence 			1
+		align 				center center
+		--No changing control of character 1
+	}
+	button
+	{
+		area 				278 348 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(1,2)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			if multiplayerFromInGame == false then
+				local slot = getMultiplayerPlayerControlledCharacterSlot(1,2)
+				multiplayerStartSwapPortraits(1,slot)
+			elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+				multiplayerScreen:OnModifyButtonClick()
+			end
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(1)
+		"
+	}
+	button
+	{
+		area 				309 348 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(1,3)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			if multiplayerFromInGame == false then
+				local slot = getMultiplayerPlayerControlledCharacterSlot(1,3)
+				multiplayerStartSwapPortraits(1,slot)
+			elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+				multiplayerScreen:OnModifyButtonClick()
+			end
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(1)
+		"
+	}
+	button
+	{
+		area 				340 348 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(1,4)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			if multiplayerFromInGame == false then
+				local slot = getMultiplayerPlayerControlledCharacterSlot(1,4)
+				multiplayerStartSwapPortraits(1,slot)
+			elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+				multiplayerScreen:OnModifyButtonClick()
+			end
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(1)
+		"
+	}
+	button
+	{
+		area 				371 348 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(1,5)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			if multiplayerFromInGame == false then
+				local slot = getMultiplayerPlayerControlledCharacterSlot(1,5)
+				multiplayerStartSwapPortraits(1,slot)
+			elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+				multiplayerScreen:OnModifyButtonClick()
+			end
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(1)
+		"
+	}
+	button
+	{
+		area 				402 348 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(1,6)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			if multiplayerFromInGame == false then
+				local slot = getMultiplayerPlayerControlledCharacterSlot(1,6)
+				multiplayerStartSwapPortraits(1,slot)
+			elseif multiplayerLocalPlayerID == 1 or multiplayer.player[multiplayerLocalPlayerID].permissions[1] == true then
+				multiplayerScreen:OnModifyButtonClick()
+			end
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(1)
+		"
+	}
+	--player 2
+	button
+	{
+		area 247 399 180 38
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(2)
+		"
+	}
+	button
+	{
+		area 				247 399 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(2,1)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(2,1)
+			multiplayerStartSwapPortraits(2,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(2)
+		"
+	}
+	button
+	{
+		area 				278 399 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(2,2)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(2,2)
+			multiplayerStartSwapPortraits(2,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(2)
+		"
+	}
+	button
+	{
+		area 				309 399 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(2,3)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(2,3)
+			multiplayerStartSwapPortraits(2,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(2)
+		"
+	}
+	button
+	{
+		area 				340 399 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(2,4)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(2,4)
+			multiplayerStartSwapPortraits(2,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(2)
+		"
+	}
+	button
+	{
+		area 				371 399 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(2,5)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(2,5)
+			multiplayerStartSwapPortraits(2,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(2)
+		"
+	}
+	button
+	{
+		area 				402 399 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(2,6)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(2,6)
+			multiplayerStartSwapPortraits(2,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(2)
+		"
+	}
+	--player 3
+	button
+	{
+		area 247 449 180 38
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(3)
+		"
+	}
+	button
+	{
+		area 				247 449 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(3,1)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(3,1)
+			multiplayerStartSwapPortraits(3,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(3)
+		"
+	}
+	button
+	{
+		area 				278 449 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(3,2)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(3,2)
+			multiplayerStartSwapPortraits(3,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(3)
+		"
+	}
+	button
+	{
+		area 				309 449 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(3,3)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(3,3)
+			multiplayerStartSwapPortraits(3,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(3)
+		"
+	}
+	button
+	{
+		area 				340 449 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(3,4)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(3,4)
+			multiplayerStartSwapPortraits(3,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(3)
+		"
+	}
+	button
+	{
+		area 				371 449 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(3,5)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(3,5)
+			multiplayerStartSwapPortraits(3,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(3)
+		"
+	}
+	button
+	{
+		area 				402 449 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(3,6)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(3,6)
+			multiplayerStartSwapPortraits(3,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(3)
+		"
+	}
+	--player 4
+	button
+	{
+		area 247 500 180 38
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(4)
+		"
+	}
+	button
+	{
+		area 				247 500 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(4,1)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(4,1)
+			multiplayerStartSwapPortraits(4,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(4)
+		"
+	}
+	button
+	{
+		area 				278 500 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(4,2)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(4,2)
+			multiplayerStartSwapPortraits(4,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(4)
+		"
+	}
+	button
+	{
+		area 				309 500 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(4,3)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(4,3)
+			multiplayerStartSwapPortraits(4,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(4)
+		"
+	}
+	button
+	{
+		area 				340 500 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(4,4)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(4,4)
+			multiplayerStartSwapPortraits(4,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(4)
+		"
+	}
+	button
+	{
+		area 				371 500 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(4,5)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(4,5)
+			multiplayerStartSwapPortraits(4,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(4)
+		"
+	}
+	button
+	{
+		area 				402 500 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(4,6)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(4,6)
+			multiplayerStartSwapPortraits(4,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(4)
+		"
+	}
+	--player 5
+	button
+	{
+		area 247 551 180 38
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(5)
+		"
+	}
+	button
+	{
+		area 				247 551 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(5,1)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(5,1)
+			multiplayerStartSwapPortraits(5,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(5)
+		"
+	}
+	button
+	{
+		area 				278 551 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(5,2)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(5,2)
+			multiplayerStartSwapPortraits(5,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(5)
+		"
+	}
+	button
+	{
+		area 				309 551 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(5,3)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(5,3)
+			multiplayerStartSwapPortraits(5,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(5)
+		"
+	}
+	button
+	{
+		area 				340 551 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(5,4)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(5,4)
+			multiplayerStartSwapPortraits(5,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(5)
+		"
+	}
+	button
+	{
+		area 				371 551 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(5,5)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(5,5)
+			multiplayerStartSwapPortraits(5,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(5)
+		"
+	}
+	button
+	{
+		area 				402 551 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(5,6)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(5,6)
+			multiplayerStartSwapPortraits(5,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(5)
+		"
+	}
+	--player 6
+	button
+	{
+		area 247 602 180 38
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(6)
+		"
+	}
+	button
+	{
+		area 				247 602 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(6,1)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(6,1)
+			multiplayerStartSwapPortraits(6,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(6)
+		"
+	}
+	button
+	{
+		area 				278 602 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(6,2)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(6,2)
+			multiplayerStartSwapPortraits(6,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(6)
+		"
+	}
+	button
+	{
+		area 				309 602 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(6,3)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(6,3)
+			multiplayerStartSwapPortraits(6,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(6)
+		"
+	}
+	button
+	{
+		area 				340 602 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(6,4)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(6,4)
+			multiplayerStartSwapPortraits(6,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(6)
+		"
+	}
+	button
+	{
+		area 				371 602 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(6,5)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(6,5)
+			multiplayerStartSwapPortraits(6,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(6)
+		"
+	}
+	button
+	{
+		area 				402 602 25 38
+		bitmap lua			'getMultiplayerPlayerControlledCharacter(6,6)'
+		sequence 			1
+		align 				center center
+		actionSimpleDrag
+		"
+			local slot = getMultiplayerPlayerControlledCharacterSlot(6,6)
+			multiplayerStartSwapPortraits(6,slot)
+		"
+		actionSimpleDrop
+		"
+			multiplayerStopSwapPortraits(6)
+		"
+	}
+
+	label -- game name
+	{
+		area 		40 84 454 56
+		text lua	"multiplayerSessionName"
+		text style 	'label'
+	}
+	label -- new game type/save name
+	{
+		area 		206 140 288 44
+		text lua	"multiplayerSaveName"
+		text style 	'label'
+		align 		left center
+	}
+	label -- chapter
+	{
+		area 		206 180 288 44
+		text lua	"multiplayerChapter"
+		text style 	'label'
+		align 		left center
+	}
+	label -- time played
+	{
+		area 		206 220 288 44
+		text lua	"multiplayerTimePlayed"
+		text style 	'label'
+		align 		left center
+	}
+	label -- difficulty
+	{
+		area 		206 260 288 44
+		text lua	"multiplayerDifficultyLabel"
+		text style 	'label'
+		align 		left center
+	}
+	label -- other difficulty
+	{
+		area 		40 140 166 164
+		bam 		"GUIDIFF"
+		frame lua	"multiplayerDifficultyImage"
+		sequence 	0
+		align 		center center
+	}
+
+	button
+	{
+		area 740 706 200 40
+		bam 'GUIBUTNT'
+		sequence 1
+		text "START_GAME_BUTTON" -- Done
+		text style 'button'
+		clickable lua "multiplayer.donebuttonclickable"
+		enabled "not multiplayerFromInGame"
+		tooltip lua "getStartGameButtonTooltip()"
+		action
+		"
+			multiplayerScreen:OnMainDoneButtonClick(mulitplayerPreexistingDifficulty)
+		"
+	}
+	button
+	{
+		on escape
+		area 740 706 200 40
+		bam 'GUIBUTNT'
+		sequence 1
+		text "DONE_BUTTON" -- Done
+		text style 'button'
+		clickable lua "multiplayer.donebuttonclickable"
+		enabled "multiplayerFromInGame"
+		tooltip lua "getStartGameButtonTooltip()"
+		action
+		"
+			multiplayerScreen:OnMainDoneButtonClick(mulitplayerPreexistingDifficulty)
+		"
+	}
+	button
+	{
+		area 82 706 200 40
+		bam 'GUIBUTNT'
+		sequence 0
+		text "LOGOUT_BUTTON" -- Logout
+		text style 'button'
+		action
+		"
+			multiplayerScreen:OnLogoutButtonClick()
+		"
+	}
+	button
+	{
+		area 298 652 200 40
+		bam 'GUIBUTNT'
+		sequence 0
+		text "MULTIPLAYER_GAME_OPTIONS_BUTTON"
+		text style 'button'
+		enabled "multiplayerLocalPlayerID == 1"
+		action
+		"
+			helpTextString = Infinity_FetchString(11323)
+			Infinity_PushMenu('MP_OPTIONS')
+		"
+	}
+
+	--dragged portrait
+	label
+	{
+		name 				"multiplayerDraggingPortraitImage"
+		area 				-20 -20 37 57
+		bitmap lua			'mpDraggedPortrait'
+		sequence 			1
+		align 				center center
+		enabled 			"multiplayerUpdateDraggedPortrait()"
+	}
+}

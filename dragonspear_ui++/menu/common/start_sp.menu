@@ -1,0 +1,118 @@
+menu
+{
+	name 'START_SP'
+	align top left
+	size 1024 768
+	ignoreEsc
+	onopen
+	"
+	--Infinity_PlayMovie('flames','flames2')
+	getMenuPanelArea()
+	startEngine:SetEngineState(0)
+	Infinity_TransitionMenu('START')
+	"
+
+	label
+	{
+		name "MenuPanel1SP"
+		area 1476 190 368 470
+		mosaic "RGMMENU"
+	}
+	button
+	{
+		name "MenuButton1SP"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 250 249 45
+		pad 10 8 10 8
+		text style "button"
+		--text 9372
+		text "CONTINUE_BUTTON"
+		clickable lua "canContinue"
+	}
+	button
+	{
+		name "MenuButton2SP"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 300 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "NEW_GAME_BUTTON"
+	}
+	button
+	{
+		name "MenuButton3SP"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 350 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "LOAD_GAME_BUTTON"
+	}
+	button
+	{
+		name "MenuButton4SP"
+		bam 'STARTBUT'
+		enabled "getTutorialEnabled()"
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 400 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "TUTORIAL_BUTTON"
+	}
+	button
+	{
+		name "MenuButton4xSP"
+		bam 'STARTBUT'
+		enabled "getCampaignImportEnabled()"
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 400 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "IMPORT_GAME_BUTTON"
+	}
+	button
+	{
+		name "MenuButton5SP"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 450 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "MULTIPLAYER_BUTTON"
+	}
+	button
+	{
+		-- TODO: not enough room for a new button, but this menu seems to unused anyway
+		-- name "MenuButton6SP"
+		enabled "false"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 500 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "PREGENERATE_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnPreGenerateButtonClick()"
+	}
+	button
+	{
+		name "MenuButton6SP"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 500 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "OPTIONS_BUTTON"
+	}
+	button
+	{
+		name "MenuButton7SP"
+		area 1536 550 249 45
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		pad 10 8 10 8
+		text style "button"
+		text "QUIT_GAME_BUTTON"
+	}
+}

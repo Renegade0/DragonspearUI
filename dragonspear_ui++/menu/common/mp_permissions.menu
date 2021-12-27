@@ -1,0 +1,246 @@
+menu
+{
+	name 'MP_PERMISSIONS'
+	align center center
+	modal
+	onOpen
+	"
+		local index = 1
+		for index = 0, #(multiplayer.player[multiplayerInPermissionForPlayer].permissions), 1 do
+			local luaIndex = -1
+			local loopLuaIndex = -1
+
+			for loopLuaIndex = 1, #multiplayerPermissions, 1 do
+				if multiplayerPermissions[loopLuaIndex][5] == index then
+					luaIndex = loopLuaIndex
+					break
+				end
+			end
+
+			if luaIndex ~= -1 then
+				if multiplayer.player[multiplayerInPermissionForPlayer].permissions[index] == true then
+					multiplayerPermissions[luaIndex][3] = true
+					multiplayerPermissions[luaIndex][4] = true
+				elseif multiplayer.player[multiplayerInPermissionForPlayer].permissions[index] == false then
+					multiplayerPermissions[luaIndex][3] = false
+					multiplayerPermissions[luaIndex][4] = false
+				else
+					multiplayerPermissions[luaIndex][3] = false
+					multiplayerPermissions[luaIndex][4] = false
+				end
+			end
+		end
+	"
+
+	label
+	{
+		mosaic 'RECENTEV'
+		area 2 -2 664 668
+	}
+	label
+	{
+		area 106 70 458 44
+		text "PERMISSIONS_TITLE"
+		text style "title"
+	}
+
+	label
+	{
+		area 106 114 458 44
+		text lua "getMultiplayerPlayerPermissionDescription()"
+		text style "title"
+	}
+
+	button
+	{
+		bam GUIOSW
+		on esc
+		area 616 6 44 44
+		sequence 2
+		action
+		"
+			multiplayerScreen:OnCancelButtonClick()
+			Infinity_PopMenu()
+		"
+	}
+
+	--bottom buttons
+	button
+	{
+		on escape
+		area 236 528 200 40
+		bam 'GUIBUTNT'
+		sequence 0
+		text "CANCEL_BUTTON" -- Back
+		text style 'button'
+		action
+		"
+			multiplayerScreen:OnCancelButtonClick()
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		on return
+		area 236 572 200 40
+		bam 'GUIBUTNT'
+		sequence 1
+		text "DONE_BUTTON" -- Done
+		text style 'button'
+		enabled "multiplayerLocalPlayerID == 1"
+		action
+		"
+			local index = 1
+			for index = #(multiplayerPermissions), 1, -1 do
+				if multiplayerPermissions[index][3] ~= multiplayerPermissions[index][4] then
+					broadcastPermissionChange(multiplayerInPermissionForPlayer,index,multiplayerPermissions[index][3])
+					multiplayerScreen:OnPermissionButtonClick(multiplayerInPermissionForPlayer - 1, multiplayerPermissions[index][5])
+				end
+			end
+
+			multiplayerInPermission = false
+			multiplayerScreen:OnDoneButtonClick()
+			Infinity_PopMenu()
+		"
+	}
+
+	--permissions
+	button
+	{
+		area 268 178 32 32
+		bam ROUNDBUT
+		sequence 0
+		glow lua "multiplayerPermissions[1][3] == true"
+		tooltip lua "t(multiplayerPermissions[1][2])"
+		scaleToClip
+		action
+		"
+			if multiplayerLocalPlayerID == 1 then
+				multiplayerPermissions[1][3] = not multiplayerPermissions[1][3]
+			end
+		"
+	}
+	text
+	{
+		area 306 166 212 56
+		text lua "t(multiplayerPermissions[1][1])"
+		tooltip lua "t(multiplayerPermissions[1][2])"
+		text style "normal"
+		align left center
+	}
+	button
+	{
+		area 268 233 32 32
+		bam ROUNDBUT
+		sequence 0
+		glow lua "multiplayerPermissions[2][3] == true"
+		tooltip lua "t(multiplayerPermissions[2][2])"
+		scaleToClip
+		action
+		"
+			if multiplayerLocalPlayerID == 1 then
+				multiplayerPermissions[2][3] = not multiplayerPermissions[2][3]
+			end
+		"
+	}
+	text
+	{
+		area 306 222 212 56
+		text lua "t(multiplayerPermissions[2][1])"
+		tooltip lua "t(multiplayerPermissions[2][2])"
+		text style "normal"
+		align left center
+	}
+	button
+	{
+		area 268 289 32 32
+		bam ROUNDBUT
+		sequence 0
+		glow lua "multiplayerPermissions[3][3] == true"
+		tooltip lua "t(multiplayerPermissions[3][2])"
+		scaleToClip
+		action
+		"
+			if multiplayerLocalPlayerID == 1 then
+				multiplayerPermissions[3][3] = not multiplayerPermissions[3][3]
+			end
+		"
+	}
+	text
+	{
+		area 306 278 212 56
+		text lua "t(multiplayerPermissions[3][1])"
+		tooltip lua "t(multiplayerPermissions[3][2])"
+		text style "normal"
+		align left center
+	}
+	button
+	{
+		area 268 347 32 32
+		bam ROUNDBUT
+		sequence 0
+		glow lua "multiplayerPermissions[4][3] == true"
+		tooltip lua "t(multiplayerPermissions[4][2])"
+		scaleToClip
+		action
+		"
+			if multiplayerLocalPlayerID == 1 then
+				multiplayerPermissions[4][3] = not multiplayerPermissions[4][3]
+			end
+		"
+	}
+	text
+	{
+		area 306 334 212 56
+		text lua "t(multiplayerPermissions[4][1])"
+		tooltip lua "t(multiplayerPermissions[4][2])"
+		text style "normal"
+		align left center
+	}
+	button
+	{
+		area 268 401 32 32
+		bam ROUNDBUT
+		sequence 0
+		glow lua "multiplayerPermissions[5][3] == true"
+		tooltip lua "t(multiplayerPermissions[5][2])"
+		scaleToClip
+		action
+		"
+			if multiplayerLocalPlayerID == 1 then
+				multiplayerPermissions[5][3] = not multiplayerPermissions[5][3]
+			end
+		"
+	}
+	text
+	{
+		area 306 390 212 56
+		text lua "t(multiplayerPermissions[5][1])"
+		tooltip lua "t(multiplayerPermissions[5][2])"
+		text style "normal"
+		align left center
+	}
+	button
+	{
+		area 268 459 32 32
+		bam ROUNDBUT
+		sequence 0
+		glow lua "multiplayerPermissions[6][3] == true"
+		tooltip lua "t(multiplayerPermissions[6][2])"
+		scaleToClip
+		action
+		"
+			if multiplayerLocalPlayerID == 1 then
+				multiplayerPermissions[6][3] = not multiplayerPermissions[6][3]
+			end
+		"
+	}
+	text
+	{
+		area 306 446 212 56
+		text lua "t(multiplayerPermissions[6][1])"
+		tooltip lua "t(multiplayerPermissions[6][2])"
+		text style "normal"
+		align left center
+	}
+}

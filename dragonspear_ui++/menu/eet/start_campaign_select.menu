@@ -1,0 +1,85 @@
+--menu
+--{
+--	name 'START_CAMPAIGN_SELECT'
+--	align center center
+--	ignoreEsc
+--	modal
+--
+--	onOpen "
+--	"
+--
+--	label
+--	{
+--		area 0 0 921 585
+--		mosaic 'RGCAMPS'
+--	}
+--
+--	list
+--	{
+--		column
+--		{
+--			width 15
+--			label
+--			{
+--				area	0 0 -1 -1
+--				bam "CMPGEET"
+--				sequence lua 'startCampaignData[rowNumber].icon'
+--				align	center center
+--			}
+--		}
+--		column
+--		{
+--			width 85
+--			label
+--			{
+--				area		0 0 -1 -1
+--				text lua "getEETTitle(rowNumber)"
+--				text style "normal"
+--				text align left center
+--			}
+--		}
+--
+--		area 83 122 330 384
+--
+--		rowheight	40
+--		--hideHighlight
+--		table		"startCampaignData"
+--		var		selectedOpt
+--		scrollbar	'GUISCRP'
+--		action		"
+--			onCampaignButton(selectedOpt)
+--			selectedOpt = 0
+--			startEngine:DismissChooseCampaignPopup()
+--		"
+--		actionEnter
+--		"
+--			if mouseoverRow > 0 then
+--				highlightedCampaign = mouseoverRow
+--			end
+--			glowTest = mouseoverRow
+--			selectedOpt = mouseoverRow
+--		"
+--		actionExit
+--		"
+--			glowTest = nil
+--			--highlightedCampaign = nil
+--			selectedOpt = 0
+--		"
+--	}
+--
+--	text
+--	{
+--		area		147 37 625 52
+--		text	"SELECT_CAMPAIGN_TITLE"
+--		text style	"title"
+--	}
+--
+--	text
+--	{
+--		name		"campaignBookDescription"
+--		area		436 110 400 420
+--		text lua	"getEETDescription(highlightedCampaign)"
+--		text style	"normal"
+--		scrollbar	'GUISCRC'
+--	}
+--}

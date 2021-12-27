@@ -1,0 +1,33 @@
+menu
+{
+	name "luaHistoryMenu"
+	offset 500 -32
+	align right bottom
+	label
+	{
+		area 0 0 809 300
+		mosaic 'GUWBTP30'
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 -1
+				text lua "luaEditHistory[rowNumber]"
+				text style	"list"
+			}
+		}
+		area 20 10 400 298
+		rowheight	24
+		var luaEditHistoryListSelected
+		table		"luaEditHistory"
+		scrollbar	'GUISCRC'
+		action
+		"
+			luaEdit = luaEditHistory[luaEditHistoryListSelected]
+		"
+	}
+}

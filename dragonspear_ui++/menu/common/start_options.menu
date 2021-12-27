@@ -1,0 +1,124 @@
+menu
+{
+	name 'START_OPTIONS'
+	align top left
+	ignoreEsc
+	onopen
+	"
+--	Infinity_PlayMovie('flames','flames3')
+	getMenuPanelArea()
+	"
+	size 1024 768
+
+	label
+	{
+		name "MenuPanel1OP"
+		area 1476 190 368 470
+		mosaic "RGMMENU"
+	}
+	label
+	{
+		name "MenuOpLabel"
+		area 1536 205 249 40
+		text "OPTIONS_TITLE"
+		text style "title"
+	}
+	label
+	{
+		name "MenuTitle1OP"
+	#if GAME_VERSION == 'sod' then
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG"
+		area 1434 46 450 121
+		mosaic 'RGTITLE2'
+--		sequence 0
+--		frame 0
+	#else
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 0"
+		area 1410 78 488 96
+		bam 'RGTITLE'
+		sequence 0
+		frame 0
+	#end
+	}
+	label
+	{
+		name "MenuTitle2OP"
+	#if GAME_VERSION == 'sod' then
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
+		area 1410 42 494 120
+		mosaic 'RGTITLE'
+--		sequence 0
+--		frame 1
+	#else
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 1"
+		area 1410 78 488 96
+		bam 'RGTITLE'
+		sequence 0
+		frame 1
+	#end
+	}
+	label
+	{
+		name "MenuTitle3OP"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
+	#if GAME_VERSION == 'sod' then
+		area 1388 78 504 62
+		bam 'TITLE'
+	#else
+		area 1388 78 488 96
+		bam 'RGTITLE'
+	#end
+		sequence 0
+		frame 2
+	}
+
+	list
+	{
+
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 45
+				text lua "t( OptionsButtons[rowNumber].text )"
+				text style "button"
+				bam STARTBUT
+				sequence lua "getCampaignButtonSequence()"
+				frame lua "selectedMenuOpt == rowNumber"
+				align center center
+			}
+		}
+
+		area 1536 250 268 300
+
+		name "MenuOptionsArea"
+		rowheight	50
+		table		"OptionsButtons"
+		var			selectedMenuOpt
+		scrollbar	'GUISCRC'
+		hidehighlight
+
+		action
+		"
+			onStartOptionClick()
+		"
+	}
+
+		button
+	{
+		name "MenuButton5OP"
+		on escape
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 550 249 45
+		bam STARTBUT
+		pad 10 8 10 8
+		text style "button"
+		text "BACK_BUTTON"
+		action
+		"
+			Infinity_PopMenu()
+			e:SelectEngine(startEngine)
+		"
+	}
+}

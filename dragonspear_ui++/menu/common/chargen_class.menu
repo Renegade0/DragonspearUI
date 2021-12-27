@@ -1,0 +1,82 @@
+menu
+{
+	name 'CHARGEN_CLASS'
+--	modal
+	align center center
+	ignoreesc
+	onopen "currentChargenClass = nil"
+	label
+	{
+		area 0 0 1444 818
+		mosaic RGCGWDE
+	}
+	label
+	{
+		area 350 84 744 44
+		text "CLASS_TITLE"
+		text style "title"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 		0 0 310 42
+				mosaic lua  'getClassBackground(rowNumber)'
+				respectClipping
+				align		center center
+			}
+			label
+			{
+				area 0 0 310 42
+				text lua "Infinity_FetchString(chargen.class[rowNumber].name)"
+				text style "list"
+				text align center center
+				pad -8 0 0 0
+				text lower
+
+			}
+		}
+		action "
+			if chargen.class[currentChargenClass] then
+				createCharScreen:OnClassSelectButtonClick(chargen.class[currentChargenClass].id)
+			end
+			"
+		rowheight 42
+		hideHighlight
+		area 376 180 318 518
+		table "chargen.class"
+		var currentChargenClass
+		scrollbar 'GUISCRC'
+	}
+	text
+	{
+		area 748 180 344 518
+		text lua "classOrGeneralHelp()"
+		text style "normal"
+		scrollbar	'GUISCRC'
+	}
+	button
+	{
+		on escape
+		area 420 726 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:GetCurrentStep() ~= const.STEP_DUALCLASS_CLASS"
+		action "createCharScreen:OnCancelButtonClick(); Infinity_PopMenu('CHARGEN_CLASS');"
+	}
+	button
+	{
+		on return
+		area 806 726 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action "createCharScreen:OnDoneButtonClick(); Infinity_PopMenu('CHARGEN_CLASS'); chargen.selectedClass = chargen.class[ currentChargenClass ].id;"
+	}
+
+}

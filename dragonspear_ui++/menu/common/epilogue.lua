@@ -1,0 +1,2 @@
+megacredits = ''
+epilogueImage = "GUIOSTUR"

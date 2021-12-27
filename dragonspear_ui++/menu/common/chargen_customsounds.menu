@@ -1,0 +1,77 @@
+menu
+{
+	name 'CHARGEN_CUSTOMSOUNDS'
+	align center center
+	ignoreesc
+	onOpen "
+		prepareSounds(chargen.customSound)
+	"
+	label
+	{
+		area 0 0 1444 818
+		mosaic 'RGCGWDE'
+	}
+	label
+	{
+		area	338 82 772 44
+		text	"SOUND_TITLE"
+		text style	title
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 384 20
+				text lua "getSoundStringRef(rowNumber, chargen.customSound)"
+				text style	"normal"
+				pad 8 0 0 0
+			}
+		}
+		area 358 232 340 464
+		rowheight	20
+		table		"chargen.customSound"
+		var			"currentChargenCustomSound"
+		scrollbar	'GUISCRC'
+		action
+		"
+			createCharScreen:OnSoundItemSelect(chargen.customSound[currentChargenCustomSound].index-1)
+		"
+	}
+	text
+	{
+		area 746 180 342 516
+		text "SOUND_DESCRIPTION"
+		scrollbar 'GUISCRC'
+		text style	normal
+	}
+	button
+	{
+		area 374 184 300 40
+		bam GUIBUTWT
+		text "PLAY_SOUND_BUTTON"
+		text style "button"
+		action "createCharScreen:OnPlayButtonClick()"
+	}
+	button
+	{
+		on escape
+		area 420 724 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu(); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		area 802 724 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action "Infinity_PopMenu(); createCharScreen:OnDoneButtonClick()"
+	}
+}

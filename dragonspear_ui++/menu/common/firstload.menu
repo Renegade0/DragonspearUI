@@ -1,0 +1,981 @@
+menu
+{
+	name 'FirstLoad'
+	align center center
+	modal
+	ignoreEsc
+	onopen
+	"
+	FLmenu = 'FLStartPage'
+	"
+	label
+	{
+		area 0 0 862 714
+		mosaic "GUIHELP"
+	}
+	label
+	{
+		area 234 10 416 52
+		text "SOD GUI Overhaul v2.2"
+		text style "title"
+		text align center center
+	}
+	label
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 108 92 650 52
+		text "Select an option to explore the new features:"
+		text point 22
+		text style "button"
+		text align left center
+	}
+	button
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 108 144 650 40
+		text "Enhanced Inventory (v2.2)"
+		text style "normal"
+		text color 'R'
+		text align center center
+		action
+		"
+			FLmenu = 'newInventory'
+		"
+	}
+	button
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 108 184 650 40
+		text "Classic Dialog Option (v2.2)"
+		text style "normal"
+		text color 'R'
+		text align center center
+		action
+		"
+			FLmenu = 'newClassicDialog'
+		"
+	}
+	button
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 108 224 650 40
+		text "Graphics Overhaul"
+		text style "normal"
+		text color '$'
+		text align center center
+		action
+		"
+			FLmenu = 'newGraphics'
+		"
+	}
+	button
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 108 264 650 40
+		text "Two Journal Options"
+		text style "normal"
+		text color '$'
+		text align center center
+		action
+		"
+			FLmenu = 'newJournal'
+		"
+	}
+	button
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 108 304 650 40
+		text "Two Quickloot Options"
+		text style "normal"
+		text color '$'
+		text align center center
+		action
+		"
+			FLmenu = 'newQL'
+		"
+	}
+	button
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 108 344 650 40
+		text "Improved Dialog Window"
+		text style "normal"
+		text color '$'
+		text align center center
+		action
+		"
+			FLmenu = 'newDialog'
+		"
+	}
+	button
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 108 384 650 40
+		text "Restore Missing Portraits"
+		text style "normal"
+		text color '$'
+		text align center center
+		action
+		"
+			FLmenu = 'newPortraits'
+		"
+	}
+	button
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 316 650 230 40
+		bam GUIBUTMT
+		text "CONTINUE_BUTTON"
+		text style "normal"
+		text align center center
+		action
+		"
+			FLmenu = 'FLaccess'
+		"
+	}
+	label
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 108 462 650 52
+		text "Thanks to:"
+		text point 22
+		text style "button"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'FLStartPage'"
+		area 108 514 650 124
+		text lua "'Mr2150 (co-developer of this mod)\nlefreut (creator of the missing portraits and classic dialog components)\nAdul (creator of the store screen tweaks)\nAedan, Cahir, Etamin, rede9 (translators)'"
+		text style "normal"
+		text align center center
+	}
+
+--new inventory
+label
+	{
+		enabled "FLmenu == 'newInventory'"
+		area 114 74 644 66
+		text "Enhanced inventory now shows backpacks of all party members at the same time."
+		text point 22
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newInventory'"
+		area 114 136 644 182
+		text "You can shift between backpacks by clicking on portraits or any of their slots, after that, the respective character will be selected. However, you can transfer items only through portraits. After an item is transfered through portrait, a backpack of a non-selected character will be updated by either selecting it, or when mouse cursor leaves the portrait element of that character."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newInventory'"
+		area 114 318 162 308
+		text "An extended combat stats information, that was present in earlier versions is hidden under a tooltip of combat stat labels. If you hower over them, the information will be shown."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		enabled "FLmenu == 'newInventory'"
+		area 316 650 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action
+		"
+			FLmenu = 'FLStartPage'
+		"
+	}
+	label
+	{
+		enabled "FLmenu == 'newInventory'"
+		area 286 312 478 276
+		rectangle 6
+	}
+	label
+	{
+		enabled "FLmenu == 'newInventory'"
+		area 292 318 466 262
+		bitmap "RGSS07"
+	}
+--classic dialog
+label
+	{
+		enabled "FLmenu == 'newClassicDialog'"
+		area 114 106 644 66
+		text "In the UI Settings screen, you can now toggle on a 'classic dialog' option, which displays the static dialog window in the bottom center of the screen."
+		text point 22
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newClassicDialog'"
+		area 114 173 644 88
+		text "This feature is based on lefreut's 'BGEE 1.3-ish dialog box' tweak, that allows to scroll up to see the dialog history."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		enabled "FLmenu == 'newClassicDialog'"
+		area 316 650 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action
+		"
+			FLmenu = 'FLStartPage'
+		"
+	}
+	label
+	{
+		enabled "FLmenu == 'newClassicDialog'"
+		area 150 262 560 218
+		rectangle 6
+	}
+	label
+	{
+		enabled "FLmenu == 'newClassicDialog'"
+		area 158 268 546 206
+		bitmap "RGSS08"
+	}
+-- newGraphics menu
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 108 74 650 96
+		text "Several layouts were changed in this update. The most noticable is the main gameplay screen, which (aside from the new graphics) now has all the gameplay buttons at the bottom of the screen."
+		text point 22
+		text style "normal"
+		text align left center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 108 212 50 50
+		bam RGGBUT
+		sequence 0
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 174 212 142 50
+		text "Map"
+		text point 22
+		text style "normal"
+		text align left center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 108 262 50 50
+		bam RGGBUT
+		sequence 2
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 174 262 142 50
+		text "Journal"
+		text point 22
+		text style "normal"
+		text align left center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 108 312 50 50
+		bam RGGBUT
+		sequence 1
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 174 312 142 50
+		text "Inventory"
+		text point 22
+		text style "normal"
+		text align left center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 108 362 50 50
+		bam RGGBUT
+		sequence 3
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 174 362 142 50
+		text "Character Record"
+		text point 22
+		text style "normal"
+		text align left center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 108 412 50 50
+		bam RGGBUT
+		sequence 4
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 174 412 142 50
+		text "Mage Spellbook"
+		text point 22
+		text style "normal"
+		text align left center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 108 462 50 50
+		bam RGGBUT
+		sequence 5
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 174 462 142 50
+		text "Priest Scrollbook"
+		text point 22
+		text style "normal"
+		text align left center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 688 212 50 50
+		bam RGGBUT
+		sequence 10
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 540 212 142 50
+		text "Quicksave"
+		text point 22
+		text style "normal"
+		text align right center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 688 262 50 50
+		bam RGGBUT
+		sequence 8
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 540 262 142 50
+		text "Quickloot"
+		text point 22
+		text style "normal"
+		text align right center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 688 312 50 50
+		bam RGGBUT
+		sequence 7
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 540 312 142 50
+		text "Sleep"
+		text point 22
+		text style "normal"
+		text align right center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 688 362 50 50
+		bam RGGBUT
+		sequence 6
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 540 362 142 50
+		text "Reveal Details"
+		text point 22
+		text style "normal"
+		text align right center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 688 412 50 50
+		bam RGGBUT
+		sequence 9
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 540 412 142 50
+		text "Toggle AI"
+		text point 22
+		text style "normal"
+		text align right center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 688 462 50 50
+		bam RGGBUT
+		sequence 11
+		frame lua "rggbuttHighlight2()"
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 540 462 142 50
+		text "Select All"
+		text point 22
+		text style "normal"
+		text align right center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 108 173 208 39
+		text "LEFT SIDEBAR"
+		text point 22
+		text style "normal"
+		text color '$'
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 540 173 200 39
+		text "RIGHT SIDEBAR"
+		text point 22
+		text style "normal"
+		text color '$'
+		text align right center
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 108 544 650 36
+		text "Also, the In-game Options menu screen is now more stylish."
+		text point 22
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 108 580 650 46
+		text "Lastly, new chapters and dream sequences were overhauled. They will now fit to the entire screen with the text being shown on a darkened background above the artwork."
+		text point 22
+		text style "normal"
+		text align left center
+	}
+
+	button
+	{
+		enabled "FLmenu == 'newGraphics'"
+		area 316 650 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action
+		"
+			FLmenu = 'FLStartPage'
+		"
+	}
+
+-- newPortraits menu
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 108 74 650 110
+		text "All available NPC portraits and portrait packs from BG:EE and BG2:EE will now appear in the Portrait Picker list. This includes for example portraits of Hexxat, New Imoen, or Yanner's portraits from BG2:EE."
+		text point 22
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 265 197 113 173
+		rectangle 0
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 269 201 105 165
+		bitmap "YANNER4L"
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 386 197 113 173
+		rectangle 0
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 390 201 105 165
+		bitmap "YANNER1L"
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 506 197 113 173
+		rectangle 0
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 510 201 105 165
+		bitmap "ohhexxl"
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 386 387 113 173
+		rectangle 0
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 390 391 105 165
+		bitmap "YANNER6L"
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 265 387 113 173
+		rectangle 0
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 269 391 105 165
+		bitmap "YANNER5L"
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 506 387 113 173
+		rectangle 0
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 510 391 105 165
+		bitmap "bdimoenl"
+	}
+	label
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 108 560 650 72
+		text "This component is an inclusion of a mod 'Restore Missing Portraits' made by lefreut."
+		text point 22
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		enabled "FLmenu == 'newPortraits'"
+		area 316 650 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action
+		"
+			FLmenu = 'FLStartPage'
+		"
+	}
+-- newJournal menu
+		label
+	{
+		enabled "FLmenu == 'newJournal'"
+		area 108 74 650 40
+		text "Two journal options are available:"
+		text point 22
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal'"
+		area 108 118 70 40
+		text "Large"
+		text style "normal"
+		text color '$'
+		text align center center
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal'"
+		area 118 158 622 96
+		text "The Large journal fills the screen with a window the same size as the other windows.  It gives you access to all quests and filters these by Active (left) and Completed (right).  You can toggle between quests and notes.  Navigating, checking and adding notes, and getting a status update is simple with the large display."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal'"
+		area 118 254 622 32
+		text "Notes are pre-filtered by system and user notes (left and right respectively)."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		enabled "FLmenu == 'newJournal'"
+		area 316 650 230 40
+		bam GUIBUTMT
+		text "NEXT_BUTTON"
+		text style "button"
+		action
+		"
+			FLmenu = 'newJournal2'
+		"
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal'"
+		area 128 286 592 326
+		rectangle 6
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal'"
+		area 134 290 580 316
+		bitmap "RGSS01"
+	}
+
+	-- Page 2
+	label
+	{
+		enabled "FLmenu == 'newJournal2'"
+		area 378 106 62 40
+		text "Small"
+		text style "normal"
+		text color '$'
+		text align center center
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal2'"
+		area 386 140 314 110
+		text "The small journal works much like the large journal however it doesn't fill the screen and can be dragged to a suitable position."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal2'"
+		area 386 250 314 110
+		text "It can be filtered by All, Active and Completed quests, and you can filter notes by just user created notes."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal2'"
+		area 118 98 212 320
+		rectangle 6
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal2'"
+		area 122 102 204 312
+		bitmap "RGSS02"
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal2'"
+		area 114 526 632 96
+		text "With both journals, you can close all opened quests by clicking Current Quests.  Clicking the journal update pop-up now takes you straight to the specific quest (where a matching quest is found)."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newJournal2'"
+		area 114 430 632 82
+		text "Hitting the chapter button will toggle between journals but your preferred journal can be set to default in the settings."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		enabled "FLmenu == 'newJournal2'"
+		area 316 650 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action
+		"
+			FLmenu = 'FLStartPage'
+		"
+	}
+
+-- newQL menu
+	label
+	{
+		enabled "FLmenu == 'newQL'"
+		area 108 74 650 40
+		text "Two quickloot options are available:"
+		text point 22
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newQL'"
+		area 108 140 62 40
+		text "Expert"
+		text style "normal"
+		text color '$'
+		text align center center
+	}
+	label
+	{
+		enabled "FLmenu == 'newQL'"
+		area 282 386 104 38
+		text "Advanced"
+		text style "normal"
+		text color '$'
+		text align center center
+	}
+
+	label
+	{
+		enabled "FLmenu == 'newQL'"
+		area 114 173 385 113
+		text "Expert arranges up to 60 items on the ground in a number of rows.  You can customise the number of rows.  This makes it easier to see multiple items and ensure you get the best loot."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newQL'"
+		area 296 418 462 110
+		text "Advanced provides a scrollable list of all quickloot items.  You can filter the list, and reposition the menu down using the center of the tab, and left/right using the corners of the tab.  The E-key opens and closes the quickloot quickly."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newQL'"
+		area 134 572 612 60
+		text lua "'Both quickloots will \'hide\' when there is nothing to pick-up.  You can configure the quickloot to start visible or hidden from the settings menu.'"
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		enabled "FLmenu == 'newQL'"
+		area 316 650 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action
+		"
+			FLmenu = 'FLStartPage'
+		"
+	}
+	label
+	{
+		enabled "FLmenu == 'newQL'"
+		area 499 122 211 264
+		rectangle 6
+	}
+	label
+	{
+		enabled "FLmenu == 'newQL'"
+		area 134 300 138 254
+		rectangle 6
+	}
+	label
+	{
+		enabled "FLmenu == 'newQL'"
+		area 140 306 125 242
+		bitmap "RGSS03"
+	}
+	label
+	{
+		enabled "FLmenu == 'newQL'"
+		area 506 128 198 252
+		bitmap "RGSS04"
+	}
+-- newDialog menu
+	label
+	{
+		enabled "FLmenu == 'newDialog'"
+		area 102 386 656 76
+		text "The new dialog window automatically resizes to the size of the text being displayed so you can always see the full conversation and options without scrolling (depends on your text size and scaling option)."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newDialog'"
+		area 102 462 656 64
+		text "The window can be moved left and right just by dragging the tab at the top.  A large picture** ensures it's clear who you are speaking to."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newDialog'"
+		area 102 526 656 46
+		text "Convenient buttons allow you to open the Message Log history, shift the dialog position and copy the dialog text to your journal."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'newDialog'"
+		area 354 590 404 42
+		text "** Works great with Minor NPC Portraits mod for BGEE."
+		text point 14
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		enabled "FLmenu == 'newDialog'"
+		area 310 650 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action
+		"
+			FLmenu = 'FLStartPage'
+		"
+	}
+	label
+	{
+		enabled "FLmenu == 'newDialog'"
+		area 246 98 390 278
+		rectangle 6
+	}
+	label
+	{
+		enabled "FLmenu == 'newDialog'"
+		area 252 106 380 264
+		bitmap "RGSS05"
+	}
+
+-- FLaccess menu
+	label
+	{
+		enabled "FLmenu == 'FLaccess'"
+		area 196 100 482 112
+		text lua "'All new features can be found under the\n      \'OPTIONS\' > \'GAMEPLAY\' > \'UI Settings\' menu.'"
+		text style "button"
+		text align left center
+	}
+	label
+	{
+		enabled "FLmenu == 'FLaccess'"
+		area 224 586 80 52
+		text "Click"
+		text style "normal"
+		text align center center
+	}
+	label
+	{
+		enabled "FLmenu == 'FLaccess'"
+		area 370 586 270 52
+		text "to customise your settings now!"
+		text style "normal"
+		text align center center
+	}
+	label
+	{
+		enabled "FLmenu == 'FLaccess'"
+		area 224 212 426 342
+		rectangle 6
+	}
+	label
+	{
+		enabled "FLmenu == 'FLaccess'"
+		area 234 216 412 328
+		bitmap "RGSS06"
+	}
+	button
+	{
+		enabled "FLmenu == 'FLaccess'"
+		area 286 586 92 52
+		text "HERE"
+		text style "normal"
+		text color '$'
+		text align center center
+		action
+		"
+			setCurrent()
+			Infinity_PushMenu('UI_SETTINGS')
+		"
+	}
+	button
+	{
+		enabled "FLmenu == 'FLaccess'"
+		area 316 650 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		action
+		"
+			setCurrent()
+		"
+	}
+}

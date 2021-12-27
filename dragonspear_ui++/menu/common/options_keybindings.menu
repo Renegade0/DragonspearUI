@@ -1,0 +1,127 @@
+menu
+{
+	name	'OPTIONS_KEYBINDINGS'
+	modal
+	align center center
+
+	button -- Background
+	{
+		area 0 0 864 710
+		mosaic GUICHISD
+	}
+
+	label -- Title
+	{
+		area 82 12 700 40
+		text  "ASSIGN_KEYS_TITLE"
+		text style	"title"
+	}
+
+	label -- Instruction
+	{
+		area 252 60 367 42
+		text  "ASSIGN_KEYS_SUBTITLE"
+		text style	"label"
+	}
+	label -- Contextual instruction
+	{
+		area 42 112 778 50
+		text lua "Infinity_FetchString(displayHelp())"
+		text style	"label"
+	}
+
+	list -- Key categories
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 -1
+				text lua "t(keycategories[rowNumber][2])"
+				text style	"normal"
+				text align	center center
+			}
+		}
+		area 42 190 360 420
+
+		rowheight	24
+		table		"keycategories"
+		var			keyCategory
+		scrollbar	'GUISCRC'
+		action
+		"
+			Infinity_StopKeybind()
+			key = 0
+		"
+	}
+
+
+	list -- Key bindings
+	{
+		column
+		{
+			width 90
+			label
+			{
+				area 0 0 -1 -1
+				text lua "getHotkeyName(keyCategory,rowNumber)"
+				text style	"normal"
+				align left center
+			}
+		}
+		column
+		{
+			width 10
+			label
+			{
+				area 0 0 -1 -1
+				text lua "formatKeyCode(keybindings[keyCategory][rowNumber][6])"
+				text style	"normal"
+				text upper
+				text align right center
+			}
+		}
+
+		area 448 190 372 420
+		rowheight	24
+		table		"keybindings[keyCategory]"
+		var			key
+		scrollbar	'GUISCRC'
+		action
+		"
+		if(key > 0) then
+			Infinity_StartKeybind(key);
+			keybindings[keyCategory][key][6] = 0
+		end
+		"
+	}
+
+	button
+	{
+		area		514 634 230 40
+		bam			GUIBUTMT
+		sequence	6
+		text		"DONE_BUTTON"
+		text style	"button"
+		action
+		"
+			Infinity_StopKeybind()
+			key = 0
+			Infinity_PopMenu();
+		"
+	}
+	button
+	{
+		area		102 634 230 40
+		bam			GUIBUTMT
+		sequence	6
+		text		"REVERT_BUTTON"
+		text style	"button"
+
+		action
+		"
+			revertKeymap();
+		"
+	}
+}

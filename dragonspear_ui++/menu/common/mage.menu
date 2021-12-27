@@ -1,0 +1,565 @@
+menu
+{
+	name 'MAGE'
+	align center center
+	modal lua "bookMode == 1"
+
+	onopen "
+		showMageMemorizationFlash = false
+		mgpage = nil
+		setMageBookLevel(1)
+		helpString = ''
+--		if showContingency then
+--			Infinity_SetArea('bookListMage', nil, 374, nil, 200)
+--			Infinity_SetArea('bookDescription', nil, 374, nil, 200)
+--		else
+--			Infinity_SetArea('bookListMage', nil, 174, nil, 400)
+--			Infinity_SetArea('bookDescription', nil, 174, nil, 400)
+--		end
+		currentContingencyCondition = 0
+		currentContingencyTarget = 0
+		currentAnimationID = 1
+		updateCounterMemorizationSparkles = 1
+		pushSidebars()
+		Infinity_PopMenu('WORLD_QUICKLOOT');
+		"
+	onclose "
+		currentSpell = nil
+		popSidebars()
+	"
+
+	button
+	{
+		enabled 	"currentSpell == nil and CurrentlyInGame()"
+		on escape
+		action
+		"
+			--Return to world screen on escape
+			e:SelectEngine(worldScreen)
+		"
+	}
+
+	template
+	{
+		label
+		{
+			enabled "showMemorizationSparkle(instanceId)"
+			ignoreEvents
+			area 0 0 45 42
+			bam "FLASHBR"
+			usealpha lua "true"
+			frame lua "memorizationFlashes[instanceId][2]"
+			align center center
+		}
+		name "TEMPLATE_mageMemorizationSparkle"
+	}
+
+
+	label
+	{
+		area 0 0 1364 756
+		mosaic "GUIMGB2"
+	}
+	label
+	{
+		area		210 34 944 40
+		text lua	"mageBookTitle()"
+		text style	"title"
+	}
+	label
+	{
+		area 		295 90 774 32
+		text lua	"mageBookAction()"
+		text style	"label"
+	}
+#for i = 0, 8 do
+	button
+	{
+		area		691 `184 + 55 * i` 48 45
+		--bam		RGSPNUM
+--		--highlightgroup	mgpage
+		--sequence	0
+		--text "`i + 1`"
+		--text align center center
+		--frame lua "getSpellButtHighlight(`i + 1`)"
+		text '`i + 1`'
+		text style "rg_trajan"
+		text align center center
+		enabled		"maxMagePage > `i`"
+		action		"setMageBookLevel(`i + 1`)"
+	}
+#end
+	button
+	{
+		area		491 168 34 44
+		bam		RGSPARR
+		sequence	1
+		enabled		"bookMode == 0 and (currentSpellLevel < maxMagePage or MageBook:canScroll(1))"
+		action		"
+			if MageBook:canScroll(1) then
+				MageBook:scroll(1)
+			else
+				incrementMageBookLevel()
+			end
+		"
+	}
+	button
+	{
+		area		280 168 38 44
+		bam		RGSPARR
+		sequence	0
+		enabled		"bookMode == 0 and (currentSpellLevel > 1 or MageBook:canScroll(-1))"
+		action		"
+			if MageBook:canScroll(-1) then
+				MageBook:scroll(-1)
+			else
+				decrementMageBookLevel()
+			end
+		"
+	}
+	label
+	{
+		area 		318 171 152 29
+		text lua	"Infinity_FetchString(7192) .. '  ' .. currentSpellLevel"
+		text style "rg_trajan"
+		--text color lua "parchment"
+		text align center center
+	}
+
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area	0 0 -1 -1
+				bam	lua "bookSpells[rowNumber].icon"
+				align	center center
+			}
+		}
+
+
+		name 		"bookListMage"
+		rowwidth	40
+		table		"bookSpells"
+		var		currentBookSpell
+		scrollbar	'GUISCRC'
+		action		"
+
+			if cellNumber == 1 then
+				if bookMode == 0 then
+					if #bottomSpells < #bottomSpellsPlaceHolder then
+						createMageMemorizationSparkle(1, 0, 40, 40, 'bookListMage', -1)
+						Infinity_PlaySound('GAM_24')
+						showMageMemorizationFlash = true
+					end
+					mageScreen:MemorizeSpell( bookSpells[currentBookSpell].level, bookSpells[currentBookSpell].index )
+				elseif bookMode == 1 and #bottomSpells < #bottomSpellsPlaceHolder then
+					mageScreen:SequenceSpell( bookSpells[currentBookSpell].resref, bookSpells[currentBookSpell].masterResref )
+				end
+			end
+			if lastCurrentBookSpell == currentBookSpell and cellNumber == 2 then
+				currentBookSpell = 0
+				-- contingencyDescription = mageBookStrings[contingencyResRef].tip
+			else
+				lastCurrentBookSpell = currentBookSpell
+			end
+		"
+		actionalt
+		"
+			if cellNumber == 1 and bookMode == 0 and characters[id].hasSorcererBook == false then
+				popup2Button(`REF_CONFIRM_ERASE_SPELL`, 'REMOVE_BUTTON', function() mageScreen:EraseKnownSpell(bookSpells[currentBookSpell].resref) end)
+			end
+		"
+
+	}
+
+
+#for level = 1, 9 do
+#local y = 133 + 55 * level
+	list
+	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
+		area 740 `y` 512 36
+		rowwidth	36 table		"bottomSpellsPlaceHolder`level`" enabled "currentSpell == nil"
+	}
+#end
+#for level = 1, 9 do
+#local y = 133 + 55 * level
+	list
+	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells`level`[rowNumber].icon" align	center center greyscale lua "bottomSpells`level`[rowNumber].castable == 0" } }
+		area 740 `y` 512 36
+		sound ""
+		name "memorizedListMage`level`" enabled 	"#bottomSpells`level` ~= 0" rowwidth	36 table		"bottomSpells`level`" var		currentBottomSpell`level` enabled "currentSpell == nil"
+		action "MageBook:unmemorizeSpell(`level`, bottomSpells`level`, currentBottomSpell`level`)"
+	}
+#end
+
+	--list
+	--{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells[rowNumber].icon" align	center center greyscale lua "bottomSpells[rowNumber].castable == 0" } }
+	--	area 598 270 470 36
+	--	name "memorizedListMage"  rowwidth	36 table		"bottomSpells" var		currentBottomSpell
+	--	action "
+	--		mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref )	table.remove(sequencerSpells, currentBottomSpell)	bottomSpells = sequencerSpells	currentBottomSpell = 1	end	"
+	--}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area	0 0 -1 -1
+				bam	lua "bottomSpells[rowNumber].icon"
+				align	center center
+				greyscale lua "bottomSpells[rowNumber].castable == 0"
+			}
+		}
+
+		area 225 454 353 36
+
+		name 		"memorizedListMage"
+		enabled 	"bookMode == 1"
+		rowwidth	36
+		table		"bottomSpells"
+		var		currentBottomSpell
+		action
+		"
+			if bookMode == 0 then
+				showMageMemorizationFlash = false
+				mageScreen:UnmemorizeSpell( bottomSpells[currentBottomSpell].level, bottomSpells[currentBottomSpell].memorizedIndex )
+				Infinity_PlaySound('GAM_44')
+			elseif bookMode == 1 then
+				mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )
+				table.remove(sequencerSpells, currentBottomSpell)
+				bottomSpells = sequencerSpells
+				currentBottomSpell = 0
+			end
+		"
+	}
+
+
+	label
+	{
+		area 1050 144 186 36
+		--text "ZAPAMATOVANÁ KOUZLA" --lua "priestPageInfo()"  .. ' ' .. Infinity_FetchString(8624)
+		text lua "Infinity_FetchString(11944)"
+		text style "rg_trajan"
+--		text color '5'
+		enabled "currentSpell == nil"
+		text align right center
+	}
+	label
+	{
+		area 130 144 156 36
+		--text "ZNÁMÁ KOUZLA" --lua "Infinity_FetchString(11945)"  .. ' ' .. Infinity_FetchString(8624)
+		text lua "Infinity_FetchString(11945)"
+		text style "rg_trajan"
+--		text color '5'
+		text align left center
+	}
+
+	text
+	{
+		area		740 154 508 545
+		text		lua "Infinity_FetchString(currentSpell.description)"
+		text style	"normal_parchment"
+		scrollbar	GUISCRP -- 'RGSCR3' is glitchy for me
+		enabled 	"currentSpell ~= nil"
+		--mosaic "RGPRDESC"
+		--action "currentSpell = nil"
+	}
+
+	button
+	{
+		on escape
+		area 1194 148 32 40
+		enabled "currentSpell ~= nil"
+		text "X"
+		text style "rg_trajan"
+		--text shadow 1
+		--text color lua "parchment"
+		action "currentSpell = nil"
+	}
+
+	button
+	{
+		area 1154 148 33 40
+		enabled "currentSpell and bookMode == 0 and not characters[id].hasSorcererBook"
+		text "Ø"
+		text style "rg_trajan"
+		--text shadow 1
+		--text color lua "parchment"
+		action "MageBook:eraseCurrentSpell()"
+	}
+
+	list
+	{
+		column
+		{
+			width 0
+			label
+			{
+				area	0 0 -1 -1
+				bam	"SPELFRMS"
+				sequence 0
+				align	center center
+			}
+		}
+
+--		area 162 324 694 36
+
+		enabled "#bottomSpellsPlaceHolder ~= 0 or bookMode == 1"
+		rowwidth	36
+		table		"bottomSpellsPlaceHolder"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area	0 0 -1 -1
+				bam	lua "bottomSpells[rowNumber].icon"
+				align	center center
+				greyscale lua "bottomSpells[rowNumber].castable == 0"
+			}
+		}
+
+--		area 162 324 694 36
+
+		name 		"memorizedListMage"
+		enabled 	"#bottomSpells ~= 0"
+		rowwidth	36
+		table		"bottomSpells"
+		var		currentBottomSpell
+		action
+		"
+			if bookMode == 0 then
+				showMageMemorizationFlash = false
+				mageScreen:UnmemorizeSpell( bottomSpells[currentBottomSpell].level, bottomSpells[currentBottomSpell].memorizedIndex )
+				Infinity_PlaySound('GAM_44')
+			elseif bookMode == 1 then
+				mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )
+				table.remove(sequencerSpells, currentBottomSpell)
+				bottomSpells = sequencerSpells
+				currentBottomSpell = 0
+			end
+		"
+	}
+
+	button
+	{
+		area 1026 84 230 44
+		enabled "bookMode == 0 and (#characters[id].contingencySpells > 0 or #characters[id].sequencerSpells > 0)"
+		bam GUIBUTMT
+		text "CONTINGENCY_BUTTON"
+		text style "button"
+		--text color '5'
+		action "Infinity_PushMenu('MAGE_CONTINGENCY')"
+
+	}
+	label
+	{
+		area 0 0 1364 756
+		enabled "bookMode == 1"
+		mosaic "RGCONTI"
+	}
+
+#for i = 0, 8 do
+	button
+	{
+		area		`156 + 54 * i` 175 49 45
+		bam		RGSPNUM
+		sequence	0
+		text align center center
+		frame lua "getSpellButtHighlight(`i + 1`)"
+		text '`i + 1`'
+		text style "rg_trajan"
+		text align center center
+		enabled		"maxMagePage > `i` and bookMode == 1"
+		action		"setMageBookLevel(`i + 1`)"
+	}
+#end
+
+	label
+	{
+		area 126 144 358 36
+		text lua "Infinity_FetchString(`REF_CONTINGENCY`) .. ' ' .. Infinity_FetchString(8624)"
+		text style "normal_parchment"
+		enabled "bookMode == 1"
+		text align left center
+	}
+
+	label
+	{
+		area 130 494 354 40
+		text lua "magePageInfo()"
+		text style "normal_parchment"
+		enabled "bookMode == 1"
+--		text color '5'
+		text align left center
+	}
+
+	label
+	{
+		area 734 159 164 34
+		enabled "showContingency"
+		text "CONDITION_NORMAL"
+		text style "normal"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area		10 0 -1 -1
+				text lua "Infinity_FetchString( contingencyConditions[rowNumber].strref)"
+				text style "normal"
+				text align left center
+			}
+		}
+
+		area 734 201 232 461
+
+		enabled 	"showContingency"
+		rowheight	25
+		table		"contingencyConditions"
+		var		currentContingencyCondition
+		scrollbar	'GUISCRC'
+
+	}
+	label
+	{
+		area 991 159 163 34
+		enabled "showContingency"
+		text "TARGET_NORMAL"
+		text style "normal"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area		10 0 -1 -1
+				text lua "Infinity_FetchString( contingencyTargets[rowNumber].strref)"
+				text style "normal"
+				text align left center
+			}
+		}
+
+		area 991 201 241 461
+
+		enabled 	"showContingency"
+		rowheight	25
+		table		"contingencyTargets"
+		var		currentContingencyTarget
+		scrollbar	'GUISCRC'
+
+	}
+
+	button
+	{
+		area 558 679 300 43
+		enabled "bookMode == 1"
+		bam GUIBUTWT
+		text lua "contingencyDoneButtonText()"
+		text style "button"
+		--text color '5'
+		action
+		"
+			if contingencyComplete() then
+				mageScreen:DoneSequencingSpells()
+			else
+				mageScreen:CancelSequencingSpells()
+			end
+			e:SelectEngine(worldScreen)
+		"
+
+	}
+
+#for i = 1, 2 do
+	list {
+		column {
+			width 100
+			-- list item borders + icon + spell name
+			label { area 0 0 -1 -1  bam "RGKNSLOT"  align left center }
+			label { area 0 1 36 36  bam lua "MageBook.columns[`i`][rowNumber].icon"  align center center }
+			label { area 5 0 -1 -1  text lua "Infinity_FetchString(MageBook.columns[`i`][rowNumber].name)"
+					pad 37 1 0 1  text style "normal_parchment"  align left center }
+		}
+
+		hideHighlight
+		sound       ""
+		area        `134 + 260 * (i - 1)` 224 260 460
+		rowheight   38
+		name        "bookSpellsList`i`"
+		table       "MageBook.columns[`i`]"
+		var         "index"
+		action      "MageBook:memorizeSpell(MageBook.columns[`i`][index], 'bookSpellsList`i`', index)"
+		actionAlt   "currentSpell = MageBook.columns[`i`][index]"
+		actionScroll "MageBook:scroll()"
+	}
+#end
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area	0 0 -1 -1
+				bam	"RGSPSLO1"
+				sequence 0
+				align	center center
+			}
+		}
+
+		area 130 545 460 36
+
+		enabled "bookMode == 1"
+		rowwidth	36
+		table		"bottomSpellsPlaceHolder"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area	0 0 -1 -1
+				bam	lua "bottomSpells[rowNumber].icon"
+				align	center center
+				greyscale lua "bottomSpells[rowNumber].castable == 0"
+			}
+		}
+
+		area 130 545 460 36
+
+		name 		"memorizedListMage"
+		enabled 	"bookMode == 1"
+		rowwidth	36
+		table		"bottomSpells"
+		var		currentBottomSpell
+		action
+		"
+			mageScreen:UnSequenceSpell( bottomSpells[currentBottomSpell].resref, bottomSpells[currentBottomSpell].masterResref )
+			table.remove(sequencerSpells, currentBottomSpell)
+			bottomSpells = sequencerSpells
+			currentBottomSpell = 0
+		"
+	}
+
+	label
+	{
+		area 0 0 1364 756
+		fill        0 0 0 176
+		enabled "mageBookEnabled == false"
+	}
+}

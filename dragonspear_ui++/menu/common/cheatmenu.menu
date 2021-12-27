@@ -1,0 +1,118 @@
+menu
+{
+	name 'cheatMenu'
+	ignoreEsc
+
+	onOpen
+	"
+		if game:GetMissionPackInfo() then
+			cheatAreaDisplayList = cheatAreasTutorial
+		elseif game:GetMissionPackInfoTBP() then
+			cheatAreaDisplayList = cheatAreasArena
+		elseif `CHEAT_AREAS_EXPANSION_CONDITION` then
+			cheatAreaDisplayList = cheatAreasExpansion
+		else
+			cheatAreaDisplayList = cheatAreas
+		end
+	"
+
+	label
+	{
+		area 100 0 809 298
+		mosaic 'GUWBTP30'
+	}
+	list
+	{
+		column
+		{
+			width 20
+			label
+			{
+				area 0 0 -1 -1
+				text lua "cheatAreaDisplayList[rowNumber][1]"
+				text style "list"
+			}
+		}
+		column
+		{
+			width 80
+			label
+			{
+				area 0 0 -1 -1
+				text lua "cheatAreaDisplayList[rowNumber][2]"
+				text style "list"
+			}
+		}
+
+		area 122 6 492 240
+
+		rowheight	18
+		table		"cheatAreaDisplayList"
+		var		cheatTeleportArea
+		scrollbar	'GUISCRC'
+	}
+	button
+	{
+		area		122 252 140 30
+		bam			GUIBUTNS
+		sequence	6
+		text		"TRAVEL_BUTTON"
+		text style	"button"
+		action 		"C:MoveToArea(cheatAreaDisplayList[cheatTeleportArea][1])"
+	}
+	button
+	{
+		area		620 186 140 30
+		bam			GUIBUTNS
+		sequence	6
+		text			"GODBOW_LABEL"
+		text style	"button"
+		action		"C:CreateItem('godbow')"
+	}
+	button
+	{
+		area		620 216 140 30
+		bam			GUIBUTNS
+		sequence	6
+		text			"GIVE_GOLD_LABEL"
+		text style	"button"
+		action		"C:AddGold(cheatGoldAmt)"
+	}
+	edit
+	{
+		area		766 222 138 30
+		var		cheatGoldAmt
+		text style	"edit"
+		maxlines	1
+		fill            112 111 111 64
+	}
+
+	button
+	{
+		area		620 252 140 30
+		bam			GUIBUTNS
+		sequence	6
+		text			"GIVE_XP_LABEL"
+		text style	"button"
+		action		"C:SetCurrentXP(cheatXpAmt)"
+	}
+	edit
+	{
+		area		766 258 138 30
+		var		cheatXpAmt
+		text style	"edit"
+		maxlines	1
+		fill            112 111 111 64
+	}
+
+	button
+	{
+		area		766 186 140 30
+		bam			GUIBUTNS
+		sequence	6
+		text			"EXPLORE_LABEL"
+		text style	"button"
+		action		"C:ExploreArea()"
+	}
+
+}

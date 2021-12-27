@@ -1,0 +1,84 @@
+menu
+{
+	name 'cheatConsole'
+	align center bottom
+	ignoreEsc
+
+	onOpen
+	"
+		toolbarTop = 50
+		Infinity_PushMenu('WORLD_MESSAGES')
+		Infinity_PushMenu('cheatMenu', 0, 0);
+		Infinity_FocusTextEdit('luaEditArea');
+		luaEdit = trim(luaEdit)
+		loadLuaHistory()
+	"
+	onClose
+	"
+		Infinity_PopMenu('cheatMenu', 0, 0);
+		Infinity_PopMenu('luaHistoryMenu', 0, 0);
+	"
+	label
+	{
+		area 0 0 809 50
+		mosaic GUWBTP20
+	}
+	edit
+	{
+		name				"luaEditArea"
+		area				12 8 790 24
+		var					luaEdit
+		scrollbar			'GUISCRC'
+		text style			"edit"
+		fill            	112 111 111 64
+		text useFontZoom	0
+		action
+		"
+			--if key_pressed is return
+			if (key_pressed == 13) then
+				updateLuaHistory()
+				saveLuaHistory()
+				Infinity_LuaConsoleInput(luaEditObjectId,luaEditDebugDump)
+				return -1
+			end
+			if (key_pressed == 27) then
+				return 0
+			end
+			return 1
+		"
+	}
+	button
+	{
+		area		816 6 32 32
+		bam			ROUNDBUT
+		scaleToClip
+		toggle		luaEditShowHistoryList
+		action
+		"
+			if(luaEditShowHistoryList == 0) then
+				Infinity_PopMenu('luaHistoryMenu',0,0)
+			else
+				Infinity_PushMenu('luaHistoryMenu',0,0)
+			end
+		"
+	}
+	button
+	{
+		enabled "Infinity_TextEditHasFocus()"
+		on up
+		action
+		"
+			luaEditHistoryUp()
+		"
+	}
+	button
+	{
+		enabled "Infinity_TextEditHasFocus()"
+		on down
+		action
+		"
+			luaEditHistoryDown()
+		"
+	}
+
+}

@@ -1,0 +1,112 @@
+menu
+{
+	name 'STORE_IDENTIFY'
+	align center center
+	onOpen
+	"
+		storeScreen:UpdateIdentifyPanel()
+		store.identifyText = ''
+
+	"
+	ignoreEsc
+
+	label
+	{
+		area 0 0 864 756
+		mosaic GUISTIDB
+	}
+	label
+	{
+		area 0 32 864 44
+		text "IDENTIFY_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 0 76 864 36
+		text lua "Infinity_FetchString(storeScreen:GetStoreName())"
+		text style "label"
+	}
+--	label
+--	{
+--		area 719 70 110 48
+--		text lua "game:GetPartyGold()"
+--		text style "gold"
+--	}
+	label
+	{
+		area 26 122 252 34
+		text "COST_LABEL"
+		text style "label"
+		text align left center
+	}
+	label
+	{
+		area 324 126 102 30
+		text lua "storeScreen:GetIdentifyCost()"
+		text style "gold"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 64 60
+				bam STONSL10
+				frame lua "getStoreSlotHighlight(filter(store.identifyItems)[rowNumber].highlight)"
+				icon lua "filter(store.identifyItems)[rowNumber].item.icon"
+				tint lua "filter(store.identifyItems)[rowNumber].item.tint"
+				align center center
+			}
+			label
+			{
+				area 75 0 304 60
+				text lua "filter(store.identifyItems)[rowNumber].label"
+				text style "normal"
+				text align left center
+			}
+--			label
+--			{
+--				enabled "store.identifyItems[rowNumber].valid == 0"
+--				area 0 0 379 60
+--				rectangle 1
+--				rectangle opacity 150
+--			}
+		}
+		area 15 157 407 480
+		hidehighlight
+		rowheight	60
+		table		"filter(store.identifyItems)"
+		var			"identifyItemsVar"
+		rowbackground	 GUISTBK2
+		scrollbar 'GUISCRC'
+		action
+		"
+			local highlight = true
+			local idx = getIdx(store.identifyItems, identifyItemsVar)
+			if (store.identifyItems[idx].highlight == 1) then highlight = false end
+			storeScreen:SelectIdentifyItem(idx - 1,  highlight)
+		"
+	}
+	button
+	{
+		area 118 676 200 40
+		bam GUIBUTNT
+		text "IDENTIFY_BUTTON"
+		text style "button"
+		clickable lua "storeScreen:IsIdentifyItemButtonClickable()"
+		action
+		"
+			storeScreen:OnIdentifyItemButtonClick()
+		"
+	}
+	text
+	{
+		area 464 148 372 502
+		text lua "store.identifyText"
+		text style "normal_parchment"
+		scrollbar 'GUISCRP'
+	}
+}

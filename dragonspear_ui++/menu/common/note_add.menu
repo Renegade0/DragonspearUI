@@ -1,0 +1,168 @@
+menu
+{
+	name 'NOTE_ADD'
+	align center center
+	onOpen
+	"
+		if colorChoice == nil then
+			colorChoice = Infinity_FindUIItemByName('BUTTON_mapNoteColor_' .. mapScreen:GetColorChoice())
+		end
+	"
+	onClose
+	"
+		colorChoice = nil
+	"
+	modal
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label
+	{
+		area	 32 24 596 68
+		rectangle	0
+	}
+	edit
+	{
+		name 		"mapNoteEditArea"
+		area		40 32 584 56
+		var			mapNoteEdit
+		scrollbar	'GUISCRC'
+		text style	"edit"
+		fill            112 111 111 64
+	}
+	button
+	{
+		area 440 170 200 40
+		bam GUIBUTNT
+		text style "button"
+		text "DONE_BUTTON"
+		action
+		"
+			mapScreen:OnUserNoteDoneButtonClick()
+			Infinity_PopMenu('NOTE_ADD',0,0)
+		"
+	}
+	button
+	{
+		on escape
+		area 228 170 200 40
+		bam GUIBUTNT
+		text style "button"
+		text "CANCEL_BUTTON"
+		action
+		"
+			Infinity_PopMenu('NOTE_ADD',0,0)
+		"
+	}
+	button
+	{
+		area 18 170 200 40
+		bam GUIBUTNT
+		text style "button"
+		text "DELETE_BUTTON"
+		action
+		"
+			mapScreen:OnUserNoteDeleteButtonClick()
+			Infinity_PopMenu('NOTE_ADD',0,0)
+		"
+	}
+
+	button
+	{
+		name "BUTTON_mapNoteColor_0"
+		area 29 98 45 42
+		bam "FLAG1"
+		highlightgroup colorChoice
+		sequence 0
+		action
+		"
+			mapScreen:OnColorChoice(0)
+		"
+	}
+	button
+	{
+		name "BUTTON_mapNoteColor_1"
+		area 108 98 45 42
+		bam "FLAG1"
+		highlightgroup colorChoice
+		sequence 1
+		action
+		"
+			mapScreen:OnColorChoice(1)
+		"
+	}
+	button
+	{
+		name "BUTTON_mapNoteColor_2"
+		area 187 98 45 42
+		bam "FLAG1"
+		highlightgroup colorChoice
+		sequence 2
+		action
+		"
+			mapScreen:OnColorChoice(2)
+		"
+	}
+	button
+	{
+		name "BUTTON_mapNoteColor_3"
+		area 266 98 45 42
+		bam "FLAG1"
+		highlightgroup colorChoice
+		sequence 3
+		action
+		"
+			mapScreen:OnColorChoice(3)
+		"
+	}
+	button
+	{
+		name "BUTTON_mapNoteColor_4"
+		area 345 98 45 42
+		bam "FLAG1"
+		highlightgroup colorChoice
+		sequence 4
+		action
+		"
+			mapScreen:OnColorChoice(4)
+		"
+	}
+	button
+	{
+		name "BUTTON_mapNoteColor_5"
+		area 424 98 45 42
+		bam "FLAG1"
+		highlightgroup colorChoice
+		sequence 5
+		action
+		"
+			mapScreen:OnColorChoice(5)
+		"
+	}
+	button
+	{
+		name "BUTTON_mapNoteColor_6"
+		area 503 98 45 42
+		bam "FLAG1"
+		highlightgroup colorChoice
+		sequence 6
+		action
+		"
+			mapScreen:OnColorChoice(6)
+		"
+	}
+	button
+	{
+		name "BUTTON_mapNoteColor_7"
+		area 582 98 45 42
+		bam "FLAG1"
+		highlightgroup colorChoice
+		sequence 7
+		action
+		"
+			mapScreen:OnColorChoice(7)
+		"
+	}
+}

@@ -1,0 +1,327 @@
+menu
+{
+	name	'OPTIONS_FEEDBACK'
+	align center center
+	modal
+	onOpen
+	"
+		panelID = 9
+
+		helpString = 'FEEDBACK_HELP'
+		selFeedOpt = 0
+		selMessageOpt = 0
+		selectedSL = 0
+
+		markerFeedSLDR = Infinity_GetOption(8, panelID)
+		locatorFeedSLDR = Infinity_GetOption(9, panelID)
+
+		for index, var in pairs(feedbackToggles) do
+				var[5] = Infinity_GetOption(var[3], panelID)
+				if var[5] == 0 then
+					var[4] = 0
+				else
+					var[4] = 2
+				end
+			end
+
+		for index, var in pairs(messagesToggles) do
+			var[5] = Infinity_GetOption(var[3], panelID)
+			if var[5] == 0 then
+				var[4] = 0
+			else
+				var[4] = 2
+			end
+		end
+
+	"
+
+	button
+	{
+		area	0 0 1024 768
+		mosaic	GUITUTB
+		action
+		"
+			helpString = 'FEEDBACK_HELP'
+			selFeedOpt = 0
+			selMessageOpt = 0
+			selectedSL = 0
+		"
+	}
+	label
+	{
+		area		126 32 768 54
+		text		"FEEDBACK_TITLE"
+		text style	title
+	}
+
+
+
+	label
+	{
+		area		100 338 407 44
+		text		"VISUAL_FEEDBACK_LABEL"
+		text style	"button"
+		text align 	right center
+	}
+
+	list
+	{
+
+		column
+		{
+			width 85
+			label
+			{
+				area 0 0 -1 -1
+				text lua "t( feedbackToggles[rowNumber][1])"
+				text style "normal"
+				text align right center
+			}
+		}
+		column
+		{
+			width 15
+			label
+			{
+				area		20 8 32 32
+				bam			ROUNDBUT
+				scaleToClip
+				frame		lua "feedbackToggles[rowNumber][4]"
+			}
+		}
+
+		area 100 382 407 268
+
+		rowheight	50
+		table		"feedbackToggles"
+		var		selFeedOpt
+		scrollbar	'GUISCRC'
+
+		action
+		"
+			selectedSL = 0
+			selMessageOpt = 0
+			helpString = feedbackToggles[selFeedOpt][2]
+
+			if(cellNumber == 2) then
+				Infinity_PlaySound('GAM_09')
+				feedbackToggles[selFeedOpt][4] = toggleFrame(feedbackToggles[selFeedOpt][4])
+
+				if feedbackToggles[selFeedOpt][4] == 0 then
+					feedbackToggles[selFeedOpt][5] = 0
+				else
+					feedbackToggles[selFeedOpt][5] = 1
+				end
+			end
+		"
+	}
+
+	label
+	{
+		area		568 128 416 44
+		text		"FEEDBACK_MESSAGES_LABEL"
+		text style	"button"
+		text align 	right center
+	}
+
+	list
+	{
+
+		column
+		{
+			width 85
+			label
+			{
+				area 10 0 -1 -1
+				text lua "t( messagesToggles[rowNumber][1])"
+				text style	"normal"
+				text align right center
+			}
+		}
+		column
+		{
+			width 15
+			label
+			{
+				area		20 8 32 32
+				bam			ROUNDBUT
+				scaleToClip
+				frame		lua "messagesToggles[rowNumber][4]"
+			}
+		}
+
+		area 568 172 422 328
+
+		rowheight	50
+		table		"messagesToggles"
+		var		selMessageOpt
+		scrollbar	'GUISCRC'
+
+		action
+		"
+
+			helpString = messagesToggles[selMessageOpt][2]
+			selectedSL = 0
+			selFeedOpt = 0
+
+			if(cellNumber == 2) then
+				Infinity_PlaySound('GAM_09')
+				messagesToggles[selMessageOpt][4] = toggleFrame(messagesToggles[selMessageOpt][4])
+
+				if messagesToggles[selMessageOpt][4] == 0 then
+					messagesToggles[selMessageOpt][5] = 0
+				else
+					messagesToggles[selMessageOpt][5] = 1
+				end
+			end
+		"
+	}
+
+	label
+	{
+		area 560 522 425 142
+		mosaic GUINOTE
+	}
+
+	text
+	{
+		area		576 534 398 110
+		text		lua "t(helpString)"
+		text style	normal
+		scrollbar	'GUISCRC'
+	}
+
+	text
+	{
+		area		110 142 186 36
+		text		"MARKER_FEEDBACK_LABEL"
+		text style "label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 1)"
+		action
+		"
+			helpString = 'MARKER_FEEDBACK_HELP'
+			selFeedOpt = 0
+			selMessageOpt = 0
+			selectedSL = 1
+		"
+
+	}
+	slider
+	{
+		area		300 142 200 36
+		position "markerFeedSLDR"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	6
+		pad 5 0 5 0
+		action
+		"
+			helpString = 'MARKER_FEEDBACK_HELP'
+			selFeedOpt = 0
+			selMessageOpt = 0
+			selectedSL = 1
+		"
+	}
+	label
+	{
+		area		300 178 200 36
+		text		lua "getFrequency(markerFeedSLDR,true)"
+		text style	"label"
+		text align	center center
+	}
+
+	text
+	{
+		area		110 242 186 36
+		text		"LOCATOR_FEEDBACK_LABEL"
+		text style "label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 2)"
+		action
+		"
+			helpString = 'LOCATOR_FEEDBACK_HELP'
+			selFeedOpt = 0
+			selMessageOpt = 0
+			selectedSL = 2
+		"
+	}
+	slider
+	{
+		area 300 242 200 36
+		position "locatorFeedSLDR"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	5
+		pad 5 0 5 0
+		action
+		"
+			helpString = 'LOCATOR_FEEDBACK_HELP'
+			selFeedOpt = 0
+			selMessageOpt = 0
+			selectedSL = 2
+		"
+	}
+	label
+	{
+		area		300 278 200 36
+		text		lua "getFrequency(locatorFeedSLDR,false)"
+		text style	"label"
+		text align	center center
+	}
+	button
+	{
+		on escape
+		area		188 700 200 40
+		bam			GUIBUTNT
+		sequence	2
+		text 		"CANCEL_BUTTON"
+		text style	"button"
+		action
+		"
+			helpString = 'GAMEPLAY_DESCRIPTION'
+			selectedSL = 0
+			panelID = 8
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		area		638 700 200 40
+		bam			GUIBUTNT
+		sequence	2
+		text 		"DONE_BUTTON" --Done
+		text style	"button"
+		action
+		"
+			helpString = 'GAMEPLAY_DESCRIPTION'
+			panelID = 9
+			Infinity_ChangeOption( 8, markerFeedSLDR, panelID)
+			Infinity_ChangeOption( 9, locatorFeedSLDR, panelID )
+
+			selectedOpt = 0
+			selectedSL = 0
+
+			for index, var in pairs(messagesToggles) do
+
+				Infinity_ChangeOption( var[3], var[5], panelID)
+
+			end
+
+			for index, var in pairs(feedbackToggles) do
+
+				Infinity_ChangeOption( var[3], var[5], panelID)
+
+			end
+			Infinity_PopMenu()
+		"
+	}
+}

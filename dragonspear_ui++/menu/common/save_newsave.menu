@@ -1,0 +1,160 @@
+menu
+{
+	name 'SAVE_NEWSAVE'
+	align center center
+	modal
+	onOpen
+	"
+		bitmapbools =
+		{
+			hasScreenShot = 0,
+			hasPortrait0 = 0,
+			hasPortrait1 = 0,
+			hasPortrait2 = 0,
+			hasPortrait3 = 0,
+			hasPortrait4 = 0,
+			hasPortrait5 = 0,
+		}
+		newSaveName = ''
+		if currentSave ~= 0 then
+			newSaveName = gameSaves.files[currentSave].slotName
+			bitmapbools =
+			{
+			hasScreenShot = gameSaves.files[currentSave].hasScreenShot,
+			hasPortrait0 = gameSaves.files[currentSave].hasPortrait0,
+			hasPortrait1 = gameSaves.files[currentSave].hasPortrait1,
+			hasPortrait2 = gameSaves.files[currentSave].hasPortrait2,
+			hasPortrait3 = gameSaves.files[currentSave].hasPortrait3,
+			hasPortrait4 = gameSaves.files[currentSave].hasPortrait4,
+			hasPortrait5 = gameSaves.files[currentSave].hasPortrait5,
+			}
+		end
+		Infinity_FocusTextEdit('newSaveNameArea')
+	"
+	label
+	{
+		area	0 0 786 341
+		mosaic	GUISRRQB
+	}
+	label
+	{
+		area	42 20 300 30
+		text	"ENTER_SAVE_LABEL"
+		text style "label"
+		text align left center
+	}
+	edit
+	{
+		name        "newSaveNameArea"
+		area		246 66 466 32
+		var			newSaveName
+		text style	"edit"
+		maxlines	1
+		fill        112 111 111 64
+		action
+		"
+			--On return pressed
+			if (key_pressed == 13) then
+				if(currentSave ~= 0) then
+					completeOverwrite()
+				else
+					completeSave()
+				end
+				Infinity_FocusTextEdit('')
+				return -1
+			end
+			return 1
+		"
+	}
+	label
+	{
+		area	252 110 424 34
+		text	lua "gameSaves.currentGameInfo.chapter .. ' ' .. gameSaves.currentGameInfo.time"
+		text style "label"
+		text align left center
+	}
+	button
+	{
+		enabled		 "bitmapbools.hasScreenShot"
+		area	64 70 160 138
+		bitmap res "gameSaves.files[currentSave].screenshot"
+		align	center center
+	}
+	button
+	{
+		enabled		 "bitmapbools.hasPortrait0"
+		area	338 164 30 48
+		bitmap res "gameSaves.files[currentSave].portrait0"
+		align	center center
+	}
+	button
+	{
+		enabled		 "bitmapbools.hasPortrait1"
+		area	402 164 30 48
+		bitmap res "gameSaves.files[currentSave].portrait1"
+		align	center center
+	}
+	button
+	{
+		enabled		 "bitmapbools.hasPortrait2"
+		area	462 164 30 48
+		bitmap res "gameSaves.files[currentSave].portrait2"
+		align	center center
+	}
+	button
+	{
+		enabled		 "bitmapbools.hasPortrait3"
+		area	524 164 30 48
+		bitmap res "gameSaves.files[currentSave].portrait3"
+		align	center center
+	}
+	button
+	{
+		enabled		 "bitmapbools.hasPortrait4"
+		area	592 164 30 48
+		bitmap res "gameSaves.files[currentSave].portrait4"
+		align	center center
+	}
+	button
+	{
+		enabled		 "bitmapbools.hasPortrait5"
+		area	654 164 30 48
+		bitmap res "gameSaves.files[currentSave].portrait5"
+		align	center center
+	}
+	button
+	{
+		area	528 254 200 40
+		bam		GUIBUTNT
+		text	"SAVE_BUTTON"
+		text style "button"
+		action
+		"
+			completeSave()
+		"
+	}
+	button
+	{
+		enabled	currentSave
+		area	528 254 200 40
+		bam		GUIBUTNT
+		text	"OVERWRITE_BUTTON"
+		text style "button"
+		action
+		"
+			completeOverwrite()
+		"
+	}
+	button
+	{
+		on escape
+		area	228 254 200 40
+		bam		GUIBUTNT
+		text	"CANCEL_BUTTON"
+		text style "button"
+		action
+		"
+			Infinity_PopMenu('SAVE_NEWSAVE')
+		"
+	}
+}

@@ -1,0 +1,31 @@
+menu
+{
+	name 'CONNECTION_JOINING'
+	modal
+	align center center
+
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label --Title
+	{
+		area 30 20 594 124
+		text  20274
+		text style	"label"
+	}
+	button
+	{
+		area		222 170 230 40
+		bam		GUIBUTMT
+		sequence	0
+		text  		"CANCEL_BUTTON"
+		text style	"button"
+		on		escape
+		action
+		"
+			Infinity_PopMenu();
+		"
+	}
+}

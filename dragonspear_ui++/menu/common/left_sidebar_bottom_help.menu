@@ -1,0 +1,94 @@
+menu
+{
+	name 'LEFT_SIDEBAR_BOTTOM_HELP'
+	align left bottom
+	offset 0 -22
+	--combined height of these buttons makes a menu with height = 231, menu is placed into lower left. y pos is offset from top of this menu.
+	ignoreEsc
+	button
+	{
+		area 3 0 73 55
+		enabled "worldScreen == e:GetActiveEngine()"
+		bam GUILS10
+		sequence 15
+		tooltip lua "getTooltipWithHotkey(28,31813)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 10
+		"
+	}
+	button
+	{
+		area 3 56 73 55
+		enabled "worldScreen == e:GetActiveEngine()"
+		bam GUILS10
+		sequence 16
+		tooltip lua "Infinity_FetchString(31827)"  --"getTooltipWithHotkey(16,31827)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 11
+		"
+	}
+	button
+	{
+		area 3 110 73 55
+		bam GUILS10
+		sequence 9
+		tooltip lua "getTooltipWithHotkey(31,11942)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 12
+		"
+	}
+
+
+	--begin clock
+	label
+	{
+		enabled "worldScreen == e:GetActiveEngine()"
+		area 0 182 73 55
+		bam "CGEAR"
+		frame lua "timer:GetCurrentTime() % 24"
+		useOverlayTint "worldScreen:CheckIfPaused()"
+		overlayTint 180 180 180
+	}
+	label
+	{
+		enabled "worldScreen == e:GetActiveEngine()"
+		area 0 182 73 55
+		bam "CDIAL"
+		frame lua "timer:GetCurrentHour() % timer.TIMESCALE_HOUR_PER_DAY"
+		useOverlayTint "worldScreen:CheckIfPaused()"
+		overlayTint 180 180 180
+	}
+	label
+	{
+		enabled "worldScreen == e:GetActiveEngine()"
+		area 0 182 73 55
+		bam "CPEN"
+		frame lua "timer:GetCurrentTime() % 24"
+		useOverlayTint "worldScreen:CheckIfPaused()"
+		overlayTint 180 180 180
+	}
+	button
+	{
+		enabled "worldScreen == e:GetActiveEngine()"
+		area 0 182 73 55
+		tooltip lua "worldScreen:GetCurrentTimeString()"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 23
+		"
+	}
+	--end clock
+	label
+	{
+		--area is preset
+		enabled "gameOptions.m_bRenderFrameTimes"
+		frameTimes
+	}
+}

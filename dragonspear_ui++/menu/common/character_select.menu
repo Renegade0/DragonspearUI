@@ -1,0 +1,84 @@
+menu
+{
+	name 'CHARACTER_SELECT'
+	align center center
+	onopen "selectedCharacter = 0"
+	ignoreesc
+	label
+	{
+		mosaic GUICGPR
+		area 0 0 1024 768
+	}
+	label
+	{
+		area 170 16 690 44
+		text "CHARGEN_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 26 64 978 622
+		rectangle 3
+	}
+	list
+	{
+		column
+		{
+			width 8
+			label
+			{
+				area 0 0 0 100 --hack to pad the portrait on the bottom by forcing a min rowheight
+			}
+			label
+			{
+				area 10 8 54 84
+				bitmap lua "character_select[rowNumber].portrait"
+			}
+		}
+		column
+		{
+			width 92
+			label
+			{
+				area 20 4 -1 -1
+				text lua "character_select[rowNumber].name .. '\n' .. character_select[rowNumber].desc"
+				text style "label"
+				text align left top
+			}
+		}
+
+		area 50 84 932 586
+		rowheight dynamic
+		table "character_select"
+		var selectedCharacter
+		scrollbar GUISCRC
+	}
+	button
+	{
+		area 520 686 237 66
+		text "DONE_BUTTON"
+		text style "button"
+		bam GUIBUTST
+		clickable lua "selectedCharacter ~= 0"
+		action
+		"
+			Infinity_OnCharacterImportItemSelect(selectedCharacter - 1)
+			createCharScreen:OnDoneButtonClick()
+			Infinity_PopMenu('CHARACTER_SELECT')
+		"
+	}
+	button
+	{
+		on escape
+		bam GUIBUTST
+		area 268 686 237 66
+		text "BACK_BUTTON"
+		text style "button"
+		action
+		"
+			createCharScreen:OnCancelButtonClick()
+			Infinity_PopMenu('CHARACTER_SELECT')
+		"
+	}
+
+}

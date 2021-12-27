@@ -1,0 +1,18 @@
+menu
+{
+	name 'CHAPTER_WAITING_FOR_PROVIDER'
+	modal
+	align center center
+
+	label
+	{
+		area 0 0 465 500
+		mosaic GUIERR
+	}
+	label --Title
+	{
+		area 124 134 224 112
+		text "WAITING_FOR_OTHER_PLAYERS"
+		text style	"label"
+	}
+}

@@ -1,0 +1,266 @@
+menu
+{
+	name 'SAVE'
+	align center center
+	ignoreEsc
+	label
+	{
+		area	0 0 1444 818
+		mosaic	RGSAVE --GUISRSVB
+		action
+		"
+			currentSave = nil
+		"
+	}
+	label
+	{
+		area 250 32 944 44
+		text "SAVE_TITLE"
+		text style "title"
+	}
+	label
+	{
+		name "SaveFilterLabel1"
+		area 1092 482 230 44
+		bam			GUIBUTMT
+	}
+	label
+	{
+		name "SaveFilterLabel2"
+		area 1092 428 230 44
+		bam			GUIBUTMT
+	}
+	label
+	{
+		name "SaveFilterLabel3"
+		area 1092 374 230 44
+		bam			GUIBUTMT
+	}
+	edit
+	{
+		name "SaveFilter1"
+		area	1102 428 215 44
+		var SaveSearchString
+		placeholder 'RG_FILTER1'
+		text style "edit"
+		maxlines 1
+		align left center
+	}
+	edit
+	{
+		name "SaveFilter2"
+		area	1102 374 215 44
+		var SaveSearchString1
+		placeholder 'RG_FILTER2'
+		text style "edit"
+		maxlines 1
+		align left center
+	}
+	edit
+	{
+		name "SaveFilter3"
+		area	1102 482 215 44
+		var SaveSearchString2
+		placeholder 'RG_FILTER3'
+		text style "edit"
+		maxlines 1
+		align left center
+	}
+
+	list
+	{
+		column
+		{
+			width	75
+			label
+			{
+				area 		0 0 928 -1
+				enabled	"SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber)"
+				mosaic lua	'getSaveBackground(rowNumber)'
+				respectClipping
+				align		center center
+				}
+			button
+			{
+				enabled		"SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasScreenShot"
+				area		0 0 60 60
+				bitmap res 	"gameSaves.files[rowNumber].screenshot"
+				bitmap area	8 8 130 82
+				align		center center
+			}
+
+			label
+			{
+				area	416 21 298 30
+				enabled	"SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber)"
+				text	lua "gameSaves.files[rowNumber].slotName"
+				text style "label"
+				align	left top
+			}
+
+			label
+			{
+				area	416 57 280 30
+				enabled	"SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber)"
+				text	lua "gameSaves.files[rowNumber].chapter .. ' ' .. gameSaves.files[rowNumber].time"
+				text style "label"
+				align	left top
+			--	pad		0 0 -200 0
+			}
+
+			button
+			{
+				enabled		 "SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait0"
+				area	163 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait0"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+			button
+			{
+				enabled		 "SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait1"
+				area	198 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait1"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+			button
+			{
+				enabled		 "SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait2"
+				area	234 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait2"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+			button
+			{
+				enabled		 "SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait3"
+				area	269 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait3"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+			button
+			{
+				enabled		 "SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait4"
+				area	304 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait4"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+			button
+			{
+				enabled		 "SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait5"
+				area	339 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait5"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+		}
+		column
+		{
+			width	25
+			label
+			{
+				area 		-684,0,928,-1
+				enabled	"SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber)"
+				mosaic lua	'getSaveBackground(rowNumber)'
+				respectClipping
+				align		center center
+			}
+			label
+			{
+				area	10 21 195 30
+				enabled	"SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber)"
+				text	lua "gameSaves.files[rowNumber].sName"
+				text style "label"
+				align	center top
+			}
+			label
+			{
+				area		10 47 200 40
+				enabled	"SaveContainsSearchString(rowNumber) and SaveContainsSearchString1(rowNumber) and SaveContainsSearchString2(rowNumber)"
+				bam 		GUIBUTNT
+				frame lua 	"currentCellCheck(2)"
+				sequence 	0
+				text		"SAVE_BUTTON"
+				text style	"button"
+			}
+		}
+
+		action
+		"
+			if cellNumber == 1 then
+				cellNumber = nil
+			elseif cellNumber == 2 then
+				cellNumber = nil
+				Infinity_PlaySound('GAM_09')
+				Infinity_PushMenu( 'SAVE_NEWSAVE' );
+			end
+		"
+
+		actionDbl
+		"
+			Infinity_PlaySound('GAM_09')
+			Infinity_PushMenu( 'SAVE_NEWSAVE' );
+		"
+
+		area 98 84 928 690
+		rowheight	dynamic
+		table		"gameSaves.files"
+		hidehighlight
+		var		currentSave
+		scrollbar	'GUISCRC'
+	}
+--	button
+--	{
+--		area	48 108 928 148
+--		mosaic		GUISAVEB
+--	}
+--	label
+--	{
+--		area	248 120 300 30
+--		text	'NEW_SAVE_LABEL'
+--		text style "label"
+--		text align left center
+--	}
+	button
+	{
+		area		1092 196 230 40
+		bam			GUIBUTMT
+		text		"NEW_SAVE_LABEL"
+		text style	"button"
+		action
+		"
+			--saveScreen:SaveGame(#saveFiles, 'Test Save ' .. #saveFiles)
+			currentSave = 0
+			Infinity_PushMenu( 'SAVE_NEWSAVE' );
+		"
+	}
+
+	button
+	{
+		area		1092 590 230 40
+		bam			GUIBUTMT
+		clickable	lua	"currentSave"
+		text		"DELETE_BUTTON"
+		text style	"button"
+		action
+		"
+			popup2Button(15305, 'DELETE_BUTTON',
+			function() saveScreen:DeleteGame(gameSaves.files[currentSave].slotIndex) end)
+		"
+	}
+	button
+	{
+		on escape
+		area		1092 644 230 40
+		bam			GUIBUTMT
+		text		"BACK_BUTTON"
+		text style	"button"
+		action
+		"
+			saveScreen:OnMainCancelButtonClick()
+		"
+	}
+}

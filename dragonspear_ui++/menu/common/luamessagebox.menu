@@ -1,0 +1,32 @@
+menu
+{
+	name 'LuaMessageBox'
+	align center center
+	modal
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label
+	{
+		area 29 21 580 126
+		text lua "messages[messageBoxCurMessage]"
+		text style	"label"
+	}
+	button
+	{
+		area 213 170 230 40
+		bam GUIBUTNT
+		text "DONE_BUTTON"
+		text style	"button"
+		action
+		"
+			messageBoxMessages[messageBoxCurMessage] = nil
+			if(getNextMessage() == 0) then
+				messageBoxCurMessage = nil
+				Infinity_PopMenu()
+			end
+		"
+	}
+}

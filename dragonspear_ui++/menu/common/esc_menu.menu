@@ -1,0 +1,189 @@
+menu
+{
+	name "ESC_MENU"
+	ignoreesc
+	align top left
+	onOpen "
+		Infinity_PlayMovie('RGOPT1','RGOPT1')
+		getEscMenuArea()
+
+		#if GAME_VERSION == 'eet' then
+		----'Active Campaign' INI setting is not automatically updated by MoveToCampaign action
+		----there is no known way to retrieve in-game variable from within GUI, so we're checking Infinity_GetMaxChapterPage() instead
+		--checkCampaign = Infinity_GetINIValue('Program Options','Active Campaign')
+		--local chapter = Infinity_GetMaxChapterPage()
+		--if (chapter == 0) and (checkCampaign ~= const.START_CAMPAIGN_BG1) and (checkCampaign ~= const.START_CAMPAIGN_BP1) and (checkCampaign ~= const.START_CAMPAIGN_BP2) and (checkCampaign ~= const.START_CAMPAIGN_TUT) then
+		--	currentCampaign = const.START_CAMPAIGN_BG1
+		--elseif (chapter > 0) and (chapter < 7) and (checkCampaign ~= const.START_CAMPAIGN_BG1) then
+		--	currentCampaign = const.START_CAMPAIGN_BG1
+		--elseif (chapter == 7) and (checkCampaign ~= const.START_CAMPAIGN_BG1) and (checkCampaign ~= const.START_CAMPAIGN_SOD) then
+		--	currentCampaign = const.START_CAMPAIGN_SOD
+		--elseif (chapter > 7) and (chapter < 13) and (checkCampaign ~= const.START_CAMPAIGN_SOD) then
+		--	currentCampaign = const.START_CAMPAIGN_SOD
+		--elseif (chapter == 13) and (checkCampaign ~= const.START_CAMPAIGN_SOD) and (checkCampaign ~= const.START_CAMPAIGN_SOA) then
+		--	currentCampaign = const.START_CAMPAIGN_SOA
+		--elseif (chapter > 13) and (chapter < 20) and (checkCampaign ~= const.START_CAMPAIGN_SOA) then
+		--	currentCampaign = const.START_CAMPAIGN_SOA
+		--elseif (chapter >= 20) and (checkCampaign ~= const.START_CAMPAIGN_TOB) then
+		--	currentCampaign = const.START_CAMPAIGN_TOB
+		--end
+		--if (checkCampaign ~= currentCampaign) then
+		--	Infinity_SetINIValue('Program Options','Active Campaign',currentCampaign)
+		--end
+		#end
+
+		versionString = CBaldurChitin:GetVersionString()
+		pushSidebars()
+		rgEscPortrait = 1
+		Infinity_PopMenu('WORLD_QUICKLOOT');
+	"
+	onClose "
+		popSidebars()
+		rgEscPortrait = 0
+	"
+	movie
+	{
+		name "RGOPT1"
+		area 0 0 1920 1080
+	}
+	label
+	{
+		name "RGOPT2"
+		area 646 226 628 628
+		mosaic RGOPT2
+	}
+	label
+	{
+		name "RGESCLOGO"
+		area		665 250 587 587
+		bam 		BIGLOGO
+		sequence 1
+		frame lua "getBigLogo()"
+	}
+	button
+	{
+		area		665 250 587 587
+		action
+		"
+			e:SelectEngine( worldScreen );
+		"
+	}
+--	label
+--	{
+--		area 260 92 350 44
+--		text "OPTIONS_TITLE"
+--		text style "title"
+--	}
+	label
+	{
+		name "RGVERSTRING"
+		area 887 1047 145 29
+		text lua "versionString"
+		text style "normal"
+		text align center center
+	}
+	button
+	{
+		name "RGBUT_GAMEPLAY"
+		area		1314 270 156 156
+		bam			RGOPTBT
+		text 		"GAMEPLAY_BUTTON"
+		text style	"button"
+
+		action
+		"
+			Infinity_PushMenu( 'OPTIONS_GAMEPLAY' )
+
+		"
+	}
+	button
+	{
+		name "RGBUT_GRAPHICS"
+		area		1354 470 156 156
+		bam			RGOPTBT
+		text 		"GRAPHICS_BUTTON"
+		text style	"button"
+
+		action
+		"
+			Infinity_PushMenu( 'OPTIONS_GRAPHICS' )
+
+		"
+	}
+	button
+	{
+		name "RGBUT_SOUND"
+		area		1314 670 156 156
+		bam			RGOPTBT
+		text 		"SOUND_BUTTON"
+		text style	"button"
+
+		action
+		"
+			Infinity_PushMenu( 'OPTIONS_SOUND' )
+
+		"
+	}
+--	button
+--	{
+--		area 284 615 300 40
+--		bam GUIBUTWT
+--		text "RETURN_GAME_BUTTON"
+--		text style "button"
+--		action
+--		"
+--			e:SelectEngine( worldScreen );
+--		"
+--	}
+	button
+	{
+		name "RGBUT_LOAD"
+		area		450 270 156 156
+		bam			RGOPTBT
+		text style "button"
+		text "LOAD_GAME_BUTTON"
+		clickable lua "canClickSaveLoad()"
+		action
+		"
+			popup2Button(19531, 'LOAD_BUTTON', function() optionsScreen:LoadGame() end)
+		"
+	}
+	button
+	{
+		name "RGBUT_QUIT"
+		area		410 470 156 156
+		bam			RGOPTBT
+		text style "button"
+		text "QUIT_GAME_BUTTON"
+		action
+		"
+			if e:IsTouchUI() then
+				popup3Button(16456,
+				'CANCEL_BUTTON', nil,
+				'MAIN_MENU_BUTTON', function() optionsScreen:QuitGame() end,
+				'SAVE_BUTTON', function() optionsScreen:SaveGame(0) end
+				)
+			else
+				popup4Button(16456,
+				'CANCEL_BUTTON', nil,
+				'MAIN_MENU_BUTTON', function() optionsScreen:QuitGame() end,
+				'QUIT_BUTTON', function() Infinity_ShutdownGame() end,
+				'SAVE_BUTTON', function() optionsScreen:SaveGame(0) end
+				)
+			end
+		"
+	}
+	button
+	{
+		name "RGBUT_SAVE"
+		area		450 670 156 156
+		bam			RGOPTBT
+		text style "button"
+		text "SAVE_GAME_BUTTON"
+		clickable lua "canClickSaveLoad()"
+		action
+		"
+			optionsScreen:SaveGame(0)
+		"
+	}
+}

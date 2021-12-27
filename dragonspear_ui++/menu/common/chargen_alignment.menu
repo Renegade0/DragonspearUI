@@ -1,0 +1,81 @@
+menu
+{
+	name 'CHARGEN_ALIGNMENT'
+--	modal
+	align center center
+	ignoreesc
+	onopen "currentChargenAlignment = nil"
+	label
+	{
+		area 0 0 1444 818
+		mosaic RGCGWDE
+	}
+	label
+	{
+		area 348 84 744 42
+		text "ALIGNMENT_TITLE"
+		text style "title"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 		0 0 310 42
+				mosaic lua  'getAlignmentBackground(rowNumber)'
+				respectClipping
+				align		center center
+			}
+			label
+			{
+				area 0 0 310 42
+				text lua "Infinity_FetchString(chargen.alignment[rowNumber].name)"
+				text style "list"
+				text align center center
+				pad -8 0 0 0
+				text lower
+
+			}
+		}
+		action "
+			if chargen.alignment[currentChargenAlignment] then
+				createCharScreen:OnAlignmentSelectButtonClick(chargen.alignment[currentChargenAlignment].id)
+			end
+			"
+		rowheight 42
+		hideHighlight
+		area 376 180 318 518
+		table "chargen.alignment"
+		var currentChargenAlignment
+		scrollbar	'GUISCRC'
+	}
+	text
+	{
+		area 748 180 344 518
+		text lua "alignmentOrGeneralHelp()"
+		text style "normal"
+		scrollbar	'GUISCRC'
+	}
+	button
+	{
+		on escape
+		area 420 726 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu(); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		area 806 726 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action "Infinity_PopMenu(); createCharScreen:OnDoneButtonClick()"
+	}
+
+}

@@ -4,16 +4,16 @@ VERSION ~21.12.1~
 
 LANGUAGE
 	~English~ ~dragonspear_ui++/tra~ ~dragonspear_ui++/tra/english.tra~
-LANGUAGE 
+LANGUAGE
 	~Polski (by Etamin)~ ~dragonspear_ui++/tra/english.tra~ ~dragonspear_ui++/tra/polish.tra~
-LANGUAGE 
+LANGUAGE
 	~Italian (by Aedan)~ ~dragonspear_ui++/tra/english.tra~ ~dragonspear_ui++/tra/italian.tra~
 LANGUAGE
 	~Russian (by d0lphin)~ ~dragonspear_ui++/tra/russian.tra~ ~dragonspear_ui++/tra/russian.tra~
 LANGUAGE
 	~Brazilian Portuguese (by Felipefpl)~ ~dragonspear_ui++/tra/brazilian portuguese.tra~ ~dragonspear_ui++/tra/brazilian portuguese.tra~
 
-	
+
 /////////////////////////////////////////////////////////////////////////////////
 ///  M_BG.LUA BACKUP
 /////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +35,43 @@ BEGIN @1000
 
 REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
+ACTION_MATCH 0 WITH
+	0 WHEN GAME_IS ~eet~ BEGIN OUTER_SPRINT game "eet" END
+	0 WHEN GAME_IS ~bgee~ BEGIN OUTER_SPRINT game "sod" END
+	0 WHEN GAME_IS ~bg2ee~ BEGIN OUTER_SPRINT game "bg2" END
+	DEFAULT FAIL "unhandled match case"
+END
+
+OUTER_SPRINT build_folder "%MOD_FOLDER%/build"
+MKDIR "%build_folder%"
+
+ACTION_IF "%WEIDU_OS%" STRING_EQUAL "win32" BEGIN
+	AT_NOW exit_code "%MOD_FOLDER%/bin/build.bat %WEIDU_ARCH% %game% 2> %build_folder%/error.log"
+END ELSE BEGIN
+	AT_NOW exit_code "%MOD_FOLDER%/bin/build.sh %game% 2> %build_folder%/error.log"
+END
+
+ACTION_MATCH exit_code WITH
+	0 BEGIN /* all good */ END
+	42 BEGIN
+		WARN "This mod requires lua5.2+ installed."
+
+		ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL "osx" BEGIN
+			WARN "You can install it using homebrew or macports:%LNL%"
+			   ^ "https://brew.sh%LNL%"
+			   ^ "https://www.macports.org%LNL%"
+		END ELSE BEGIN
+			WARN "You can install it using your OS package manager."
+		END
+
+		FAIL "Missing or unsupported Lua version"
+	END
+	DEFAULT
+		FAIL "An error happened file generating UI.menu file"
+END
+
+
+COPY "%build_folder%/ui.menu" ~override~
 COPY ~dragonspear_ui++/content-common/all~ ~override~
 
 ACTION_IF GAME_IS ~bgee~ THEN BEGIN
@@ -101,7 +138,7 @@ COPY_EXISTING ~M_BG.lua~ ~override~
 }~
 		END
 	END
-	
+
 
 /////////////////////////////////////////////////////////////////////////////////
 ///  TRANSPARENT TOOLTIP BACKGROUND
@@ -113,7 +150,7 @@ REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 COPY ~dragonspear_ui++/content-tooltip~ ~override~
 
-	
+
 /////////////////////////////////////////////////////////////////////////////////
 ///  UPDATE DIALOG.TLK STRINGS
 /////////////////////////////////////////////////////////////////////////////////
@@ -161,7 +198,7 @@ SUBCOMPONENT @1008
 COPY_EXISTING ~savename.2da~ ~override~
 	SET_2DA_ENTRY 1 3 4 2
 
-	
+
 BEGIN ~3~
 
 REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
@@ -170,7 +207,7 @@ SUBCOMPONENT @1008
 
 COPY_EXISTING ~savename.2da~ ~override~
 	SET_2DA_ENTRY 1 3 4 3
-	
+
 
 BEGIN ~4~
 
@@ -180,8 +217,8 @@ SUBCOMPONENT @1008
 
 COPY_EXISTING ~savename.2da~ ~override~
 	SET_2DA_ENTRY 1 3 4 4
-	
-	
+
+
 BEGIN ~5~
 
 REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
@@ -190,8 +227,8 @@ SUBCOMPONENT @1008
 
 COPY_EXISTING ~savename.2da~ ~override~
 	SET_2DA_ENTRY 1 3 4 5
-	
-	
+
+
 BEGIN ~6~
 
 REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
@@ -201,7 +238,7 @@ SUBCOMPONENT @1008
 COPY_EXISTING ~savename.2da~ ~override~
 	SET_2DA_ENTRY 1 3 4 6
 
-	
+
 /////////////////////////////////////////////////////////////////////////////////
 ///  PORTRAIT PICKER UPDATE
 /////////////////////////////////////////////////////////////////////////////////

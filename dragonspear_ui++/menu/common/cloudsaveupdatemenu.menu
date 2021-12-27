@@ -1,0 +1,29 @@
+menu
+{
+	name 'CloudSaveUpdateMenu'
+	modal
+	label -- Background
+	{
+		area 174 267 677 234
+		mosaic GUIERR6
+	}
+	label
+	{
+		area 214 287 600 120
+		text lua "CheckCloudSaveStatus()"
+		text style "label"
+	}
+	button
+	{
+		area		544 437 232 44
+		bam			GUIOSTUR
+		sequence	0
+		text		"SKIP_BUTTON"
+		text style	"button"
+		on 			escape
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}

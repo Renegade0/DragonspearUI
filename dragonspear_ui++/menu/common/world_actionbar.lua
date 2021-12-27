@@ -1,0 +1,2 @@
+	actionBarTooltip = {}
+	FirstTime = 0

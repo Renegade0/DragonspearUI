@@ -1,0 +1,45 @@
+menu
+{
+	name "WORLD_DEATH"
+	align center center
+	ignoreEsc
+	modal
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label
+	{
+		area 29 21 580 126
+		text lua "worldDeathText()"
+		text style	"label"
+		text align center center
+	}
+	button
+	{
+		area 79 170 230 40
+		bam GUIBUTMT
+		text "LOAD_BUTTON"
+		text style	"button"
+		clickable lua "worldDeathLoadClickable()"
+		action
+		"
+			Infinity_PopMenu()
+			worldScreen:OnDeathLoad()
+		"
+	}
+	button
+	{
+		area 343 170 230 40
+		bam GUIBUTMT
+		text style	"button"
+		text lua "worldDeathQuitText()"
+		clickable lua "worldDeathQuitClickable()"
+		action
+		"
+			Infinity_PopMenu()
+			worldScreen:OnDeathQuit()
+		"
+	}
+}

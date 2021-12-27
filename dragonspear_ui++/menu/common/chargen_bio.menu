@@ -1,0 +1,57 @@
+menu
+{
+	name 'CHARGEN_BIO'
+	align center center
+	ignoreesc
+	label
+	{
+		area 0 0 1444 818
+		mosaic 'RGCBIOG'
+	}
+	label
+	{
+		area 350 84 744 44
+		text "BIOGRAPHY_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area		334 160 776 538
+		fill        112 111 111 64
+	}
+	edit
+	{
+		name		"createBioEditArea"
+		area		342 168 760 522
+		var			createBioEdit
+		scrollbar	'GUISCRC'
+		text style	"edit"
+	}
+	button
+	{
+		on escape
+		area 354 724 230 40
+		text "BACK_BUTTON"
+		text style "button"
+		bam GUIBUTMT
+		action "createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		area 606 724 230 40
+		text "CLEAR_BUTTON"
+		text style "button"
+		bam GUIBUTMT
+		action "createBioEdit = ''"
+	}
+	button
+	{
+		on return
+		area 860 724 230 40
+		text "DONE_BUTTON"
+		text style "button"
+		bam GUIBUTMT
+		action "createCharScreen:OnDoneButtonClick()"
+	}
+
+}

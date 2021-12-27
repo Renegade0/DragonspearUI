@@ -1,0 +1,133 @@
+menu
+{
+	name 'START_DLC'
+	align center center
+
+	label
+	{
+		area 0 0 1024 768
+		mosaic 'GUIDLC'
+	}
+
+	label
+	{
+		area		60 0 906 56
+		text		"STRREF_GUI_LOWER_DLC_STORE"
+		text style  'title'
+		text align	center center
+	}
+
+	label
+	{
+		area		588 568 326 48
+		text lua	"getDLCIndex()"
+		text style  'title'
+		text align	center center
+	}
+
+	label
+	{
+		area		576 132 348 54
+		text lua	"getDLCTitle()"
+		text style  'title'
+		text align	center center
+	}
+
+	text
+	{
+		area		588 228 326 334
+		text lua	"getDLCDescription()"
+		text style  'normal'
+		scrollbar	'GUISCRC'
+	}
+
+	label
+	{
+		area 154 92 362 568
+		bitmap lua "dlcScreen:GetDLCImage()"
+	}
+
+	button
+	{
+		bam 'GUIPRC'
+		sequence 0
+		area 22 274 56 140
+		align center center
+		action
+		"
+			dlcScreen:DecrementDLCIndex()
+		"
+	}
+
+	button
+	{
+		bam 'GUIPRC'
+		sequence 1
+		area 946 270 52 140
+		align center center
+		action
+		"
+			dlcScreen:IncrementDLCIndex()
+		"
+	}
+
+	button
+	{
+		on escape
+		bam 'GUIBUTNT'
+		sequence 0
+		area 316 713 200 40
+		align center center
+		text style "button"
+		text "BACK_BUTTON"
+		action
+		"
+			dlcScreen:OnDoneButtonClick()
+		"
+	}
+
+	button
+	{
+		bam 'GUIBUTNT'
+		frame 3
+		area 526 713 200 40
+		align center center
+		text style "button"
+		text "STRREF_GUI_DLC_INSTALLED"
+		text color 'E'
+		enabled "not isDLCBuyButtonClickable()"
+		action
+		"
+			dlcScreen:OnBuyButtonClick()
+		"
+	}
+
+	button
+	{
+		bam 'GUIBUTNT'
+		sequence 2
+		area 526 713 200 40
+		align center center
+		text style "button"
+		text "BUY_BUTTON"
+		enabled "isDLCBuyButtonClickable()"
+		action
+		"
+			dlcScreen:OnBuyButtonClick()
+		"
+	}
+
+	button
+	{
+		bam 'GUIBUTWT'
+		sequence 2
+		area 600 648 298 40
+		align center center
+		text style "button"
+		text "STRREF_GUI_DLC_RESTORE_PURCHASES"
+		action
+		"
+			dlcScreen:RestorePurchases()
+		"
+	}
+}

@@ -1,0 +1,94 @@
+menu
+{
+	name 'MP_PICKPLAYER'
+	align center center
+	modal
+	label
+	{
+		mosaic 'RECENTEV'
+		area 0 0 664 662
+	}
+	label
+	{
+		area 104 70 456 44
+		text "SELECT_PLAYER_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 98 162 470 46
+		text "SELECT_PLAYER_DESCRIPTION"
+		text style "title"
+	}
+
+	-- list
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 340 32
+				text lua "getMultiplayerPlayerName(getActivePlayerIndex(rowNumber), false, true)"
+				text style "normal"
+				align left center
+			}
+		}
+
+		action
+		"
+		"
+
+		rowheight 32
+		area 202 218 258 280
+		table "multiplayer.player"
+		var currentMultiplayerSelectPlayer
+	}
+
+	button
+	{
+		bam GUIOSW
+		on esc
+		area 616 6 44 44
+		sequence 2
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+
+	button
+	{
+		on escape
+		area 236 512 198 40
+		text "CANCEL_BUTTON"
+		text style "button"
+		align center center
+		bam 'GUIBUTNT'
+		sequence 0
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		on escape
+		area 236 564 198 40
+		text "DONE_BUTTON"
+		text style "button"
+		align center center
+		bam 'GUIBUTNT'
+		sequence 0
+		action
+		"
+			if mpaCharacters[selectedCharacter]['ready'] == true and mpaCharacters[selectedCharacter]['player'] ~= getActivePlayerIndex(currentMultiplayerSelectPlayer) then
+				multiplayerScreen:OnReadyButtonClick(selectedCharacter-1)
+			end
+			broadcastCharacterControlChange(selectedCharacter, getActivePlayerIndex(currentMultiplayerSelectPlayer))
+			multiplayerScreen:OnPlayerSelection(getActivePlayerIndex(currentMultiplayerSelectPlayer)-1)
+			Infinity_PopMenu()
+		"
+	}
+}

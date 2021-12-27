@@ -1,0 +1,58 @@
+menu
+{
+	name 'RIGHT_SIDEBAR_BOTTOM_HELP'
+	align right bottom
+	ignoreEsc
+	--Buttons form a menu aligned bottom right, with height = 197, y is offset from top of that menu.
+	button
+	{
+		area 6 0 71 48
+		enabled "e:IsTouchUI() and worldScreen == e:GetActiveEngine()"
+		bam GUILS10
+		sequence 14
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 13
+		"
+	}
+	button
+	{
+		area 6 49 71 48
+		enabled "worldScreen == e:GetActiveEngine()"
+		tooltip lua "Infinity_FetchString(32729)"
+		bam GUILS10
+		sequence 11
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 14
+		"
+	}
+	button
+	{
+		area 6 99 71 48
+		enabled "worldScreen == e:GetActiveEngine()"
+		tooltip lua "getPartyAITooltip()"
+		bam GUILS10
+		sequence 10
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 15
+		"
+	}
+	button
+	{
+		area 6 149 71 48
+		enabled "worldScreen == e:GetActiveEngine()"
+		tooltip lua "Infinity_FetchString(10485)"
+		bam GUILS10
+		sequence 13
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 16
+		"
+	}
+}

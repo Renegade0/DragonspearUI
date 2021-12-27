@@ -1,0 +1,61 @@
+menu
+{
+	name 'QuitMenu'
+	modal
+	align center center
+	label -- Background
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label --Title
+	{
+		area 40 20 600 120
+		text  20186
+		text style	"label"
+	}
+	button
+	{
+		area		370 170 230 40
+		bam			GUIBUTMT
+		sequence	0
+		text  "QUIT_GAME_BUTTON"
+		text style	"button"
+		on 			return
+		enabled "not e:IsAndroid()"
+		action
+		"
+			restoreOverlayFromQuit()
+			Infinity_ShutdownGame()
+		"
+	}
+	button
+	{
+		area		370 170 230 40
+		bam			GUIBUTMT
+		sequence	0
+		text  "QUIT_GAME_BUTTON"
+		text style	"button"
+		on 			escape
+		enabled "e:IsAndroid()"
+		action
+		"
+			restoreOverlayFromQuit()
+			Infinity_ShutdownGame()
+		"
+	}
+	button
+	{
+		area		88 170 230 40
+		bam			GUIBUTMT
+		sequence	0
+		text  "CANCEL_BUTTON"
+		text style	"button"
+		on 			escape
+		action
+		"
+			restoreOverlayFromQuit()
+			Infinity_PopMenu('QuitMenu')
+		"
+	}
+}

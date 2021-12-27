@@ -1,0 +1,133 @@
+menu
+{
+	name 'CHARGEN_DIFFICULTY'
+	align center center
+	ignoreesc
+	onopen
+	"
+		currentDifficulty = 3
+		WhoYouGonnaCall()
+	"
+	label
+	{
+		area 0 0 1444 818
+		mosaic 'RGCDIF'
+	}
+	label
+	{
+		area 370 74 700 60
+		text "`CHARGEN_DIFFICULTY_TITLE_LABEL`"
+		text style "title"
+	}
+	label
+	{
+		area 94 148 1248 562
+		rectangle 3
+	}
+	list
+	{
+		column
+		{
+			width 10
+			label
+			{
+				area 20 5 60 60
+				bam "GUIDIFFS"
+				frame lua "rowNumber-1"
+				align center center
+			}
+		}
+		column
+		{
+			width 20
+			label
+			{
+				area 0 0 -1 -1
+				text lua "t( difficulties[rowNumber].name )"
+				text style "label"
+				text align center center
+				text color	B
+			}
+		}
+		column
+		{
+			width 70
+			label
+			{
+				area 10 0 -1 -1
+				text lua "t( difficulties[rowNumber].description )"
+				text style "label"
+				text point	12
+				text align left center
+				text color	B
+			}
+		}
+		area 116 170 1204 522
+		rowheight	72
+		table		"difficulties"
+		var			"currentDifficulty"
+		scrollbar	'GUISCRC'
+		action
+		"
+		"
+	}
+	button
+	{
+		on escape
+		area 352 732 230 40
+		bam GUIBUTMT
+		text 15416
+		text style "button"
+		action
+		"
+			Infinity_PopMenu()
+			if(createCharScreen:GetEngineState() == 7) then
+				--If we're in import character mode, go back to the import screen.
+				e:SelectEngine(startEngine)
+				Infinity_PopMenu()
+				startEngine:OnImportCharacterButtonClick()
+			end
+
+			if Infinity_GetCurrentScreenName() == 'CHARGEN' then
+				createCharScreen:OnMainBackButtonClick()
+			end
+		"
+	}
+	button
+	{
+		area 866 732 230 40
+		bam GUIBUTMT
+		text lua "t('VENTURE_FORTH')"
+		text style "button"
+		enabled "fromSinglePlayer"
+		action
+		"
+			Infinity_PopMenu()
+			createCharScreen:AcceptCharacter(currentDifficulty)
+		"
+	}
+	button
+	{
+		area 586 732 230 40
+		bam GUIBUTMT
+		text 11973
+		text style "button"
+		enabled "fromMultiPlayer"
+		action
+		"
+			Infinity_PopMenu()
+			Infinity_PopMenu()
+			Infinity_PopMenu()
+			Infinity_PopMenu()
+
+			if connectionLocalNetworkGame == 1 then
+				connectionIsHosting = true
+				chooseNetworkProtocol(2)
+			end
+
+			fromMultiPlayer = false
+			mulitplayerPreexistingDifficulty = currentDifficulty
+			connectionScreen:OnNewGameButtonClick()
+		"
+	}
+}

@@ -1,0 +1,67 @@
+menu
+{
+	name 'CHARGEN_NAME'
+	align center center
+	ignoreesc
+	onopen
+	"
+		if chargen.name then
+			charNameEdit = chargen.name
+		else
+			charNameEdit = ''
+		end
+		Infinity_FocusTextEdit('charNameEditArea')
+	"
+	label
+	{
+		area 0 0 1444 818
+		mosaic 'RGCNAME'
+
+	}
+	label
+	{
+		area 394 344 656 166
+		rectangle 3
+
+	}
+	label
+	{
+		area 422 374 602 38
+		text "`CHARGEN_ENTER_NAME_LABEL`"
+		text style "label"
+	}
+	label
+	{
+		area 422 428 598 36
+		fill            112 111 111 64
+	}
+	edit
+	{
+		name		"charNameEditArea"
+		area		422 432 586 52
+		var			charNameEdit
+		text style	"edit"
+		maxlines	1
+		maxchars	20
+	}
+	button
+	{
+		on escape
+		area 410 720 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu(); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		area 812 720 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action "Infinity_PopMenu(); createCharScreen:OnDoneButtonClick()"
+	}
+
+}

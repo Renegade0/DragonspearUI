@@ -1,0 +1,504 @@
+menu
+{
+	name	'OPTIONS_SOUND'
+	align center center
+	modal
+	onOpen
+	"
+		panelID = 7
+		helpString = 18042
+		selectedsoundOpt = 0
+		selectedSL = 0
+
+		ambientSLDR = Infinity_GetOption(1, panelID)
+		sfxSLDR = Infinity_GetOption(2, panelID)
+		voiceSLDR = Infinity_GetOption(3, panelID)
+		musicSLDR = Infinity_GetOption(4, panelID)
+		movieSLDR = Infinity_GetOption(22, panelID)
+
+		for index, var in pairs(command) do
+				var[5] = Infinity_GetOption(var[3], panelID)
+				if var[5] == 0 then
+					var[4] = 0
+				else
+					var[4] = 2
+					commandSel = index
+				end
+			end
+		for index, var in pairs(selectOpt) do
+			var[5] = Infinity_GetOption(var[3], panelID)
+			if var[5] == 0 then
+				var[4] = 0
+			else
+				var[4] = 2
+				selectSel = index
+			end
+		end
+		for index, var in pairs(soundsToggles) do
+			var[5] = Infinity_GetOption(var[3], panelID)
+			if var[5] == 0 then
+				var[4] = 0
+			else
+				var[4] = 2
+				selectSel = index
+			end
+		end
+	"
+
+	button
+	{
+		area	0 0 1444 818
+		mosaic	RGOPTIO
+		action
+		"
+			helpString = 18042
+		"
+	}
+	label
+	{
+		area		250 32 946 44
+		text		"SOUND_TITLE"
+		text style	title
+	}
+
+	text
+	{
+		area		146 524 400 44
+		text		"CHARACTER_SOUNDS_LABEL"
+		text style	"button"
+		text align 	right center
+		text highlight lua "getSelected(selectedSL, 3)"
+	}
+
+	list
+	{
+
+		column
+		{
+			width 85
+			label
+			{
+				area 0 0 -1 -1
+				text lua "t( soundsToggles[rowNumber][1])"
+				text style "normal"
+				text align right center
+			}
+		}
+		column
+		{
+			width 15
+			label
+			{
+				area		20 8 32 32
+				bam			ROUNDBUT
+				scaleToClip
+				frame		lua "soundsToggles[rowNumber][4]"
+			}
+		}
+
+		area 146 568 400 140
+
+		rowheight	46
+		table		"soundsToggles"
+		var		selectedsoundOpt
+		scrollbar	'GUISCRC'
+
+		action
+		"
+			panelID = 7
+			helpString = soundsToggles[selectedsoundOpt][2]
+			selectedSL = 0
+			if(cellNumber == 2) then
+				Infinity_PlaySound('GAM_09')
+				soundsToggles[selectedsoundOpt][4] = toggleFrame(soundsToggles[selectedsoundOpt][4])
+
+				if soundsToggles[selectedsoundOpt][4] == 0 then
+					soundsToggles[selectedsoundOpt][5] = 0
+				else
+					soundsToggles[selectedsoundOpt][5] = 1
+				end
+
+			end
+		"
+	}
+
+	text
+	{
+		area		146 138 400 44
+		text		"COMMAND_SOUNDS_BUTTON"
+		text style	"button"
+		text align 	right center
+		text highlight lua "getSelected(selectedSL, 1)"
+		action
+		"
+			helpString = 18016
+			selectedsoundOpt = 0
+			selectedSL = 1
+		"
+	}
+
+
+	list
+	{
+
+		column
+		{
+			width 85
+			label
+			{
+				area 10 0 -1 -1
+				text lua "t( command[rowNumber][1])"
+				text style	"normal"
+				text align right center
+			}
+		}
+		column
+		{
+			width 15
+			label
+			{
+				area		20 8 32 32
+				bam			ROUNDBUT
+				scaleToClip
+				frame		lua "command[rowNumber][4]"
+			}
+		}
+
+		area 146 182 400 140
+
+		rowheight	46
+		table		"command"
+		var		commandSel
+		scrollbar	'GUISCRC'
+		hidehighlight
+
+		action
+		"
+			panelID = 7
+			helpString = 18016
+			selectedSL = 1
+			selectedsoundOpt = 0
+			opt = commandSel
+			command[1][4] = 0
+			command[2][4] = 0
+			command[3][4] = 0
+
+			Infinity_PlaySound('GAM_09')
+			command[opt][4] = 2
+		"
+	}
+
+	text
+	{
+		area		146 331 400 44
+		text		"SELECTION_BUTTON"
+		text style	"button"
+		text align 	right center
+		text highlight lua "getSelected(selectedSL, 2)"
+		action
+		"
+			helpString = 11352
+			selectedsoundOpt = 0
+			selectedSL = 2
+		"
+	}
+
+	list
+	{
+
+		column
+		{
+			width 85
+			label
+			{
+				area 10 0 -1 -1
+				text lua "t( selectOpt[rowNumber][1])"
+				text style	"normal"
+				text align right center
+			}
+		}
+		column
+		{
+			width 15
+			label
+			{
+				area		20 8 32 32
+				bam			ROUNDBUT
+				scaleToClip
+				frame		lua "selectOpt[rowNumber][4]"
+			}
+		}
+
+		area 146 375 400 140
+
+		rowheight	46
+		table		"selectOpt"
+		var		selectSel
+		scrollbar	'GUISCRC'
+		hidehighlight
+		action
+		"
+			panelID = 7
+			helpString = 11352
+			selectedSL = 2
+			opt = selectSel
+			selectOpt[1][4] = 0
+			selectOpt[2][4] = 0
+			selectOpt[3][4] = 0
+			selectedsoundOpt = 0
+
+			Infinity_PlaySound('GAM_09')
+			selectOpt[opt][4] = 2
+		"
+	}
+
+	label
+	{
+		area 1010 134 316 578
+		Rectangle 3
+	}
+
+	text
+	{
+		area		1036 162 266 530
+		text		lua "Infinity_FetchString(helpString)"
+		text style	normal
+		scrollbar	'GUISCRC'
+	}
+
+	text
+	{
+		area		606 138 394 44
+		text		"VOLUME_CONTROLS_LABEL"
+		text style	"button"
+		text align 	right center
+	}
+
+	text
+	{
+		area		610 202 173 40
+		text		"AMBIENT_VOLUME_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 4)"
+		action
+		"
+			helpString = 18008
+			selectedsoundOpt = 0
+			selectedSL = 4
+		"
+	}
+	slider
+	{
+		area 796 206 200 36
+		position "ambientSLDR"
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		bam	 'SLDRSTAR'
+		sequence 0
+		frame	 1
+		settings	40
+		pad 5 0 4 0
+		action
+		"
+			helpString = 18008
+			selectedsoundOpt = 0
+			selectedSL = 4
+		"
+	}
+
+	text
+	{
+		area		598 272 185 40
+		text		"SFX_VOLUME_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 5)"
+		action
+		"
+			helpString = 18009
+			selectedsoundOpt = 0
+			selectedSL = 5
+		"
+
+	}
+	slider
+	{
+		area 796 276 200 36
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		position "sfxSLDR"
+		bam	 'SLDRSTAR'
+		sequence 0
+		frame	 1
+		settings	40
+		pad 5 0 4 0
+		action
+		"
+			helpString = 18009
+			selectedsoundOpt = 0
+			selectedSL = 5
+		"
+	}
+
+	text
+	{
+		area		610 340 173 40
+		text		"VOICE_VOLUME_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 6)"
+		action
+		"
+			helpString = 18010
+			selectedsoundOpt = 0
+			selectedSL = 6
+		"
+	}
+	slider
+	{
+		area 796 344 200 36
+		position "voiceSLDR"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	40
+		pad 5 0 4 0
+		action
+		"
+			helpString = 18010
+			selectedsoundOpt = 0
+			selectedSL = 6
+		"
+	}
+
+	text
+	{
+		area		610 410 173 40
+		text		"MUSIC_VOLUME_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 7)"
+		action
+		"
+			helpString = 18011
+			selectedsoundOpt = 0
+			selectedSL = 7
+		"
+
+	}
+	slider
+	{
+		area 796 414 200 36
+		position "musicSLDR"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	40
+		pad 5 0 4 0
+		action
+		"
+			helpString = 18011
+			selectedsoundOpt = 0
+			selectedSL = 7
+		"
+	}
+
+	text
+	{
+		area		610 480 173 44
+		text		"MOVIE_VOLUME_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 8)"
+		action
+		"
+			helpString = 18012
+			selectedsoundOpt = 0
+			selectedSL = 8
+		"
+	}
+	slider
+	{
+		area 796 484 200 40
+		position "movieSLDR"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	40
+		pad 5 0 4 0
+		action
+		"
+			helpString = 18012
+			selectedsoundOpt = 0
+			selectedSL = 8
+		"
+	}
+
+	button
+	{
+		on escape
+		area		298 734 200 40
+		bam			GUIBUTNT
+		sequence	2
+		text 		"CANCEL_BUTTON"
+		text style	"button"
+		action
+		"
+			selectedSL = 0
+			panelID = 8
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		area		972 734 200 40
+		bam			GUIBUTNT
+		sequence	2
+		text 		"DONE_BUTTON"
+		text style	"button"
+		action
+		"
+			panelID = 7
+
+			for index, var in pairs(command) do
+				Infinity_Log('Com var[4] #' .. index .. ': ' .. var[4])
+				if var[4] == 2 then
+					Infinity_ChangeOption( var[3], 1, panelID)
+				end
+			end
+			for index, var in pairs(selectOpt) do
+				Infinity_Log('Sel var[4] #' .. index .. ': ' .. var[4])
+				if var[4] == 2 then
+					Infinity_ChangeOption( var[3], 1, panelID)
+				end
+			end
+			Infinity_ChangeOption( 1, ambientSLDR, panelID)
+			Infinity_ChangeOption( 2, sfxSLDR, panelID )
+			Infinity_ChangeOption( 3, voiceSLDR, panelID )
+			Infinity_ChangeOption( 4, musicSLDR, panelID)
+			Infinity_ChangeOption( 22, movieSLDR, panelID)
+
+			selectedOpt = 0
+			selectedSL = 0
+
+			for index, var in pairs(soundsToggles) do
+				Infinity_ChangeOption( var[3], var[5], panelID)
+			end
+
+			panelID = 8
+			Infinity_PopMenu()
+		"
+	}
+}

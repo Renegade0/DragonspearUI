@@ -1,0 +1,30 @@
+menu
+{
+	name 'RG_PP_POPUP'
+	align center center
+	modal
+	label
+	{
+		area 0 0 864 710
+		mosaic GUIPOPF
+	}
+	text
+	{
+		area 40 98 788 496
+		text lua "t('RG_PP_TOOLTIP1') .. '\n\n' .. t('RG_PP_TOOLTIP2') .. '\n\n' .. t('RG_PP_TOOLTIP3') .. '\n\n' .. t('RG_PP_TOOLTIP4')"
+		text style	"label"
+		text align left top
+		scrollbar 'GUISCRC'
+	}
+	button
+	{
+		area 317 634 230 44
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style	"button"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}

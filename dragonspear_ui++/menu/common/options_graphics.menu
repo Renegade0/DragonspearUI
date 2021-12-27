@@ -1,0 +1,220 @@
+menu
+{
+	name	'OPTIONS_GRAPHICS'
+	modal
+	align center center
+	onOpen
+	"
+		if e:HasDirectX() then
+			appendDirectXOption()
+		end
+		panelID = 6
+		helpString = 18042
+		selectedGraphicOpt = 0
+		selectedSL = 0
+		fontSizeSLDR = Infinity_GetOption(22, panelID)
+		fontSizeCancel = Infinity_GetOption(22, panelID)
+
+		for index, var in pairs(graphicsToggles) do
+			var[5] = Infinity_GetOption(var[3], panelID)
+			var[6] = 0
+			if var[5] == 0 then
+				var[4] = 0
+			else
+				var[4] = 2
+			end
+		end
+
+		if e:IsTouchUI() then
+			removeOptionFromList(graphicsToggles, 9)
+			removeOptionFromList(graphicsToggles, 13)
+		end
+	"
+
+
+	button
+	{
+		area	0 0 1444 818
+		mosaic	RGOPTIO
+		action
+		"
+			helpString = 18042
+			selectedSL = 0
+		"
+	}
+
+	label
+	{
+		area		252 32 944 44
+		text		"GRAPHICS_TITLE"
+		text style	title
+	}
+
+	label
+	{
+		area		618 222 380 478
+		text		lua "formatGraphicsInfoString()"
+		text style	normal
+		text align	center center
+	}
+
+	text
+	{
+		area		178 138 366 44
+		text		"DISPLAY_OPTIONS_LABEL"
+		text style	"button"
+		text align 	right center
+		text highlight lua "getSelected(selectedSL, 1)"
+		action
+		"
+			selectedGraphicOpt = 0
+			selectedSL = 1
+		"
+	}
+
+	list
+	{
+
+		column
+		{
+			width 90
+			label
+			{
+				area 0 0 -1 -1
+				text lua "t( graphicsToggles[rowNumber][1])"
+				text style "normal"
+				text align right center
+			}
+		}
+		column
+		{
+			width 10
+			label
+			{
+				area		2 5 32 32
+				bam			ROUNDBUT
+				scaleToClip
+				frame		lua "graphicsToggles[rowNumber][4]"
+			}
+		}
+
+		area 154 186 390 526
+
+		rowheight	40
+		table		"graphicsToggles"
+		var		selectedGraphicOpt
+		scrollbar	'GUISCRC'
+
+		action
+		"
+			panelID = 6
+			helpString = graphicsToggles[selectedGraphicOpt][2]
+			selectedSL = 0
+			if(cellNumber == 2) then
+				Infinity_PlaySound('GAM_09')
+				graphicsToggles[selectedGraphicOpt][4] = toggleFrame(graphicsToggles[selectedGraphicOpt][4])
+
+				if graphicsToggles[selectedGraphicOpt][4] == 0 then
+					graphicsToggles[selectedGraphicOpt][5] = 0
+				else
+					graphicsToggles[selectedGraphicOpt][5] = 1
+				end
+				graphicsToggles[selectedGraphicOpt][6] = 1
+				--Infinity_ChangeOption(graphicsToggles[selectedGraphicOpt][3], graphicsToggles[selectedGraphicOpt][5], panelID )
+			end
+		"
+	}
+
+	label
+	{
+		area 1010 134 316 578
+		Rectangle 3
+	}
+
+	text
+	{
+		area		1038 160 264 532
+		text		lua "getStringFromAmbiguousSource(helpString)"
+		text style	normal
+		scrollbar	'GUISCRC'
+	}
+
+	text
+	{
+		area		596 150 196 36
+		text		"FONT_SIZE_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+		text useFontZoom 1
+		text highlight lua "getSelected(selectedSL, 2)"
+		action
+		"
+			helpString = 17204
+			selectedGraphicOpt = 0
+			selectedSL = 2
+		"
+	}
+
+	slider
+	{
+		area 798 150 200 36
+		position "fontSizeSLDR"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	7
+		pad 5 0 4 0
+		action
+		"
+			Infinity_ChangeOption( 22, fontSizeSLDR, 6)
+			helpString = 17204
+			selectedGraphicOpt = 0
+			selectedSL = 1
+		"
+	}
+
+
+	button
+	{
+		on escape
+		area		288 734 230 40
+		bam			GUIBUTMT
+		sequence	2
+		text 		"CANCEL_BUTTON"
+		text style	"button"
+		action
+		"
+			panelID = 6
+			Infinity_ChangeOption( 22, fontSizeCancel, panelID)
+
+			selectedSL = 0
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		area		950 734 230 40
+		bam			GUIBUTMT
+		sequence	2
+		text 		"DONE_BUTTON" --Done
+		text style	"button"
+		action
+		"
+			panelID = 6
+			Infinity_ChangeOption( 22, fontSizeSLDR, panelID)
+
+			for index, var in pairs(graphicsToggles) do
+
+				if ( var[6] == 1 ) then
+					Infinity_ChangeOption( var[3], var[5], panelID)
+				end
+			end
+
+			selectedSL = 0
+			Infinity_PopMenu()
+		"
+	}
+}

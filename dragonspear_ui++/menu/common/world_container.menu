@@ -1,0 +1,237 @@
+menu
+{
+	name "WORLD_CONTAINER"
+	align center bottom
+	offset -24 0
+	ignoreesc
+	onClose
+	"
+		if groundItemsButtonToggle == 1 then
+			Infinity_PushMenu('WORLD_QUICKLOOT')
+		end
+	"
+	label
+	{
+		area 0 0 653 130
+		mosaic gmpwmsg0
+	}
+	label
+	{
+		area 16 10 83 100
+		bam lua "loot.containerIcon"
+	}
+	button
+	{
+		area 104 2 209 116
+		actionScroll "scrollContainerItems()"
+	}
+	button
+	{
+		area 108 8 52 52
+		bam STONSL10
+		tooltip lua	"getContainerItemProperty(0,'name')"
+		tint lua	"getContainerItemProperty(0,'tint')"
+		icon lua	"getContainerItemProperty(0,'icon')"
+		count lua	"getContainerItemProperty(0,'count')"
+		usages lua	"getContainerItemProperty(0,'usages')"
+		action		"worldScreen:OnContainerButtonClick(0)"
+		actionAlt	"showContainerItemDescription(0)"
+		actionScroll "scrollContainerItems()"
+	}
+	button
+	{
+		area 162 8 52 52
+		bam STONSL10
+		tooltip lua	"getContainerItemProperty(1,'name')"
+		tint lua	"getContainerItemProperty(1,'tint')"
+		icon lua	"getContainerItemProperty(1,'icon')"
+		count lua	"getContainerItemProperty(1,'count')"
+		usages lua	"getContainerItemProperty(1,'usages')"
+		action		"worldScreen:OnContainerButtonClick(1)"
+		actionAlt	"showContainerItemDescription(1)"
+		actionScroll "scrollContainerItems()"
+	}
+	button
+	{
+		area 216 8 52 52
+		bam STONSL10
+		tooltip lua	"getContainerItemProperty(2,'name')"
+		tint lua	"getContainerItemProperty(2,'tint')"
+		icon lua	"getContainerItemProperty(2,'icon')"
+		count lua	"getContainerItemProperty(2,'count')"
+		usages lua	"getContainerItemProperty(2,'usages')"
+		action		"worldScreen:OnContainerButtonClick(2)"
+		actionAlt	"showContainerItemDescription(2)"
+		actionScroll "scrollContainerItems()"
+	}
+	button
+	{
+		area 108 62 52 52
+		bam STONSL10
+		tooltip lua	"getContainerItemProperty(3,'name')"
+		tint lua	"getContainerItemProperty(3,'tint')"
+		icon lua	"getContainerItemProperty(3,'icon')"
+		count lua	"getContainerItemProperty(3,'count')"
+		usages lua	"getContainerItemProperty(3,'usages')"
+		action		"worldScreen:OnContainerButtonClick(3)"
+		actionAlt	"showContainerItemDescription(3)"
+		actionScroll "scrollContainerItems()"
+	}
+	button
+	{
+		area 162 62 52 52
+		bam STONSL10
+		tooltip lua	"getContainerItemProperty(4,'name')"
+		tint lua	"getContainerItemProperty(4,'tint')"
+		icon lua	"getContainerItemProperty(4,'icon')"
+		count lua	"getContainerItemProperty(4,'count')"
+		usages lua	"getContainerItemProperty(4,'usages')"
+		action		"worldScreen:OnContainerButtonClick(4)"
+		actionAlt	"showContainerItemDescription(4)"
+		actionScroll "scrollContainerItems()"
+	}
+	button
+	{
+		area 216 62 52 52
+		bam STONSL10
+		tooltip lua	"getContainerItemProperty(5,'name')"
+		tint lua	"getContainerItemProperty(5,'tint')"
+		icon lua	"getContainerItemProperty(5,'icon')"
+		count lua	"getContainerItemProperty(5,'count')"
+		usages lua	"getContainerItemProperty(5,'usages')"
+		action		"worldScreen:OnContainerButtonClick(5)"
+		actionAlt	"showContainerItemDescription(5)"
+		actionScroll "scrollContainerItems()"
+	}
+	button
+	{
+		area 268 8 44 44
+		enabled "worldScreen:ContainerScrollEnabled(-1)"
+		bam guisv10
+		sequence 0
+		action
+		"
+			worldScreen:OnContainerScroll(-1)
+		"
+		actionScroll "scrollContainerItems()"
+	}
+	button
+	{
+		area 268 70 44 44
+		enabled "worldScreen:ContainerScrollEnabled(1)"
+		bam guisv10
+		sequence 1
+		action
+		"
+			worldScreen:OnContainerScroll(1)
+		"
+		actionScroll "scrollContainerItems()"
+	}
+	label
+	{
+		area 313 12 68 100
+		encumbrance
+	}
+	button
+	{
+		area 406 2 162 116
+		actionScroll "scrollGroupItems()"
+	}
+	button
+	{
+		area 411 8 52 52
+		bam STONSL10
+		tooltip lua	"getGroupItemProperty(0,'name')"
+		tint lua	"getGroupItemProperty(0,'tint')"
+		icon lua	"getGroupItemProperty(0,'icon')"
+		count lua	"getGroupItemProperty(0,'count')"
+		usages lua	"getGroupItemProperty(0,'usages')"
+		action		"worldScreen:OnContainerButtonClick(10)"
+		actionAlt	"showGroupItemDescription(0)"
+		actionScroll "scrollGroupItems()"
+	}
+	button
+	{
+		area 465 8 52 52
+		bam STONSL10
+		tooltip lua	"getGroupItemProperty(1,'name')"
+		tint lua	"getGroupItemProperty(1,'tint')"
+		icon lua	"getGroupItemProperty(1,'icon')"
+		count lua	"getGroupItemProperty(1,'count')"
+		usages lua	"getGroupItemProperty(1,'usages')"
+		action		"worldScreen:OnContainerButtonClick(11)"
+		actionAlt	"showGroupItemDescription(1)"
+		actionScroll "scrollGroupItems()"
+	}
+	button
+	{
+		area 411 62 52 52
+		bam STONSL10
+		tooltip lua	"getGroupItemProperty(2,'name')"
+		tint lua	"getGroupItemProperty(2,'tint')"
+		icon lua	"getGroupItemProperty(2,'icon')"
+		count lua	"getGroupItemProperty(2,'count')"
+		usages lua	"getGroupItemProperty(2,'usages')"
+		action		"worldScreen:OnContainerButtonClick(12)"
+		actionAlt	"showGroupItemDescription(2)"
+		actionScroll "scrollGroupItems()"
+	}
+	button
+	{
+		area 465 62 52 52
+		bam STONSL10
+		tooltip lua	"getGroupItemProperty(3,'name')"
+		tint lua	"getGroupItemProperty(3,'tint')"
+		icon lua	"getGroupItemProperty(3,'icon')"
+		count lua	"getGroupItemProperty(3,'count')"
+		usages lua	"getGroupItemProperty(3,'usages')"
+		action		"worldScreen:OnContainerButtonClick(13)"
+		actionAlt	"showGroupItemDescription(3)"
+		actionScroll "scrollGroupItems()"
+	}
+	button
+	{
+		area 517 8 44 44
+		enabled "worldScreen:GroupScrollEnabled(-1)"
+		bam guisv10
+		sequence 0
+		action
+		"
+			worldScreen:OnGroupScroll(-1)
+		"
+		actionScroll "scrollGroupItems()"
+	}
+	button
+	{
+		area 517 70 44 44
+		enabled "worldScreen:GroupScrollEnabled(1)"
+		bam guisv10
+		sequence 1
+		action
+		"
+			worldScreen:OnGroupScroll(1)
+		"
+		actionScroll "scrollGroupItems()" -- TODO: review, not in SOD 2.5, but in BG2 2.5
+	}
+	label
+	{
+		area 568 20 78 50
+		bam GUIGOLD
+	}
+	label
+	{
+		area 575 76 71 28
+		text lua "game:GetPartyGold()"
+		text style "gold"
+	}
+	button
+	{
+		area 40 82 32 32
+		bam "ROUNDBUT"
+		scaleToClip
+		action
+		"
+			worldScreen:TakeAllFromContainer()
+		"
+	}
+}

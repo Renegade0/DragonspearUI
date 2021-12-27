@@ -1,0 +1,107 @@
+menu
+{
+	name 'ITEM_ABILITIES'
+	align center center
+	onOpen "initAbilities()"
+
+	label
+	{
+		area	0 0 539 668
+		mosaic	GUICGGEN
+	}
+	label
+	{
+		area 0 16 539 44
+		text "ITEM_ABILITIES_TITLE"
+		text style	"title"
+	}
+	text
+	{
+		area 22 74 496 52
+		text highlight lua "selectedAbility == 1"
+		enabled "characters[id].equipment[selectedSlot].abilities[1] ~= nil"
+		text lua "characters[id].equipment[selectedSlot].abilities[1].text"
+		text style	"label"
+		action "selectedAbility = 1"
+	}
+	button
+	{
+		area 22 74 52 52
+		bam "STONSL10"
+		enabled "characters[id].equipment[selectedSlot].abilities[1] ~= nil"
+		icon lua "characters[id].equipment[selectedSlot].abilities[1].icon"
+		action "selectedAbility = 1"
+	}
+
+
+	text
+	{
+		area 22 138 496 52
+		text highlight lua "selectedAbility == 2"
+		enabled "characters[id].equipment[selectedSlot].abilities[2] ~= nil"
+		text lua "characters[id].equipment[selectedSlot].abilities[2].text"
+		text style	"label"
+		action "selectedAbility = 2"
+	}
+	button
+	{
+		area 22 138 52 52
+		bam "STONSL10"
+		enabled "characters[id].equipment[selectedSlot].abilities[2] ~= nil"
+		icon lua "characters[id].equipment[selectedSlot].abilities[2].icon"
+		action "selectedAbility = 2"
+	}
+
+	text
+	{
+		area 22 202 496 52
+		text highlight lua "selectedAbility == 3"
+		enabled "characters[id].equipment[selectedSlot].abilities[3] ~= nil"
+		text lua "characters[id].equipment[selectedSlot].abilities[3].text"
+		text style	"label"
+		action "selectedAbility = 3"
+	}
+	button
+	{
+		area 22 202 52 52
+		bam "STONSL10"
+		enabled "characters[id].equipment[selectedSlot].abilities[3] ~= nil"
+		icon lua "characters[id].equipment[selectedSlot].abilities[3].icon"
+		action "selectedAbility = 3"
+	}
+
+	label
+	{
+		area 32 397 470 158
+		text 11322
+		text style "label"
+	}
+
+	button
+	{
+		area 278 607 232 40
+		bam			GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		action
+		"
+			local itemNum = characters[id].equipment[selectedSlot].abilities[selectedAbility].itemNum
+			Infinity_SelectItemAbility(selectedAbility - 1, itemNum, characters[id].equipment[selectedSlot].id)
+			Infinity_PopMenu()
+		"
+	}
+
+	button
+	{
+		on escape
+		area 50 607 232 40
+		bam			GUIBUTMT
+		text "CANCEL_BUTTON"
+		text style "button"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+
+}

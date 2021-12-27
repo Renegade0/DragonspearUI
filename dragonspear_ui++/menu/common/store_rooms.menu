@@ -1,0 +1,173 @@
+menu
+{
+	name 'STORE_ROOMS'
+	align center center
+	onOpen
+	"
+		storeScreen:SetRoomType(0)
+		storeScreen:UpdateRentRoomPanel()
+	"
+	ignoreEsc
+
+	label
+	{
+		area 0 0 864 756
+		mosaic GUISTROB
+	}
+	label
+	{
+		area 0 32 864 44
+		text "ROOMS_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 0 76 864 36
+		text lua "Infinity_FetchString(storeScreen:GetStoreName())"
+		text style "label"
+	}
+--	label
+--	{
+--		area 724 67 110 48
+--		text lua "game:GetPartyGold()"
+--		text style "gold"
+--	}
+
+	button
+	{
+		area 26 176 245 161
+		bam "INNROOMS"
+		sequence 0
+		clickable lua "storeScreen:IsRoomTypeClickable(1)"
+		action
+		"
+			storeScreen:SetRoomType(1)
+			selectedRoom = Infinity_FindUIItemByName('BUTTON_room_peasant')
+		"
+	}
+	button
+	{
+		name "BUTTON_room_peasant"
+		area 34 346 230 40
+		bam GUIBUTMT
+		text "PEASANT_BUTTON"
+		text style "button"
+		glow lua "storeScreen:GetRoomType() == 1"
+		clickable lua "storeScreen:IsRoomTypeClickable(1)"
+		action
+		"
+			storeScreen:SetRoomType(1)
+		"
+	}
+
+	button
+	{
+		area 338 176 245 161
+		bam "INNROOMS"
+		sequence 1
+		clickable lua "storeScreen:IsRoomTypeClickable(2)"
+		action
+		"
+			storeScreen:SetRoomType(2)
+			selectedRoom = Infinity_FindUIItemByName('BUTTON_room_merchant')
+		"
+	}
+	button
+	{
+		name "BUTTON_room_merchant"
+		area 345 346 230 40
+		bam GUIBUTMT
+		text "MERCHANT_BUTTON"
+		text style "button"
+		glow lua "storeScreen:GetRoomType() == 2"
+		clickable lua "storeScreen:IsRoomTypeClickable(2)"
+		action
+		"
+			storeScreen:SetRoomType(2)
+		"
+	}
+
+	button
+	{
+		area 26 422 245 161
+		bam "INNROOMS"
+		sequence 2
+		clickable lua "storeScreen:IsRoomTypeClickable(3)"
+		frame 0
+		action
+		"
+			storeScreen:SetRoomType(3)
+			selectedRoom = Infinity_FindUIItemByName('BUTTON_room_noble')
+		"
+	}
+	button
+	{
+		name "BUTTON_room_noble"
+		area 34 592 230 40
+		bam GUIBUTMT
+		text "NOBLE_BUTTON"
+		text style "button"
+		glow lua "storeScreen:GetRoomType() == 3"
+		clickable lua "storeScreen:IsRoomTypeClickable(3)"
+		action
+		"
+			storeScreen:SetRoomType(3)
+		"
+	}
+
+	button
+	{
+		area 338 422 245 161
+		bam "INNROOMS"
+		sequence 3
+		clickable lua "storeScreen:IsRoomTypeClickable(4)"
+		action
+		"
+			storeScreen:SetRoomType(4)
+			selectedRoom = Infinity_FindUIItemByName('BUTTON_room_royal')
+		"
+	}
+	button
+	{
+		name "BUTTON_room_royal"
+		area 345 592 230 40
+		bam GUIBUTMT
+		text "ROYAL_BUTTON"
+		text style "button"
+		glow lua "storeScreen:GetRoomType() == 4"
+		clickable lua "storeScreen:IsRoomTypeClickable(4)"
+		action
+		"
+			storeScreen:SetRoomType(4)
+		"
+	}
+	label
+	{
+		area 634 543 70 38
+		text "COST_LABEL"
+		text style "label"
+	}
+	text
+	{
+		area 634 176 202 330
+		text lua "store.roomText"
+		text style "normal"
+	}
+	label
+	{
+		area 710 543 126 40
+		text lua "storeScreen:GetRoomCost()"
+		text style "gold"
+	}
+	button
+	{
+		area 332 676 200 40
+		bam GUIBUTNT
+		text "RENT_BUTTON"
+		text style "button"
+		action
+		"
+			storeScreen:OnRentRoomButtonClick()
+		"
+	}
+}

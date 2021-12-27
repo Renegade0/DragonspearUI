@@ -1,0 +1,340 @@
+menu
+{
+	name 'INVENTORY'
+	align center center
+	ignoreEsc
+
+	onOpen
+	"
+		Infinity_ActivateInventory()
+		pushSidebars()
+		doubleClickEventScheduled = nil
+		Infinity_PopMenu('WORLD_QUICKLOOT')
+		inventory = Inventory:create()
+	"
+	onClose
+	"
+		inventory:deinit()
+		inventory = nil
+		Infinity_PopMenu('CHARACTER_COLOR')
+		Infinity_PopMenu('ITEM_DESCRIPTION')
+		Infinity_PopMenu('ITEM_IDENTIFY')
+		popSidebars()
+	"
+
+	-- This is needed to keep track of the selected character after pressing keys 1-6.
+	-- Updates on every frame, so every ~33 ms for 30 fps.
+	text { enabled "inventory:update()" }
+
+	label
+	{
+		area 0 0 1364 756
+		mosaic INVENTOR
+	}
+
+	-- Since we can't use actionExit for slots areas, this is a hack to set hovered to nil.
+	-- This is needed to hide the area cover, we only want it when the mouse cursor is on
+	-- a slots area.
+	-- As a side effect it fixes an issue with portraits.
+	-- With the "portrait X" property dragged items can't move over the element,
+	-- staying just outside until the mouse leaves the area.
+	text {
+		area 0 0 788 756
+		actionEnter "inventory:onSlotsAreaEnter(nil)"
+		enabled "not inventory.paused"
+	}
+
+	text
+	{
+		area		82 590 92 109
+		text		""--"ARMOR_CLASS_LABEL"
+		text style	"label"
+		tooltip lua "characters[id].AC.details"
+		text color 'D'
+		text align left center
+	}
+	text
+	{
+		area		186 590 99 109
+		text		""--"HIT_POINTS_LABEL"
+		text style	"label"
+		tooltip lua "characters[id].HP.details"
+		text color 'D'
+		text align left center
+	}
+	text
+	{
+		area		298 594 86 105
+		text		""--"THAC0_LABEL"
+		text style	"label"
+		tooltip lua "characters[id].THAC0.details"
+		text color 'D'
+		text align left center
+	}
+	text
+	{
+		area		398 594 96 105
+		text		""--"DAMAGE_LABEL"
+		text style	"label"
+		tooltip lua "characters[id].damage.details"
+		text color 'D'
+		text align left center
+	}
+
+	label
+	{
+		area		79 640 92 51
+		text lua	"inventory.stats.AC"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+	label
+	{
+		area		182 640 101 51
+		text lua	"inventory.stats.HP"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+
+	label
+	{
+		area		296 640 86 53
+		text lua	"inventory.stats.THAC0"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+	label
+	{
+		area		398 640 96 53
+		text lua	"inventory.stats.damage"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+	label
+	{
+--		enabled		"tempStats[id] == nil"
+		area		509 640 81 53
+		text lua	"characters[id].proficiencies.numAttacks.current"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+	button
+	{
+		area 356 214 128 160
+		paperdoll 1
+		actiondrag "Infinity_SwapWithAppearance()"
+	}
+
+#for i = 0, 5 do
+	label
+	{
+		area 712 `85 + i * 106` 73 98
+		enabled "inventory.count > `i`"
+		bam "contback"
+	}
+#end
+
+	button
+	{
+		name "encumberanceButton"
+		area 710 509 73 98
+		encumbrance
+	}
+
+	label
+	{
+		area 108 88 240 38
+		text lua "characters[id].name"
+		text style "button"
+	}
+	label
+	{
+		area 214 32 936 44
+		text "INVENTORY_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 85 234 200 37
+		text "QUICK_WEAPONS_LABEL"
+		text style "label"
+	}
+	label
+	{
+		area 86 341 162 37
+		text "QUICK_ITEMS_LABEL"
+		text style "label"
+	}
+	label
+	{
+		area 108 132 150 35
+		text "QUIVER_LABEL"
+		text style "label"
+	}
+	label
+	{
+		area 1210 116 63 32
+		text "GROUND_LABEL"
+		text style "label"
+		align center center
+	}
+	label
+	{
+		area 1210 148 63 30
+		text lua "Infinity_GetCurrentGroundPage()+1 .. '/' .. Infinity_GetMaxGroundPage()+1"
+		text style "label"
+		align center center
+	}
+	label
+	{
+		area 82 532 80 38
+		text lua "characters[id].gold"
+		text style "label"
+		text color '$'
+	}
+	label
+	{
+		area 348 88 266 38
+		text lua "characters[id].class"
+		text style "button"
+	}
+	text
+	{
+		area 186 482 400 82
+		text lua "TEXT_inventoryError"
+		scrollbar 'GUISCRC'
+		text style normal
+	}
+
+	slot {name "slot_inv_1"		area 81 280 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.weapon0"		}
+	slot {name "slot_inv_2"		area 134 280 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.weapon1"		}
+	slot {name "slot_inv_3"		area 187 280 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.weapon2"		}
+	slot {name "slot_inv_4"		area 240 280 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.weapon3"		}
+
+	slot {name "slot_inv_5"		area 82 386 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.personal0"	}
+	slot {name "slot_inv_6"		area 134 386 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.personal1"	}
+	slot {name "slot_inv_7"		area 186 386 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.personal2"	}
+
+	slot {name "slot_inv_11"		area 274 155 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.armor"		}
+	slot {name "slot_inv_12"		area 337 134 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.gauntlets"	}
+	slot {name "slot_inv_13"		area 393 134 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.helmet"		}
+	slot {name "slot_inv_14"		area 449 134 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.amulet"		}
+	slot {name "slot_inv_15"		area 104 175 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.quiver0"		}
+	slot {name "slot_inv_16"		area 156 175 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.quiver1"		}
+	slot {name "slot_inv_17"		area 208 175 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.quiver2"		}
+	slot {name "slot_inv_21"		area 449 400 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.belt"		}
+	slot {name "slot_inv_22"		area 274 341 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ringleft"	}
+	slot {name "slot_inv_23"		area 512 340 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ringright"	}
+	slot {name "slot_inv_24"		area 337 400 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.cloak"		}
+	slot {name "slot_inv_25"		area 393 400 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.boots"		}
+	slot {name "slot_inv_26"		area 512 282 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.shield"		}
+
+#for c = 0, 5 do
+	#for i = 0, 15 do
+	slot { name  "slot_inv_`30 + i`"  bam "RGSTONSL"  slotinfo "inventory:slot(`i + 1`, `c + 1`)"   area `789 + (math.floor(i / 2)) * 49` `85 + (i % 2) * 49 + c * 106` 49 49 }
+	#end
+
+#end
+#for i = 1, 6 do
+	text
+	{
+		name "slotsArea`i`"
+		area		789 `85 + (i - 1) * 106` 392 98
+		actionEnter "inventory:onSlotsAreaEnter(`i`)"
+		enabled "not inventory.paused"
+	}
+#end
+#for i = 0, 5 do
+	button
+	{
+		name "invPortrait`i`"
+		area 642 `90 + i * 106` 64 90
+		portrait `i`
+		bam GUIRSP10
+		enabled "inventory.count > `i`"
+		action "inventory:select(`i + 1`)"
+		actionAlt "Infinity_OnPortraitRClick(`i`)"
+		actiondrag "Infinity_SwapWithPortrait(`i`)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+#end
+
+	button
+	{
+		area 1214 220 54 424
+		actionScroll "scrollGroundItems()"
+	}
+
+#for i = 0, 7 do
+	slot {name "slot_inv_`68 + i`"		area 1214 `220 + i * 53` 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ground`i`"	actionScroll "scrollGroundItems()"	}
+#end
+
+	button
+	{
+		area 1210 646 68 47
+		bam RGAROW
+		sequence 0
+		action
+		"
+			Infinity_OnGroundPage(1)
+		"
+	}
+	button
+	{
+		area 1210 178 63 42
+		bam RGAROW
+		sequence 1
+		action
+		"
+			Infinity_OnGroundPage(-1)
+		"
+	}
+	button
+	{
+		area 511 157 50 52
+		bam INVBUT
+		colordisplay 2
+		action
+		"
+			Infinity_PushMenu('CHARACTER_COLOR', 0, 0)
+		"
+	}
+	label --this has to be last so it draws over top of everything.
+	{
+		area 0 0 630 756
+		enabled "shouldGreyOutInventory()"
+		mosaic RGINVDE2
+	}
+
+	-- When mouse enters a slots area the character it belongs to gets selected,
+	-- but then the player can press 1-6 keys to select someone else, now we if
+	-- we click on a slot in the current area of the unselected character, we
+	-- will get an item from the corresponding slot of the selected character.
+	--
+	-- This add an overlay on top of the hovered slots, you can no longer click on
+	-- the slots. Although double clicking still sends the dragged item to the
+	-- currently selected character, doesn't always work for whatever reason.
+	text
+	{
+		name "slotsAreaCover"
+		mosaic "RGJBACK"
+		area 789 85 0 0
+		tooltip force lua "''"
+		enabled "not inventory.paused"
+
+		-- actionExit doesn't work without actionEnter
+		actionEnter ""
+		actionExit "
+			if inventory.hovered and inventory.hovered ~= inventory.selected then
+				Infinity_SetArea('slotsArea' .. inventory.hovered, nil, nil, 392, 98)
+				inventory.hovered = nil
+			end
+			Infinity_SetArea('slotsAreaCover', nil, nil, 0, 0)
+		"
+	}
+}

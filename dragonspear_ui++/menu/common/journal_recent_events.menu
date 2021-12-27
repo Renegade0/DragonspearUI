@@ -1,0 +1,97 @@
+-- menu
+-- {
+	-- name 'JOURNAL_RECENT_EVENTS'
+	-- align center center
+	-- modal
+	-- label
+	-- {
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		-- area 0 0 672 672
+		-- mosaic "RECENTEV"
+
+	-- }
+	-- label
+	-- {
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		-- area 158 52 354 46
+		-- text "RECENT_EVENTS_TITLE"
+		-- text style "title"
+	-- }
+	-- button
+	-- {
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		-- area 594 10 33 35
+		-- bam "XBUTT"
+		-- action
+		-- "
+			-- Infinity_PopMenu('JOURNAL_RECENT_EVENTS')
+		-- "
+	-- }
+	-- text
+	-- {
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		-- area 126 106 422 458
+		-- text "Recent events text will go here."
+		-- text style "normal"
+	-- }
+	-- button
+	-- {
+		-- enabled "JournalSize == UIStrings.UI_Large"
+		-- area		320 572 200 44
+		-- text		"DONE_BUTTON"
+		-- text style	'button'
+		-- bam			GUIBUTNT
+		-- sequence	2
+		-- action
+		-- "
+			-- Infinity_PopMenu('JOURNAL_RECENT_EVENTS')
+		-- "
+	-- }
+
+-- JOURNALSIZE is SMALL
+
+	-- label
+	-- {
+		-- enabled "JournalSize == UIStrings.UI_Small"
+		-- area 0 0 672 672
+		-- mosaic "RECENTEV"
+
+	-- }
+	-- label
+	-- {
+		-- enabled "JournalSize == UIStrings.UI_Small"
+		-- area 158 52 354 46
+		-- text "RECENT_EVENTS_TITLE"
+		-- text style "title"
+	-- }
+	-- button
+	-- {
+		-- enabled "JournalSize == UIStrings.UI_Small"
+		-- area 594 10 33 35
+		-- bam "XBUTT"
+		-- action
+		-- "
+			-- Infinity_PopMenu('JOURNAL_RECENT_EVENTS_Small')
+		-- "
+	-- }
+	-- text
+	-- {
+		-- enabled "JournalSize == UIStrings.UI_Small"
+		-- area 126 106 422 458
+		-- text "Recent events text will go here."
+		-- text style "normal"
+	-- }
+	-- button
+	-- {
+		-- enabled "JournalSize == UIStrings.UI_Small"
+		-- area		320 572 200 44
+		-- text		"DONE_BUTTON"
+		-- text style	'button'
+		-- bam			GUIBUTNT
+		-- sequence	2
+		-- action
+		-- "
+			-- Infinity_PopMenu('JOURNAL_RECENT_EVENTS_Small')
+		-- "
+	-- }
+-- }

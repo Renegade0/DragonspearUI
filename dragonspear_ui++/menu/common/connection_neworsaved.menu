@@ -1,0 +1,84 @@
+menu
+{
+	name 'CONNECTION_NEWORSAVED'
+	align center center
+	modal
+
+	label
+	{
+		area 0 0 664 668
+		mosaic "RECENTEV"
+	}
+	label
+	{
+		area		104 70 460 48
+		text		style 'title'
+		text		"CONNECTION_NEW_OR_SAVED_GAME_TITLE"
+	}
+	label
+	{
+		area		130 140 392 45
+		text		style 'label'
+		text		"CONNECTION_SELECT_GAME_TYPE_LABEL"
+	}
+
+	button
+	{
+		bam 		GUIOSW
+		on esc
+		area 		614 7 44 44
+		sequence 	2
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+
+	button
+	{
+		area		210 250 237 66
+		bam			'GUIBUTST'
+		text style	"button"
+		text		"NEW_GAME_BUTTON"
+		tooltip lua "t('CONNECTION_NEW_GAME_TOOLTIP')"
+		action
+		"
+			fromMultiPlayer = true
+			Infinity_PushMenu('CHARGEN_DIFFICULTY')
+		"
+	}
+	button
+	{
+		area		210 332 237 66
+		bam			'GUIBUTST'
+		text style	"button"
+		text		"LOAD_BUTTON"
+		tooltip lua "t('CONNECTION_LOAD_GAME_TOOLTIP')"
+		action
+		"
+			Infinity_PopMenu()
+			Infinity_PopMenu()
+			Infinity_PopMenu()
+
+			if connectionLocalNetworkGame == 1 then
+				connectionIsHosting = true
+				chooseNetworkProtocol(2)
+			end
+
+			connectionScreen:OnLoadGameButtonClick()
+		"
+	}
+
+	button
+	{
+		on escape
+		area 			236 572 200 40
+		bam			'GUIBUTNT'
+		text style	"button"
+		text		"BACK_BUTTON"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}

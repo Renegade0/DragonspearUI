@@ -1,0 +1,136 @@
+menu
+{
+	name "WORLD_ACTIONBAR"
+	align center bottom
+	onOpen
+	"
+		QuicklootMode = Infinity_GetINIString('Game Options','QuicklootMode',1)
+		QuicklootStartPref = Infinity_GetINIString('Game Options','QuicklootStartPreference',1)
+		toolbarTop = 50
+		Infinity_PushMenu('WORLD_MESSAGES')
+--		Infinity_PushMenu('WORLD_QUICKLOOT')
+		worldScreen:SetHighlightEnabled(highlightButtonToggle == 1) -- TODO: review added by SOD v2.5
+	"
+	onClose
+	"
+		Infinity_PopMenu('WORLD_QUICKLOOT');
+		Infinity_PopMenu('WORLD_MESSAGES');
+	"
+	ignoreEsc
+	label
+	{
+		area 0 0 650 57
+		mosaic GUWBTP10
+	}
+	button
+	{
+		area 2 5 52 52
+		actionBar 0
+		enabled "buttonArray:GetButtonEnabled(0)"
+		tooltip lua "actionBarTooltip[0]"
+		action "buttonArray:OnLButtonPressed(0)"
+		actionAlt "buttonArray:OnRButtonPressed(0)"
+		actionHold "buttonArray:OnLButtonPressed(0)"
+	}
+	button
+	{
+		area 56 5 52 52
+		actionBar 1
+		enabled "buttonArray:GetButtonEnabled(1)"
+		tooltip lua "actionBarTooltip[1]"
+		action "buttonArray:OnLButtonPressed(1)"
+		actionAlt "buttonArray:OnRButtonPressed(1)"
+	}
+	button
+	{
+		area 110 5 52 52
+		actionBar 2
+		enabled "buttonArray:GetButtonEnabled(2)"
+		tooltip lua "actionBarTooltip[2]"
+		action "buttonArray:OnLButtonPressed(2)"
+		actionAlt "buttonArray:OnRButtonPressed(2)"
+	}
+	button
+	{
+		area 164 5 52 52
+		actionBar 3
+		enabled "buttonArray:GetButtonEnabled(3)"
+		tooltip lua "actionBarTooltip[3]"
+		action "buttonArray:OnLButtonPressed(3)"
+		actionAlt "buttonArray:OnRButtonPressed(3)"
+	}
+	button
+	{
+		area 218 5 52 52
+		actionBar 4
+		enabled "buttonArray:GetButtonEnabled(4)"
+		tooltip lua "actionBarTooltip[4]"
+		action "buttonArray:OnLButtonPressed(4)"
+		actionAlt "buttonArray:OnRButtonPressed(4)"
+	}
+	button
+	{
+		area 272 5 52 52
+		actionBar 5
+		enabled "buttonArray:GetButtonEnabled(5)"
+		tooltip lua "actionBarTooltip[5]"
+		action "buttonArray:OnLButtonPressed(5)"
+		actionAlt "buttonArray:OnRButtonPressed(5)"
+	}
+	button
+	{
+		area 326 5 52 52
+		actionBar 6
+		enabled "buttonArray:GetButtonEnabled(6)"
+		tooltip lua "actionBarTooltip[6]"
+		action "buttonArray:OnLButtonPressed(6)"
+		actionAlt "buttonArray:OnRButtonPressed(6)"
+	}
+	button
+	{
+		area 380 5 52 52
+		actionBar 7
+		enabled "buttonArray:GetButtonEnabled(7)"
+		tooltip lua "actionBarTooltip[7]"
+		action "buttonArray:OnLButtonPressed(7)"
+		actionAlt "buttonArray:OnRButtonPressed(7)"
+	}
+
+	button
+	{
+		area 434 5 52 52
+		actionBar 8
+		enabled "buttonArray:GetButtonEnabled(8)"
+		tooltip lua "actionBarTooltip[8]"
+		action "buttonArray:OnLButtonPressed(8)"
+		actionAlt "buttonArray:OnRButtonPressed(8)"
+	}
+	button
+	{
+		area 488 5 52 52
+		actionBar 9
+		enabled "buttonArray:GetButtonEnabled(9)"
+		tooltip lua "actionBarTooltip[9]"
+		action "buttonArray:OnLButtonPressed(9)"
+		actionAlt "buttonArray:OnRButtonPressed(9)"
+	}
+	button
+	{
+		area 542 5 52 52
+		actionBar 10
+		enabled "buttonArray:GetButtonEnabled(10)"
+		tooltip lua "actionBarTooltip[10]"
+		action "buttonArray:OnLButtonPressed(10)"
+		actionAlt "buttonArray:OnRButtonPressed(10)"
+	}
+	button
+	{
+		area 596 5 52 52
+		actionBar 11
+		enabled "buttonArray:GetButtonEnabled(11)"
+		tooltip lua "actionBarTooltip[11]"
+		action "buttonArray:OnLButtonPressed(11)"
+		actionAlt "buttonArray:OnRButtonPressed(11)"
+		actionHold "buttonArray:OnLButtonPressed(11)"
+	}
+}
