@@ -206,6 +206,8 @@ function setMageBookLevel(num)
 	lastCurrentBookSpell = 0
 	currentBookSpell = 0
 	currentSpellLevel = num
+	-- required for mageScreen:EraseKnownSpell():
+	mageScreen:SetSpellLevel(num - 1)
 	MageBook.page = 1
 	refreshMageBook()
 end
