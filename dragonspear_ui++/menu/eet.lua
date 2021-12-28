@@ -58,6 +58,8 @@ config.files = {
 	"common/right_sidebar_hidden.menu",
 	"common/inventory.lua",
 	"common/inventory.menu",
+	"common/inventory.v1.lua",
+	"common/inventory.v1.menu",
 	"common/character_color.lua",
 	"common/character_color.menu",
 	"common/world_level_up_buttons.menu",

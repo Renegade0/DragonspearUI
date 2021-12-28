@@ -1,0 +1,538 @@
+#if INVENTORY == 'v1' then
+menu
+{
+	name 'INVENTORY'
+	align center center
+	ignoreEsc
+
+	onOpen
+	"
+		Infinity_ActivateInventory()
+		pushSidebars()
+		doubleClickEventScheduled = nil
+		Infinity_PopMenu('WORLD_QUICKLOOT')
+		updateSlots()
+	"
+	onClose
+	"
+		Infinity_PopMenu('CHARACTER_COLOR')
+		Infinity_PopMenu('ITEM_DESCRIPTION')
+		Infinity_PopMenu('ITEM_IDENTIFY')
+		popSidebars()
+		charTable = {}
+	"
+	label
+	{
+		area 0 0 1364 756
+		mosaic INVENTOR
+	}
+	text
+	{
+		area		82 590 92 109
+		text		""--"ARMOR_CLASS_LABEL"
+		text style	"label"
+		tooltip lua "characters[id].AC.details"
+		text color 'D'
+		text align left center
+	}
+	text
+	{
+		area		186 590 99 109
+		text		""--"HIT_POINTS_LABEL"
+		text style	"label"
+		tooltip lua "characters[id].HP.details"
+		text color 'D'
+		text align left center
+	}
+	text
+	{
+		area		298 594 86 105
+		text		""--"THAC0_LABEL"
+		text style	"label"
+		tooltip lua "characters[id].THAC0.details"
+		text color 'D'
+		text align left center
+	}
+	text
+	{
+		area		398 594 96 105
+		text		""--"DAMAGE_LABEL"
+		text style	"label"
+		tooltip lua "characters[id].damage.details"
+		text color 'D'
+		text align left center
+	}
+
+	label
+	{
+--		enabled		"tempStats[id] == nil"
+		area		79 640 92 51
+		text lua	"getInventoryAC()"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+	label
+	{
+--		enabled		"tempStats[id] == nil"
+		area		182 640 101 51
+		text lua	"getInventoryHP()"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+
+	label
+	{
+--		enabled		"tempStats[id] == nil"
+		area		296 640 86 53
+		text lua	"getInventoryTHAC0()"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+	label
+	{
+--		enabled		"tempStats[id] == nil"
+		area		398 640 96 53
+		text lua	"getInventoryDamage()"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+	label
+	{
+--		enabled		"tempStats[id] == nil"
+		area		509 640 81 53
+		text lua	"characters[id].proficiencies.numAttacks.current"
+		text style	"label"
+		text color 'D'
+		align center center
+	}
+	button
+	{
+		area 356 214 128 160
+		paperdoll 1
+		actiondrag "Infinity_SwapWithAppearance()"
+	}
+
+	label
+	{
+		area 712 85 73 98
+		enabled "Infinity_GetNumCharacters() > 0"
+		bam "contback"
+	}
+	label
+	{
+		area 712 191 73 98
+		enabled "Infinity_GetNumCharacters() > 1"
+		bam "contback"
+	}
+	label
+	{
+		area 712 297 73 98
+		enabled "Infinity_GetNumCharacters() > 2"
+		bam "contback"
+	}
+	label
+	{
+		area 712 403 73 98
+		enabled "Infinity_GetNumCharacters() > 3"
+		bam "contback"
+	}
+	label
+	{
+		area 712 509 73 98
+		enabled "Infinity_GetNumCharacters() > 4"
+		bam "contback"
+	}
+	label
+	{
+		area 712 615 73 98
+		enabled "Infinity_GetNumCharacters() > 5"
+		bam "contback"
+	}
+	button
+	{
+		name "encumberanceButton"
+		area 710 509 73 98
+		encumbrance
+	}
+
+	label
+	{
+		area 108 88 240 38
+		text lua "characters[id].name"
+		text style "button"
+	}
+	label
+	{
+		area 214 32 936 44
+		text "INVENTORY_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 85 234 200 37
+		text "QUICK_WEAPONS_LABEL"
+		text style "label"
+	}
+	label
+	{
+		area 86 341 162 37
+		text "QUICK_ITEMS_LABEL"
+		text style "label"
+	}
+	label
+	{
+		area 108 132 150 35
+		text "QUIVER_LABEL"
+		text style "label"
+	}
+	label
+	{
+		area 1210 116 63 32
+		text "GROUND_LABEL"
+		text style "label"
+		align center center
+	}
+	label
+	{
+		area 1210 148 63 30
+		text lua "Infinity_GetCurrentGroundPage()+1 .. '/' .. Infinity_GetMaxGroundPage()+1"
+		text style "label"
+		align center center
+	}
+	label
+	{
+		area 82 532 80 38
+		text lua "characters[id].gold"
+		text style "label"
+		text color = '$'
+	}
+	label
+	{
+		area 348 88 266 38
+		text lua "characters[id].class"
+		text style "button"
+	}
+	text
+	{
+		area 186 482 400 82
+		text lua "TEXT_inventoryError"
+		scrollbar 'GUISCRC'
+		text style normal
+	}
+
+	slot {name "slot_inv_1"		area 81 280 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.weapon0"		}
+	slot {name "slot_inv_2"		area 134 280 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.weapon1"		}
+	slot {name "slot_inv_3"		area 187 280 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.weapon2"		}
+	slot {name "slot_inv_4"		area 240 280 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.weapon3"		}
+
+	slot {name "slot_inv_5"		area 82 386 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.personal0"	}
+	slot {name "slot_inv_6"		area 134 386 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.personal1"	}
+	slot {name "slot_inv_7"		area 186 386 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.personal2"	}
+
+	slot {name "slot_inv_11"		area 274 155 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.armor"		}
+	slot {name "slot_inv_12"		area 337 134 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.gauntlets"	}
+	slot {name "slot_inv_13"		area 393 134 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.helmet"		}
+	slot {name "slot_inv_14"		area 449 134 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.amulet"		}
+	slot {name "slot_inv_15"		area 104 175 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.quiver0"		}
+	slot {name "slot_inv_16"		area 156 175 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.quiver1"		}
+	slot {name "slot_inv_17"		area 208 175 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.quiver2"		}
+	slot {name "slot_inv_21"		area 449 400 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.belt"		}
+	slot {name "slot_inv_22"		area 274 341 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ringleft"	}
+	slot {name "slot_inv_23"		area 512 340 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.ringright"	}
+	slot {name "slot_inv_24"		area 337 400 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.cloak"		}
+	slot {name "slot_inv_25"		area 393 400 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.boots"		}
+	slot {name "slot_inv_26"		area 512 282 52 52	bam "STONSL10"	slotinfo "characters[id].equipment.shield"		}
+
+	slot {name "slot_inv_30"		area 789 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"  slotinfo "getItemSlot1(1)" 	}
+	slot {name "slot_inv_31"		area 789 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot2(1)" 	}
+	slot {name "slot_inv_32"		area 838 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot3(1)" 	}
+	slot {name "slot_inv_33"		area 838 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot4(1)" 	}
+	slot {name "slot_inv_34"		area 887 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot5(1)" 	}
+	slot {name "slot_inv_35"		area 887 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot6(1)" 	}
+	slot {name "slot_inv_36"		area 936 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot7(1)" 	}
+	slot {name "slot_inv_37"		area 936 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot8(1)" 	}
+	slot {name "slot_inv_38"		area 985 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot9(1)" 	}
+	slot {name "slot_inv_39"		area 985 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot10(1)"		}
+	slot {name "slot_inv_40"		area 1034 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot11(1)"		}
+	slot {name "slot_inv_41"		area 1034 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot12(1)"		}
+	slot {name "slot_inv_42"		area 1083 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot13(1)"		}
+	slot {name "slot_inv_43"		area 1083 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot14(1)"		}
+	slot {name "slot_inv_44"		area 1132 85 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot15(1)"		}
+	slot {name "slot_inv_45"		area 1132 134 49 49	enabled "Infinity_GetNumCharacters() > 0" bam "RGSTONSL"	slotinfo "getItemSlot16(1)"		}
+
+	slot {name "slot_inv_30"		area 789 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"  slotinfo "getItemSlot1(2)" }
+	slot {name "slot_inv_31"		area 789 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot2(2)" 	}
+	slot {name "slot_inv_32"		area 838 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot3(2)" 	}
+	slot {name "slot_inv_33"		area 838 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot4(2)" 	}
+	slot {name "slot_inv_34"		area 887 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot5(2)" 	}
+	slot {name "slot_inv_35"		area 887 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot6(2)" 	}
+	slot {name "slot_inv_36"		area 936 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot7(2)" 	}
+	slot {name "slot_inv_37"		area 936 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot8(2)" 	}
+	slot {name "slot_inv_38"		area 985 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot9(2)" 	}
+	slot {name "slot_inv_39"		area 985 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot10(2)"		}
+	slot {name "slot_inv_40"		area 1034 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot11(2)"		}
+	slot {name "slot_inv_41"		area 1034 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot12(2)"		}
+	slot {name "slot_inv_42"		area 1083 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot13(2)"		}
+	slot {name "slot_inv_43"		area 1083 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot14(2)"		}
+	slot {name "slot_inv_44"		area 1132 191 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot15(2)"		}
+	slot {name "slot_inv_45"		area 1132 240 49 49	enabled "Infinity_GetNumCharacters() > 1" bam "RGSTONSL"	slotinfo "getItemSlot16(2)"		}
+
+	slot {name "slot_inv_30"		area 789 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"  slotinfo "getItemSlot1(3)" 	}
+	slot {name "slot_inv_31"		area 789 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot2(3)" 	}
+	slot {name "slot_inv_32"		area 838 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot3(3)" 	}
+	slot {name "slot_inv_33"		area 838 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot4(3)" 	}
+	slot {name "slot_inv_34"		area 887 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot5(3)" 	}
+	slot {name "slot_inv_35"		area 887 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot6(3)" 	}
+	slot {name "slot_inv_36"		area 936 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot7(3)" 	}
+	slot {name "slot_inv_37"		area 936 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot8(3)" 	}
+	slot {name "slot_inv_38"		area 985 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot9(3)" 	}
+	slot {name "slot_inv_39"		area 985 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot10(3)"		}
+	slot {name "slot_inv_40"		area 1034 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot11(3)"		}
+	slot {name "slot_inv_41"		area 1034 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot12(3)"		}
+	slot {name "slot_inv_42"		area 1083 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot13(3)"		}
+	slot {name "slot_inv_43"		area 1083 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot14(3)"		}
+	slot {name "slot_inv_44"		area 1132 297 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot15(3)"		}
+	slot {name "slot_inv_45"		area 1132 346 49 49	enabled "Infinity_GetNumCharacters() > 2" bam "RGSTONSL"	slotinfo "getItemSlot16(3)"		}
+
+	slot {name "slot_inv_30"		area 789 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"  slotinfo "getItemSlot1(4)" 	}
+	slot {name "slot_inv_31"		area 789 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot2(4)" 	}
+	slot {name "slot_inv_32"		area 838 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot3(4)" 	}
+	slot {name "slot_inv_33"		area 838 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot4(4)" 	}
+	slot {name "slot_inv_34"		area 887 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot5(4)" 	}
+	slot {name "slot_inv_35"		area 887 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot6(4)" 	}
+	slot {name "slot_inv_36"		area 936 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot7(4)" 	}
+	slot {name "slot_inv_37"		area 936 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot8(4)" 	}
+	slot {name "slot_inv_38"		area 985 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot9(4)" 	}
+	slot {name "slot_inv_39"		area 985 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot10(4)"		}
+	slot {name "slot_inv_40"		area 1034 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot11(4)"		}
+	slot {name "slot_inv_41"		area 1034 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot12(4)"		}
+	slot {name "slot_inv_42"		area 1083 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot13(4)"		}
+	slot {name "slot_inv_43"		area 1083 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot14(4)"		}
+	slot {name "slot_inv_44"		area 1132 403 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot15(4)"		}
+	slot {name "slot_inv_45"		area 1132 452 49 49	enabled "Infinity_GetNumCharacters() > 3" bam "RGSTONSL"	slotinfo "getItemSlot16(4)"		}
+
+	slot {name "slot_inv_30"		area 789 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"  slotinfo "getItemSlot1(5)" 	}
+	slot {name "slot_inv_31"		area 789 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot2(5)" 	}
+	slot {name "slot_inv_32"		area 838 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot3(5)" 	}
+	slot {name "slot_inv_33"		area 838 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot4(5)" 	}
+	slot {name "slot_inv_34"		area 887 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot5(5)" 	}
+	slot {name "slot_inv_35"		area 887 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot6(5)" 	}
+	slot {name "slot_inv_36"		area 936 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot7(5)" 	}
+	slot {name "slot_inv_37"		area 936 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot8(5)" 	}
+	slot {name "slot_inv_38"		area 985 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot9(5)" 	}
+	slot {name "slot_inv_39"		area 985 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot10(5)"		}
+	slot {name "slot_inv_40"		area 1034 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot11(5)"		}
+	slot {name "slot_inv_41"		area 1034 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot12(5)"		}
+	slot {name "slot_inv_42"		area 1083 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot13(5)"		}
+	slot {name "slot_inv_43"		area 1083 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot14(5)"		}
+	slot {name "slot_inv_44"		area 1132 509 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot15(5)"		}
+	slot {name "slot_inv_45"		area 1132 558 49 49	enabled "Infinity_GetNumCharacters() > 4" bam "RGSTONSL"	slotinfo "getItemSlot16(5)"		}
+
+	slot {name "slot_inv_30"		area 789 615 49 49	bam "RGSTONSL"  enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot1(6)" 		}
+	slot {name "slot_inv_31"		area 789 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot2(6)" 		}
+	slot {name "slot_inv_32"		area 838 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot3(6)" 		}
+	slot {name "slot_inv_33"		area 838 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot4(6)" 		}
+	slot {name "slot_inv_34"		area 887 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot5(6)" 		}
+	slot {name "slot_inv_35"		area 887 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot6(6)" 		}
+	slot {name "slot_inv_36"		area 936 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot7(6)" 		}
+	slot {name "slot_inv_37"		area 936 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot8(6)" 		}
+	slot {name "slot_inv_38"		area 985 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot9(6)" 		}
+	slot {name "slot_inv_39"		area 985 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot10(6)"		}
+	slot {name "slot_inv_40"		area 1034 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot11(6)"		}
+	slot {name "slot_inv_41"		area 1034 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot12(6)"		}
+	slot {name "slot_inv_42"		area 1083 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot13(6)"		}
+	slot {name "slot_inv_43"		area 1083 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot14(6)"		}
+	slot {name "slot_inv_44"		area 1132 615 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot15(6)"		}
+	slot {name "slot_inv_45"		area 1132 664 49 49	bam "RGSTONSL"	enabled "Infinity_GetNumCharacters() > 5" slotinfo "getItemSlot16(6)"		}
+
+	text
+	{
+		name "slotsArea1"
+		area		789 85 392 98
+		action "getEncumberanceArea1()"
+	}
+	text
+	{
+		name "slotsArea2"
+		area		789 191 392 98
+		action "getEncumberanceArea2()"
+	}
+	text
+	{
+		name "slotsArea3"
+		area		789 297 392 98
+		action "getEncumberanceArea3()"
+	}
+	text
+	{
+		name "slotsArea4"
+		area		789 403 392 98
+		action "getEncumberanceArea4()"
+	}
+	text
+	{
+		name "slotsArea5"
+		area		789 509 0 0
+		action "getEncumberanceArea5()"
+	}
+	text
+	{
+		name "slotsArea6"
+		area		789 615 392 98
+		action "getEncumberanceArea6()"
+	}
+
+	button
+	{
+		name "invPortrait0"
+		area 642 90 64 90
+		portrait 0
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 0"
+		action "Infinity_OnPortraitLClick(0); updateSlots()"
+		actionAlt "Infinity_OnPortraitRClick(0)"
+		actionDbl "Infinity_OnPortraitDblClick(0)"
+		actiondrag "Infinity_SwapWithPortrait(0)"
+		actionEnter "mouseOverPortrait = 0"
+		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
+		tooltip lua "Infinity_GetPortraitTooltip(0)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+	button
+	{
+		name "invPortrait1"
+		area 642 196 64 90
+		portrait 1
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 1"
+		action "Infinity_OnPortraitLClick(1); updateSlots()"
+		actionAlt "Infinity_OnPortraitRClick(1)"
+		actionDbl "Infinity_OnPortraitDblClick(1)"
+		actiondrag "Infinity_SwapWithPortrait(1)"
+		actionEnter "mouseOverPortrait = 1"
+		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
+		tooltip lua "Infinity_GetPortraitTooltip(1)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+	button
+	{
+		name "invPortrait2"
+		area 642 302 64 90
+		portrait 2
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 2"
+		action "Infinity_OnPortraitLClick(2); updateSlots()"
+		actionAlt "Infinity_OnPortraitRClick(2)"
+		actionDbl "Infinity_OnPortraitDblClick(2)"
+		actiondrag "Infinity_SwapWithPortrait(2)"
+		actionEnter "mouseOverPortrait = 2"
+		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
+		tooltip lua "Infinity_GetPortraitTooltip(2)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+	button
+	{
+		name "invPortrait3"
+		area 642 408 64 90
+		portrait 3
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 3"
+		action "Infinity_OnPortraitLClick(3); updateSlots()"
+		actionAlt "Infinity_OnPortraitRClick(3)"
+		actionDbl "Infinity_OnPortraitDblClick(3)"
+		actiondrag "Infinity_SwapWithPortrait(3)"
+		actionEnter "mouseOverPortrait = 3"
+		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
+		tooltip lua "Infinity_GetPortraitTooltip(3)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+	button
+	{
+		name "invPortrait4"
+		area 642 514 64 90
+		portrait 4
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 4"
+		action "Infinity_OnPortraitLClick(4); updateSlots()"
+		actionAlt "Infinity_OnPortraitRClick(4)"
+		actionDbl "Infinity_OnPortraitDblClick(4)"
+		actiondrag "Infinity_SwapWithPortrait(4)"
+		actionEnter "mouseOverPortrait = 4"
+		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
+		tooltip lua "Infinity_GetPortraitTooltip(4)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+	button
+	{
+		name "invPortrait5"
+		area 642 620 64 90
+		portrait 5
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 5"
+		action "Infinity_OnPortraitLClick(5); updateSlots()"
+		actionAlt "Infinity_OnPortraitRClick(5)"
+		actionDbl "Infinity_OnPortraitDblClick(5)"
+		actiondrag "Infinity_SwapWithPortrait(5)"
+		actionEnter "mouseOverPortrait = 5"
+		actionExit "mouseOverPortrait = -1; updateSlotsOnExit()"
+		tooltip lua "Infinity_GetPortraitTooltip(5)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+
+	button
+	{
+		area 1214 220 54 424
+		actionScroll "scrollGroundItems()"
+	}
+
+	slot {name "slot_inv_68"		area 1214 220 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground0"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_69"		area 1214 273 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground1"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_70"		area 1214 326 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground2"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_71"		area 1214 379 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground3"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_72"		area 1214 432 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground4"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_73"		area 1214 485 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground5"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_74"		area 1214 538 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground6"	actionScroll "scrollGroundItems()"	}
+	slot {name "slot_inv_75"		area 1214 591 52 52	bam "STONSLOT"	slotinfo "characters[id].equipment.ground7"	actionScroll "scrollGroundItems()"	}
+
+	button
+	{
+		area 1210 646 68 47
+		bam RGAROW
+		sequence 0
+		action
+		"
+			Infinity_OnGroundPage(1)
+		"
+	}
+	button
+	{
+		area 1210 178 63 42
+		bam RGAROW
+		sequence 1
+		action
+		"
+			Infinity_OnGroundPage(-1)
+		"
+	}
+	button
+	{
+		area 511 157 50 52
+		bam INVBUT
+		colordisplay 2
+		action
+		"
+			Infinity_PushMenu('CHARACTER_COLOR', 0, 0)
+		"
+	}
+	label --this has to be last so it draws over top of everything.
+	{
+		area 0 0 630 756
+		enabled "shouldGreyOutInventory()"
+		mosaic RGINVDE2
+	}
+}
+#end

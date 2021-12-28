@@ -1,3 +1,4 @@
+#if INVENTORY == nil or INVENTORY == 'v2' then
 menu
 {
 	name 'INVENTORY'
@@ -338,3 +339,4 @@ menu
 		"
 	}
 }
+#end

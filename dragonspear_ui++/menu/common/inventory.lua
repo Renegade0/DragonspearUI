@@ -1,3 +1,4 @@
+#if INVENTORY == nil or INVENTORY == 'v2' then
 	TEXT_inventoryError = ""
 
 function resetStatsDisplay()
@@ -444,3 +445,4 @@ function Inventory:updateStats()
 		)
 	end
 end
+#end
