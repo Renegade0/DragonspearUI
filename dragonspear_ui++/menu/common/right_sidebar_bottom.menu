@@ -3,6 +3,15 @@ menu
 	name 'RIGHT_SIDEBAR_BOTTOM'
 	align right bottom
 	ignoreEsc
+	onOpen "
+		PermThiefKey = nil
+		if PermThief == 1 then
+			local key = Infinity_GetINIValue('Keymap Action', 'Thieving', 0)
+			if key ~= 0 then
+				PermThiefKey = string.char(key)
+			end
+		end
+	"
 	--Buttons form a menu aligned bottom right, with height = 197, y is offset from top of that menu.
 --	button
 --	{
@@ -44,10 +53,10 @@ menu
 	}
 	button
 	{
-		enabled "PermThief == 1"
+		enabled "PermThiefKey ~= nil"
 		area 346 15 33 33
 		bam RGGTHIEF
-		action "Infinity_PressKeyboardButton('f')"
+		action "Infinity_PressKeyboardButton(PermThiefKey)"
 	}
 	button
 	{

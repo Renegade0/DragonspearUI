@@ -15,6 +15,16 @@ menu
 		QuicklootENum = Infinity_GetINIString('Game Options','QuicklootENumber',1)
 		JournalSize = Infinity_GetINIString('Game Options','SelectedJournalSize',1)
 		QuicklootStartPref = Infinity_GetINIString('Game Options','QuicklootStartPreference',1)
+
+		thievingKeyAssigned = 0 ~= Infinity_GetINIValue('Keymap Action', 'Thieving', 0)
+		permThiefButtonHelp = t('RG_UI_THIEFBUTT1')
+		if not thievingKeyAssigned then
+			permThiefButtonHelp = permThiefButtonHelp .. '\n\n^W' .. t('RG_UI_THIEFBUTT_WARN')
+		end
+	"
+	onClose "
+		thievingKeyAssigned = nil
+		permThiefButtonHelp = nil
 	"
 
 	label
@@ -180,6 +190,7 @@ menu
 		area		421 330 85 46
 		bam			ROUNDBUT
 		glow lua 	"Infinity_GetINIValue('Game Options','PermThief','1')"
+		clickable lua "thievingKeyAssigned"
 		align 		center center
 		action		"
 		"
@@ -473,7 +484,7 @@ menu
 	{
 		enabled 	"UIhelp == 10"
 		area		574 130 402 110
-		text	'RG_UI_THIEFBUTT1'
+		text lua	"permThiefButtonHelp"
 		text style	normal
 		text align	left top
 		text point	12

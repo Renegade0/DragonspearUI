@@ -57,7 +57,6 @@ menu
 			LargePortraits = 0
 			Infinity_SetINIValue('Game Options','LargePortraits',0)
 		end
-		Infinity_SetINIValue('Keymap Action','Thieving',102)
 		PermThief = Infinity_GetINIValue('Game Options','PermThief',0)
 		if PermThief ~= 1 then
 			PermThief = 0

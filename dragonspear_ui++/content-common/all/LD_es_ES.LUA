@@ -98,5 +98,6 @@ duiStrings = {
 	RG_UI_LPORTRAITS = "Large portraits",
 	RG_UI_LPORTRAITS1 = "Toggling this option on will display bigger portraits on a main gameplay screen. Instead of default 64x91 pixels they will have 82x123 pixels. This option mainly suits unscaled interface.",
 	RG_UI_THIEFBUTT = "Permanent thieving button",
-	RG_UI_THIEFBUTT1 = "Toggling this option on will display a permanent thieving button in the bottom right section of the screen, tied to a hotkey 'f'. This is useful for Cleric / Thiefs.",
+	RG_UI_THIEFBUTT1 = "Toggling this option on will display a permanent thieving button in the bottom right section of the screen. This is useful for Cleric / Thiefs.",
+	RG_UI_THIEFBUTT_WARN = "Requires an assigned thieving key binding.",
 }
