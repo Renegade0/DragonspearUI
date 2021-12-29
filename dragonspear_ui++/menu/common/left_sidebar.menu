@@ -15,6 +15,9 @@ menu
 			Infinity_PushMenu('JOURNAL')
 		end
 		sidebarForceTooltips = 0
+#if WITH_LEFT_SIDE_PORTRAITS then
+		onPortraitsSidebarOpen()
+#end
 	"
 	onClose
 	"
@@ -27,4 +30,82 @@ menu
 		enabled "false"
 		area 0 0 0 0
 	}
+
+#if WITH_LEFT_SIDE_PORTRAITS then
+	button
+	{
+		area 0 0 88 1
+		text lua "hidePortraits('A')"
+	}
+
+#for i = 0, 5 do
+#local y = 10 + 98 * i
+	label
+	{
+		name "portrait`i + 1`ShadowSmallA"
+		enabled "Infinity_GetNumCharacters() > `i` and rgEscPortrait ~= 1 and LargePortraits == 0 and duiLeftSidePortrait == 1"
+		area 22 `y` 68 99
+		mosaic RGGFRM4
+	}
+	button
+	{
+		name "portrait`i + 1`ButtonSmallA"
+		area 24 `y + 4` 64 91
+		portrait `i`
+		bam RGGFRM3
+		enabled "Infinity_GetNumCharacters() > `i` and rgEscPortrait ~= 1 and LargePortraits == 0 and duiLeftSidePortrait == 1"
+		glow lua "draggedPortrait and draggedPortrait ~= `i`"
+		action "Infinity_OnPortraitLClick(`i`)"
+		actionAlt "Infinity_OnPortraitRClick(`i`)"
+		actionDbl "Infinity_OnPortraitDblClick(`i`)"
+		actiondrag "Infinity_SwapWithPortrait(`i`)"
+		actionEnter "mouseOverPortrait = `i`"
+		actionExit "mouseOverPortrait = -1"
+		actionSimpleDrag "draggedPortrait = `i`"
+		actionSimpleDrop "swapPortraits(`i`)"
+		tooltip lua "Infinity_GetPortraitTooltip(`i`)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+#end
+
+
+#for i = 0, 5 do
+#local y = 10 + 130 * i
+	label
+	{
+		name "portrait`i + 1`ShadowBigA"
+		enabled "Infinity_GetNumCharacters() > `i` and rgEscPortrait ~= 1 and LargePortraits == 1 and duiLeftSidePortrait == 1"
+	#if GAME_VERSION == 'sod' then
+		area 2 `y` 86 131
+	#else
+		area 2 `y` 0 0
+	#end
+		mosaic RGGFRM6
+	}
+	button
+	{
+		name "portrait`i + 1`ButtonBigA"
+	#if GAME_VERSION == 'sod' then
+		area 4 `y + 4` 82 123
+	#else
+		area 4 `y + 4` 0 0
+	#end
+		portrait `i`
+		bam RGGFRM5
+		enabled "Infinity_GetNumCharacters() > `i` and rgEscPortrait ~= 1 and LargePortraits == 1 and duiLeftSidePortrait == 1"
+		glow lua "draggedPortrait and draggedPortrait ~= `i`"
+		action "Infinity_OnPortraitLClick(`i`)"
+		actionAlt "Infinity_OnPortraitRClick(`i`)"
+		actionDbl "Infinity_OnPortraitDblClick(`i`)"
+		actiondrag "Infinity_SwapWithPortrait(`i`)"
+		actionEnter "mouseOverPortrait = `i`"
+		actionExit "mouseOverPortrait = -1"
+		actionSimpleDrag "draggedPortrait = `i`"
+		actionSimpleDrop "swapPortraits(`i`)"
+		tooltip lua "Infinity_GetPortraitTooltip(`i`)"
+		clickable lua "sidebarsGreyed ~= 1"
+	}
+#end
+
+#end -- WITH_LEFT_SIDE_PORTRAITS
 }

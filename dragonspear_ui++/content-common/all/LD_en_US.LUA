@@ -53,7 +53,7 @@ PDD = {
 	"AC: -1 \nCritical hit: +1" ,
 	"Off-hand THAC0: +2",
 	"Off-hand THAC0: +4",
-	"Main-hand THAC0: +2\nOff-hand THAC0: +6"	
+	"Main-hand THAC0: +2\nOff-hand THAC0: +6"
 }
 
 duiStrings = {
@@ -103,7 +103,7 @@ duiStrings = {
 	RG_UI_QUICKLOOT = "Quickloot bar On/Off by default",
 	RG_UI_QUICKLOOT1 = "Toggling this option on will cause quickloot menu to be always on, when starting or loading the game.",
 	RG_RANDOM = "Random Character",
-	RG_PP_TOOLTIP = "Choose your portrait from the list. For more information about custom portraits, press the 'Custom' button.", 
+	RG_PP_TOOLTIP = "Choose your portrait from the list. For more information about custom portraits, press the 'Custom' button.",
 	RG_PP_TOOLTIP1 = "To use a custom portrait, place the desired portrait in 'Documents/Baldur's Gate - Enhanced Edition/portraits' (you may need to create the portraits folder). The image must be in 24-bit BMP format, and the file name must be no more than seven characters long.",
 	RG_PP_TOOLTIP2 = "Note that the standard dimensions for portraits are 210x330; images that are larger or smaller will be resized to fit the frame. No image may be larger than 1024 in either dimension.",
 	RG_PP_TOOLTIP3 = "For updating the portrait list, run the WeiDU 'Portrait Picker' component again. Adding 'f#' (for female) or 'm#' (for male) prefix to the portrait filename before running the WeiDU will automatically set its gender. Portrait filenames that end with 'm' or 's' will not show in the list. Instead, if the filename ends with 'l' and another portrait has the exact same filename except it ends with 'm', the latter will be used as a small portrait in the right sidebar. For adding a description and setting the gender manually, you will be able to use the 'Portrait Picker' tool, which will be coming soon.",
@@ -120,6 +120,8 @@ duiStrings = {
 	RG_UI_CLASSIC_DIALOG1 = "Toggling this option on will display a static dialog window in the bottom center of the screen, where you can scroll up to see the dialog history.",
 	RG_UI_MPPICKER = "Multi-portrait picker",
 	RG_UI_MPPICKER1 = "Toggling this option on will display a multi-portrait picker in the character generation screen, instead of default list-based portrait picker.",
+	RG_UI_LEFTPORTRAITS = "Left side portraits",
+	RG_UI_LEFTPORTRAITS1 = "Toggling this option will display portraits on the left side of the screen.",
 	RG_UI_LPORTRAITS = "Large portraits",
 	RG_UI_LPORTRAITS1 = "Toggling this option on will display bigger portraits on a main gameplay screen. Instead of default 64x91 pixels they will have 82x123 pixels. This option mainly suits unscaled interface.",
 	RG_UI_THIEFBUTT = "Permanent thieving button",

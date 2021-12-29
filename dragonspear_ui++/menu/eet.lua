@@ -48,6 +48,7 @@ config.files = {
 	"common/item_identify.menu",
 	"common/item_description.lua",
 	"common/item_description.menu",
+	"common/sidebar.lua",
 	"common/left_sidebar.lua",
 	"common/left_sidebar.menu",
 	"common/left_sidebar_bottom.menu",

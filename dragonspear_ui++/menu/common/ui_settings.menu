@@ -399,6 +399,37 @@ menu
 		"
 	}
 
+#if WITH_LEFT_SIDE_PORTRAITS then
+	label
+	{
+		area 	106 570 315 46
+		text	'RG_UI_LEFTPORTRAITS'
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		area		421 570 85 46
+		bam			ROUNDBUT
+		glow lua 	"duiLeftSidePortrait == 1"
+		align 		center center
+	}
+	button
+	{
+		area		106 570 400 46
+		action		"
+					if duiLeftSidePortrait == 1 then
+						duiLeftSidePortrait = 0
+					else
+						duiLeftSidePortrait = 1
+					end
+					Infinity_SetINIValue('Game Options', 'Left Side Portrait', duiLeftSidePortrait)
+				"
+		actionEnter	"UIhelp = 11"
+		actionExit "UIhelp = 0"
+	}
+#end
+
 -- UI Help section
 	text
 	{
@@ -490,6 +521,18 @@ menu
 		text point	12
 		scrollbar	'GUISCRC'
 	}
+#if WITH_LEFT_SIDE_PORTRAITS then
+	text
+	{
+		enabled 	"UIhelp == 11"
+		area		574 130 402 110
+		text	'RG_UI_LEFTPORTRAITS1'
+		text style	normal
+		text align	left top
+		text point	12
+		scrollbar	'GUISCRC'
+	}
+#end
 	button
 	{
 		bam			GUIBUTNT
