@@ -79,12 +79,14 @@ function main(argv)
 			local script = generate_lua_script(file)
 			file:close()
 
-			local eval_script = load(script, filename, "t", env)
-			if not eval_script then
-				error(("failed to load script:\n%s\n"):format(script:sub(1, 1024)))
-			end
+			-- useful for debugging
+			local script_file = assert(io.open(argv[2] .. ".lua", "w"))
+			script_file:write(script)
+			script_file:close()
 
-			eval_script()
+			local run_script = assert(load(script, filename, "t", env))
+
+			run_script()
 		end
 
 		if #buffer > 0 then
@@ -131,7 +133,7 @@ function process_text_chunk(buf, sink)
 		table.insert(sink, ',');
 		is_lua = not is_lua
 	end
-	table.insert(sink, '"");');
+	table.insert(sink, '"");\n');
 end
 
 function generate_lua_script(file, script)
