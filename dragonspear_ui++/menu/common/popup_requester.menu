@@ -5,16 +5,12 @@ menu
 	modal
 	onOpen
 	"
-		if requester.selling == false then
-			itemRequestAmt = 0
-			requestAmt = 0
-		elseif requester.selling < 10 then
+		if requester.selling == false or requester.selling < 10 then
 			itemRequestAmt = 1
 			requestAmt = 1
 		else
 			itemRequestAmt = requester.requesterMax
 			requestAmt = requester.requestMax
-
 		end
 	"
 
