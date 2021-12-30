@@ -1,5 +1,3 @@
-UIhelp = 0
-
 function duiHighlightSelectedText(text, value, selected)
 	if value == selected then
 		return '^R' .. text .. '^-'

@@ -15,6 +15,7 @@ menu
 		QuicklootENum = Infinity_GetINIString('Game Options','QuicklootENumber',1)
 		JournalSize = Infinity_GetINIString('Game Options','SelectedJournalSize',1)
 		QuicklootStartPref = Infinity_GetINIString('Game Options','QuicklootStartPreference',1)
+		disableDialogOnSpace = Infinity_GetINIValue('Game Options', 'Disable Space Key In Conversations', 1)
 
 		thievingKeyAssigned = 0 ~= Infinity_GetINIValue('Keymap Action', 'Thieving', 0)
 		permThiefButtonHelp = t('RG_UI_THIEFBUTT1')
@@ -25,6 +26,7 @@ menu
 	onClose "
 		thievingKeyAssigned = nil
 		permThiefButtonHelp = nil
+		UIhelp = nil
 	"
 
 	label
@@ -294,11 +296,10 @@ menu
 		"
 	}
 
-#if WITH_LEFT_SIDE_PORTRAITS then
 	label
 	{
 		area 	106 570 315 46
-		text	'RG_UI_LEFTPORTRAITS'
+		text	'RG_UI_DIALOG_DISABLE_SPACE'
 		text style "normal"
 		text align left center
 	}
@@ -306,12 +307,38 @@ menu
 	{
 		area		421 570 85 46
 		bam			ROUNDBUT
-		glow lua 	"duiLeftSidePortrait == 1"
+		glow lua 	"disableDialogOnSpace == 1"
 		align 		center center
 	}
 	button
 	{
 		area		106 570 400 46
+		action		"
+			disableDialogOnSpace = duiToggle(disableDialogOnSpace, 0, 1)
+			Infinity_SetINIValue('Game Options', 'Disable Space Key In Conversations', disableDialogOnSpace)
+		"
+		actionEnter	"UIhelp = t('RG_UI_DIALOG_DISABLE_SPACE_HELP')"
+		actionExit "UIhelp = nil"
+	}
+
+#if WITH_LEFT_SIDE_PORTRAITS then
+	label
+	{
+		area 	106 610 315 46
+		text	'RG_UI_LEFTPORTRAITS'
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		area		421 610 85 46
+		bam			ROUNDBUT
+		glow lua 	"duiLeftSidePortrait == 1"
+		align 		center center
+	}
+	button
+	{
+		area		106 610 400 46
 		action		"
 			duiLeftSidePortrait = duiToggle(duiLeftSidePortrait, 0, 1)
 			Infinity_SetINIValue('Game Options', 'Left Side Portrait', duiLeftSidePortrait)
