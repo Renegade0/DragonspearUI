@@ -26,7 +26,7 @@ menu
 	button
 	{
 		area 526 248 188 166
-		bam `BAM_GUI_GENDER`
+		bam GUIGEND1
 		sequence 0
 		toggle toggleMale
 		action "toggleFemale = 0; createCharScreen:OnGenderSelectButtonClick(1)"
@@ -34,7 +34,7 @@ menu
 	button
 	{
 		area 730 248 188 166
-		bam `BAM_GUI_GENDER`
+		bam GUIGEND1
 		sequence 1
 		toggle toggleFemale
 		action "toggleMale = 0; createCharScreen:OnGenderSelectButtonClick(2)"

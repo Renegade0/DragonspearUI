@@ -99,7 +99,7 @@ function connectionGetGameType(slot)
 	ret = ""
 
 	if mp_sessions[mp_shownSessions[slot]["actualIndex"]] ~= nil then
-#if GAME_VERSION == 'sod' then
+#if GAME_VERSION == 'bg1' or GAME_VERSION == 'sod' then
 		if mp_sessions[mp_shownSessions[slot]["actualIndex"]]["version"] == "bgee-main" then
 			ret = t("MAIN_GAME_LABEL")
 		elseif mp_sessions[mp_shownSessions[slot]["actualIndex"]]["version"] == "bgee-bp" then
@@ -122,7 +122,7 @@ function connectionGetGameType(slot)
 end
 
 function matchMultiplayerGameType(gameVersion)
-#if GAME_VERSION == 'sod' then
+#if GAME_VERSION == 'bg1' or GAME_VERSION == 'sod' then
 	if gameVersion == "bgee-main" then
 		startEngine:OnSoAButtonClick(false)
 		e:CheckGUISong()

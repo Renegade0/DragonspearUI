@@ -290,7 +290,7 @@ menu
 			currentChargenProficiency = nil
 		"
 	}
-#if GAME_VERSION ~= 'sod' then
+#if GAME_VERSION ~= 'bg1' and GAME_VERSION ~= 'sod' then
 	button
 	{
 		enabled "chargen.levelingUp"
@@ -319,7 +319,7 @@ menu
 	button
 	{
 		on return
-#if GAME_VERSION == 'sod' then
+#if GAME_VERSION == 'bg1' or GAME_VERSION == 'sod' then
 		area 618 730 230 40
 #else
 		area 486 730 230 40

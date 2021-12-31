@@ -26,7 +26,7 @@ menu
 	label
 	{
 		name "MenuTitle1OP"
-	#if GAME_VERSION == 'sod' then
+	#if GAME_VERSION == 'bg1' or GAME_VERSION == 'sod' then
 		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG"
 		area 1434 46 450 121
 		mosaic 'RGTITLE2'
@@ -40,6 +40,7 @@ menu
 		frame 0
 	#end
 	}
+#if GAME_VERSION ~= 'bg1' then
 	label
 	{
 		name "MenuTitle2OP"
@@ -57,19 +58,23 @@ menu
 		frame 1
 	#end
 	}
+#end
 	label
 	{
 		name "MenuTitle3OP"
 		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
-	#if GAME_VERSION == 'sod' then
-		area 1388 78 504 62
+	#if GAME_VERSION == 'bg1' or GAME_VERSION == 'sod' then
+		area 1388 60 504 94
 		bam 'TITLE'
+		sequence 0
+		frame 0
+		scaleToClip
 	#else
 		area 1388 78 488 96
 		bam 'RGTITLE'
-	#end
 		sequence 0
 		frame 2
+	#end
 	}
 
 	list

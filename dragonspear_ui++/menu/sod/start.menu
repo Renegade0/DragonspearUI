@@ -95,6 +95,7 @@ menu
 		area 1476 190 368 470
 		mosaic "RGMMENU"
 	}
+#if GAME_VERSION == 'sod' then
 	movie
 	{
 		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
@@ -102,6 +103,7 @@ menu
 		area 324 124 404 564
 		loop
 	}
+#end
 	label
 	{
 		name "MenuTitle1"
@@ -111,6 +113,7 @@ menu
 --		sequence 0
 --		frame 0
 	}
+#if GAME_VERSION == 'sod' then
 	label
 	{
 		name "MenuTitle2"
@@ -120,14 +123,16 @@ menu
 --		sequence 0
 --		frame 1
 	}
+#end
 	label
 	{
 		name "MenuTitle3"
 		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
-		area 1388 78 504 62
+		area 1388 60 504 94
 		bam 'TITLE'
 		sequence 0
-		frame 2
+		frame 0
+		scaleToClip
 	}
 	-- {
 	-- 		bam 'STARTBUT'
@@ -266,67 +271,41 @@ menu
 		"
 	}
 
+#for i, campaign in ipairs(START_CAMPAIGNS) do
 	label
 	{
-		name "MenuCampA1"
-		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG"
-		area 41 917 160 160
+		name "MenuCampA`i`"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_`campaign.name`"
+		area `41 + (i - 1) * 134` 917 160 160
 		mosaic 'rgopt4'
 	}
 	label
 	{
-		name "MenuCampA2"
-		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
-		area 175 917 160 160
-		mosaic 'rgopt4'
-	}
-	label
-	{
-		name "MenuCampA3"
-		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
-		area 309 917 160 160
-		mosaic 'rgopt4'
-	}
-	label
-	{
-		name "MenuCampB1"
-		area 56 932 130 132
+		name "MenuCampB`i`"
+		area `56 + (i - 1) * 134` 932 134 132
 		mosaic 'rgopt3'
 	}
-	label
-	{
-		name "MenuCampB2"
-		area 190 932 134 132
-		mosaic 'rgopt3'
-	}
-	label
-	{
-		name "MenuCampB3"
-		area 324 932 134 132
-		mosaic 'rgopt3'
-	}
-
 	text
 	{
-		name "MenuCChooser1"
+		name "MenuCChooser`i`"
 		bam "CMPGSML"
-		sequence 3
-		frame lua "getCampaignHighlight(1)"
-		area 58 934 116 116
+		sequence `campaign.sequence`
+		frame lua "getCampaignHighlight(`i`)"
+		area `58 + (i - 1) * 134` 934 116 116
 		align center center
-		--tooltip lua "getCampaignTooltip(1)"
+		--tooltip lua "getCampaignTooltip(`i`)"
 		action
 		"
-			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BG then
-			startEngine:OnSoAButtonClick(true)
+			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_`campaign.name` then
+			`campaign.action`
 			end
 		"
 		actionEnter
 		"
-			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BG then
-			highlightedCampaign = 1;
+			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_`campaign.name` then
+			highlightedCampaign = `i`;
 			end
-			campaignsString = t('RG_MENU_CAMPAIGN1')
+			campaignsString = t('RG_MENU_CAMPAIGN') .. ': ' .. t('RG_MENU_CAMPAIGN`campaign.index`')
 		"
 		actionExit
 		"
@@ -334,62 +313,7 @@ menu
 			campaignsString = ''
 		"
 	}
-	text
-	{
-		name "MenuCChooser2"
-		bam "CMPGSML"
-		sequence 2
-		frame lua "getCampaignHighlight(2)"
-		area 192 934 116 116
-		align center center
-		--tooltip lua "getCampaignTooltip(2)"
-		action
-		"
-			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_SOD then
-			startEngine:OnCampaignButtonClick('SOD',true)
-			end
-		"
-		actionEnter
-		"
-			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_SOD then
-			highlightedCampaign = 2;
-			end
-			campaignsString = t('RG_MENU_CAMPAIGN2')
-		"
-		actionExit
-		"
-			highlightedCampaign = nil;
-			campaignsString = ''
-		"
-	}
-	text
-	{
-		name "MenuCChooser3"
-		bam "CMPGSML"
-		sequence 1
-		frame lua "getCampaignHighlight(3)"
-		area 326 934 116 116
-		align center center
-		--tooltip lua "getCampaignTooltip(3)"
-		action
-		"
-			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BP then
-			startEngine:OnTBPButtonClick(true)
-			end
-		"
-		actionEnter
-		"
-			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BP then
-			highlightedCampaign = 3;
-			end
-			campaignsString = t('RG_MENU_CAMPAIGN3')
-		"
-		actionExit
-		"
-			highlightedCampaign = nil;
-			campaignsString = ''
-		"
-	}
+#end
 
 	label
 	{
@@ -407,7 +331,7 @@ menu
 		text style "title"
 		text color '5'
 		text align left center
-		text lua "t('RG_MENU_CAMPAIGN') .. ': ' .. campaignsString"
+		text lua "campaignsString"
 	}
 	label
 	{
@@ -417,6 +341,6 @@ menu
 		--text shadow 5
 		text color '$'
 		text align left center
-		text lua "t('RG_MENU_CAMPAIGN') .. ': ' .. campaignsString"
+		text lua "campaignsString"
 	}
 }

@@ -10,7 +10,7 @@ menu
 	"
 	movie
 	{
-	#if GAME_VERSION == 'sod' then
+	#if GAME_VERSION == 'sod' or GAME_VERSION == 'bg1' then
 		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG"
 	#else
 		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 0"
@@ -36,7 +36,7 @@ menu
 	}
 	label
 	{
-	#if GAME_VERSION == 'sod' then
+	#if GAME_VERSION == 'sod' or GAME_VERSION == 'bg1' then
 		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG"
 	#else
 		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 0"

@@ -12,7 +12,6 @@ MOVIES_CREDITS_BUTTON = "CREDITS_MOVIE_BUTTON"
 
 LOAD_TITLE_AREA_X_OFFSET = 486
 
-BAM_GUI_GENDER = "GUIGEND1"
 REF_CHARGEN_GENDER_HELP = 24313
 REF_CHARGEN_PROFICIENCY_HELP = 24315
 REF_CHARGEN_EXPORT_TEXT = 24461
@@ -64,6 +63,12 @@ REF_KIT_NAME_EVOCATION = 25324
 REF_KIT_NAME_NECROMANCY = 25325
 REF_KIT_NAME_TRANSMUTATION = 25326
 REF_KIT_NAME_WILD_MAGE = 25327
+
+START_CAMPAIGNS = {
+	{ name = "BG",  index = 1, sequence = 3, action = "startEngine:OnSoAButtonClick(true)" },
+	{ name = "SOD", index = 2, sequence = 2, action = "startEngine:OnCampaignButtonClick('SOD',true)"},
+	{ name = "BP",  index = 3, sequence = 1, action = "startEngine:OnTBPButtonClick(true)" },
+}
 
 -- execute before processing each file
 function init()

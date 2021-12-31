@@ -37,7 +37,13 @@ REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1003
 
 ACTION_MATCH 0 WITH
 	0 WHEN GAME_IS ~eet~ BEGIN OUTER_SPRINT game "eet" END
-	0 WHEN GAME_IS ~bgee~ BEGIN OUTER_SPRINT game "sod" END
+	0 WHEN GAME_IS ~bgee~ BEGIN
+		ACTION_IF GAME_INCLUDES ~sod~ BEGIN
+			OUTER_SPRINT game "sod"
+		END ELSE BEGIN
+			OUTER_SPRINT game "bg1"
+		END
+	END
 	0 WHEN GAME_IS ~bg2ee~ BEGIN OUTER_SPRINT game "bg2" END
 	DEFAULT FAIL "unhandled match case"
 END
@@ -74,34 +80,30 @@ END
 COPY "%build_folder%/ui.menu" ~override~
 COPY ~dragonspear_ui++/content-common/all~ ~override~
 
+ACTION_IF GAME_IS ~bg2ee eet~ OR NOT GAME_INCLUDES ~sod~ BEGIN
+	COPY ~dragonspear_ui++/content-common/eet-bg2~ ~override~
+END
+
 ACTION_IF GAME_IS ~bgee~ THEN BEGIN
-
-COPY ~dragonspear_ui++/content-common/eet-sod~ ~override~
-COPY ~dragonspear_ui++/content-sod~ ~override~
-
+	COPY ~dragonspear_ui++/content-common/eet-sod~ ~override~
+	COPY ~dragonspear_ui++/content-sod~ ~override~
 END
 
 ACTION_IF GAME_IS ~bg2ee~ THEN BEGIN
-
-COPY ~dragonspear_ui++/content-common/eet-bg2~ ~override~
-COPY ~dragonspear_ui++/content-bg2~ ~override~
-
+	COPY ~dragonspear_ui++/content-bg2~ ~override~
 END
 
 ACTION_IF GAME_IS ~eet~ THEN BEGIN
+	COPY ~dragonspear_ui++/content-common/eet-sod~ ~override~
+	COPY ~dragonspear_ui++/content-eet~ ~override~
 
-COPY ~dragonspear_ui++/content-common/eet-sod~ ~override~
-COPY ~dragonspear_ui++/content-common/eet-bg2~ ~override~
-COPY ~dragonspear_ui++/content-eet~ ~override~
-
-COPY ~dragonspear_ui++/content-sod/rgdback1.wbm~ ~override/rgdback1.wbm~
-COPY ~dragonspear_ui++/content-sod/rgdback1.wbm~ ~override/rgdback7.wbm~
-COPY ~dragonspear_ui++/content-sod/rgdback2.wbm~ ~override/rgdback2.wbm~
-COPY ~dragonspear_ui++/content-sod/rgdback3.wbm~ ~override/rgdback5.wbm~
-COPY ~dragonspear_ui++/content-bg2/rgdback1.wbm~ ~override/rgdback3.wbm~
-COPY ~dragonspear_ui++/content-bg2/rgdback2.wbm~ ~override/rgdback4.wbm~
-COPY ~dragonspear_ui++/content-bg2/rgdback3.wbm~ ~override/rgdback6.wbm~
-
+	COPY ~dragonspear_ui++/content-sod/rgdback1.wbm~ ~override/rgdback1.wbm~
+	COPY ~dragonspear_ui++/content-sod/rgdback1.wbm~ ~override/rgdback7.wbm~
+	COPY ~dragonspear_ui++/content-sod/rgdback2.wbm~ ~override/rgdback2.wbm~
+	COPY ~dragonspear_ui++/content-sod/rgdback3.wbm~ ~override/rgdback5.wbm~
+	COPY ~dragonspear_ui++/content-bg2/rgdback1.wbm~ ~override/rgdback3.wbm~
+	COPY ~dragonspear_ui++/content-bg2/rgdback2.wbm~ ~override/rgdback4.wbm~
+	COPY ~dragonspear_ui++/content-bg2/rgdback3.wbm~ ~override/rgdback6.wbm~
 END
 
 ACTION_IF (NOT FILE_EXISTS_IN_GAME ~M_BG.lua~) BEGIN

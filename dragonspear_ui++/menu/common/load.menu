@@ -91,7 +91,7 @@ menu
 		maxlines 1
 		align left center
 	}
-#if GAME_VERSION == 'sod' then
+#if GAME_VERSION == 'bg1' or GAME_VERSION == 'sod' then
 	label
 	{
 		name "LoadTitle1"
@@ -114,10 +114,11 @@ menu
 	{
 		name "LoadTitle3"
 		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
-		area 1388 78 504 62
+		area 1388 60 504 94
 		bam 'TITLE'
 		sequence 0
-		frame 2
+		frame 0
+		scaleToClip
 	}
 #else
 	label

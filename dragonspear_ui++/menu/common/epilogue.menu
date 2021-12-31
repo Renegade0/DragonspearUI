@@ -20,16 +20,18 @@ menu
 		text style "title"
 		text "MAIN_GAME_LABEL"
 	}
+#if GAME_VERSION ~= 'bg1' then
 	text
 	{
 		area 100 86 828 34
 		text style "title"
-#if GAME_VERSION == 'sod' then
+	#if GAME_VERSION == 'sod' then
 		text "EXPANSION_LABEL"
-#else
+	#else
 		text "EXPANSION_BG2_LABEL"
-#end
+	#end
 	}
+#end
 	label
 	{
 		area 110 176 274 430

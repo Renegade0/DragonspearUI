@@ -21,7 +21,7 @@
 
 #if GAME_VERSION ~= 'eet' then
 	function getBigLogo()
-	#if GAME_VERSION == 'sod' then
+	#if GAME_VERSION == 'bg1' or GAME_VERSION == 'sod' then
 		local campaign = startEngine:GetCampaign()
 		return startCampaignData[campaign].bigLogo
 	#else
@@ -91,7 +91,7 @@
 --	Infinity_SetArea('MenuPanel2', 72, screenHeight-188, nil, nil)
 --	Infinity_SetArea('MenuLogo', screenWidth-410, nil, nil, nil)
 --	Infinity_SetArea('MenuLogoSP', screenWidth-410, nil, nil, nil)
-#if GAME_VERSION == 'sod' then
+#if GAME_VERSION == 'bg1' or GAME_VERSION == 'sod' then
 	Infinity_SetArea('MenuTitle1', screenWidth-486, nil, nil, nil)
 	Infinity_SetArea('MenuTitle1SP', screenWidth-486, nil, nil, nil)
 	Infinity_SetArea('MenuTitle1OP', screenWidth-486, nil, nil, nil)
@@ -108,7 +108,7 @@
 	Infinity_SetArea('MenuTitle2', screenWidth-605, nil, nil, nil)
 	Infinity_SetArea('MenuTitle2SP', screenWidth-605, nil, nil, nil)
 	Infinity_SetArea('MenuTitle2OP', screenWidth-605, nil, nil, nil)
-#else
+#elseif GAME_VERSION ~= 'bg1' then
 	Infinity_SetArea('MenuTitle2', screenWidth-510, nil, nil, nil)
 	Infinity_SetArea('MenuTitle2SP', screenWidth-510, nil, nil, nil)
 	Infinity_SetArea('MenuTitle2OP', screenWidth-510, nil, nil, nil)
@@ -156,14 +156,17 @@
 	Infinity_SetArea('MenuCampLabel2', 58, screenHeight-212, nil, nil)
 	Infinity_SetArea('MenuCampA1', 41, screenHeight-163, nil, nil)
 	Infinity_SetArea('MenuCampA2', 175, screenHeight-163, nil, nil)
-	Infinity_SetArea('MenuCampA3', 309, screenHeight-163, nil, nil)
 	Infinity_SetArea('MenuCampB1', 56, screenHeight-148, nil, nil)
 	Infinity_SetArea('MenuCampB2', 190, screenHeight-148, nil, nil)
-	Infinity_SetArea('MenuCampB3', 324, screenHeight-148, nil, nil)
 	Infinity_SetArea('MenuCChooser1', 58, screenHeight-146, nil, nil)
 	Infinity_SetArea('MenuCChooser2', 192, screenHeight-146, nil, nil)
+#if GAME_VERSION ~= 'bg1' then
+	Infinity_SetArea('MenuCampA3', 309, screenHeight-163, nil, nil)
+	Infinity_SetArea('MenuCampB3', 324, screenHeight-148, nil, nil)
 	Infinity_SetArea('MenuCChooser3', 326, screenHeight-146, nil, nil)
-#if GAME_VERSION ~= 'eet' then
+#end
+
+#if GAME_VERSION ~= 'eet' and GAME_VERSION ~= 'bg1' then
 	Infinity_SetArea('flames', 324, nil, nil, nil)
 #end
 --	Infinity_SetArea('flames2', screenWidth-420, nil, nil, nil)
@@ -177,6 +180,6 @@
 --MenuCampB1 96 902  230 902  364 902
 --MenuCampLabel1 100 840  98 838
 
-#if GAME_VERSION ~= 'eet' then
+#if GAME_VERSION == 'sod' then
 	usingSODStartMenu = 1
 #end
