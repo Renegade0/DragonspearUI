@@ -58,3 +58,46 @@ end
 #end
 CurrentVer = "2.21" 		-- This is what you will call this version when you release it
 OldVer = "2.2" 			-- This is the highest older version
+
+function duiInitSettings(opts)
+	local opts = opts or {}
+	local setting = function(name, expected, default, fallback)
+		local value = Infinity_GetINIValue('Game Options', name, fallback or default)
+		if LargePortraits ~= expected then
+			value = default
+			Infinity_SetINIValue('Game Options', name, value)
+		end
+		return value
+	end
+
+	if opts.doFirstLoad then
+		PWSMod = Infinity_GetINIString('Game Options', 'PWSFirstLoad', 1)
+		if PWSMod ~= CurrentVer then
+			PWSMod = OldVer
+			Infinity_SetINIValue('Game Options', 'PWSFirstLoad', OldVer)
+		end
+		if PWSMod == OldVer then
+			Infinity_PushMenu('FirstLoad')
+		end
+	end
+
+	if not opts.eet then
+		LeftSideMenu = Infinity_GetINIValue('Game Options', 'LeftSideMenu', 0)
+		ClassicDialog = setting('Game Options', 'ClassicDialog', 1, 0)
+		MultiPortraitPicker = setting('MultiPortraitPicker', 0, 1)
+	end
+
+	LargePortraits = setting('LargePortraits', 1, 0)
+	PermThief = setting('PermThief', 1, 0)
+	JournalSize = setting('SelectedJournalSize', UIStrings.UI_Small, UIStrings.UI_Large, 1)
+	QuicklootMode = setting('QuicklootMode', UIStrings.UI_Advanced, UIStrings.UI_Expert, 1)
+	QuicklootStartPref = setting('QuicklootStartPref', UIStrings.UI_Visible, UIStrings.UI_Hidden, 1)
+	groundItemsButtonToggle = QuicklootStartPref == UIStrings.UI_Visible and 1 or 0
+
+	local valid = { Two = true, Three = true, Four = true, Five = true, Six = true }
+	QuicklootENum = Infinity_GetINIString('Game Options', 'QuicklootENumber', 1)
+	if not valid[QuicklootENum] then
+		QuicklootENum = 'Ten'
+		Infinity_SetINIValue('Game Options', 'QuicklootENumber', QuicklootENum)
+	end
+end

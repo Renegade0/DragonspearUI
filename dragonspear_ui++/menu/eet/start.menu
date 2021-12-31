@@ -33,38 +33,9 @@ menu
 			Infinity_PopMenu('START')
 			Infinity_PushMenu('START_MP')
 		end
-		LargePortraits = Infinity_GetINIValue('Game Options','LargePortraits',0)
-		if LargePortraits ~= 1 then
-			LargePortraits = 0
-			Infinity_SetINIValue('Game Options','LargePortraits',0)
-		end
-		PermThief = Infinity_GetINIValue('Game Options','PermThief',0)
-		if PermThief ~= 1 then
-			PermThief = 0
-			Infinity_SetINIValue('Game Options','PermThief',0)
-		end
-		JournalSize = Infinity_GetINIString('Game Options','SelectedJournalSize',1)
-		if JournalSize ~= UIStrings.UI_Small then
-			JournalSize = UIStrings.UI_Large
-			Infinity_SetINIValue('Game Options','SelectedJournalSize',UIStrings.UI_Large)
-		end
-		QuicklootMode = Infinity_GetINIString('Game Options','QuicklootMode',1)
-		if QuicklootMode ~= UIStrings.UI_Advanced then
-			QuicklootMode = UIStrings.UI_Expert
-			Infinity_SetINIValue('Game Options','QuicklootMode',UIStrings.UI_Expert)
-		end
-		QuicklootENum = Infinity_GetINIString('Game Options','QuicklootENumber',1)
-		if QuicklootENum ~= 'Two' and QuicklootENum ~= 'Three' and QuicklootENum ~= 'Four' and QuicklootENum ~= 'Five' and QuicklootENum ~= 'Six' then
-			QuicklootENum = 'Ten'
-			Infinity_SetINIValue('Game Options','QuicklootENumber','Ten')
-		end
-		QuicklootStartPref = Infinity_GetINIString('Game Options','QuicklootStartPreference',1)
-		groundItemsButtonToggle = 1
-		if QuicklootStartPref ~= UIStrings.UI_Visible then
-			QuicklootStartPref = UIStrings.UI_Hidden
-			Infinity_SetINIValue('Game Options','QuicklootStartPreference',UIStrings.UI_Hidden)
-			groundItemsButtonToggle = 0
-		end
+
+		duiInitSettings({ eet = true })
+
 		Infinity_SetBackground('BACKGROUND')
 		getMenuPanelArea()
 		highlightedCampaign = nil

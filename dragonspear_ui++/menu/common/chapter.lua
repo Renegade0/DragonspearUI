@@ -31,23 +31,13 @@ function setChapterBackground(id)
 	chapterBackground = chapterBackgrounds[id]
 end
 function rgChapterNumber()
-	chapter = Infinity_GetMaxChapterPage()
-	if chapterBackground == chapterBackgrounds[0]
-	or chapterBackground == chapterBackgrounds[1]
-	or chapterBackground == chapterBackgrounds[2]
-	or chapterBackground == chapterBackgrounds[3]
-	or chapterBackground == chapterBackgrounds[4]
-	or chapterBackground == chapterBackgrounds[5]
-	or chapterBackground == chapterBackgrounds[6]
-	or chapterBackground == chapterBackgrounds[7] then
-	return Infinity_FetchString(16202 + chapter)
-	elseif chapterBackground == chapterBackgrounds[8]
-	or chapterBackground == chapterBackgrounds[9]
-	or chapterBackground == chapterBackgrounds[10]
-	or chapterBackground == chapterBackgrounds[11]
-	or chapterBackground == chapterBackgrounds[12] then
-	return Infinity_FetchString(70004 + chapter)
+	local chapter = Infinity_GetMaxChapterPage()
+	local chapters = {}
+	for i = 0, 12 do
+		local offset = i > 7 and 70004 or 16202
+		chapters[chapterBackgrounds[i]] = offset + chapter
 	end
+	return Infinity_FetchString(chapters[chapterBackground])
 end
 function getChapterArea()
 	local screenWidth, screenHeight = Infinity_GetScreenSize()

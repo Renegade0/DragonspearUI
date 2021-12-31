@@ -9,59 +9,9 @@ menu
 			isTob = 0
 		end
 		campaignsString = ''
-		PWSMod = Infinity_GetINIString('Game Options','PWSFirstLoad',1)
-		if PWSMod ~= CurrentVer then
-			PWSMod = OldVer
-			Infinity_SetINIValue('Game Options','PWSFirstLoad',OldVer)
-		end
-		if PWSMod == OldVer then
-			Infinity_PushMenu('FirstLoad')
-		end
-		QuicklootMode = Infinity_GetINIString('Game Options','QuicklootMode',1)
-		if QuicklootMode ~= UIStrings.UI_Advanced then
-			QuicklootMode = UIStrings.UI_Expert
-			Infinity_SetINIValue('Game Options','QuicklootMode',UIStrings.UI_Expert)
-		end
-		QuicklootENum = Infinity_GetINIString('Game Options','QuicklootENumber',1)
-		if QuicklootENum ~= 'Two' and QuicklootENum ~= 'Three' and QuicklootENum ~= 'Four' and QuicklootENum ~= 'Five' and QuicklootENum ~= 'Six' then
-			QuicklootENum = 'Ten'
-			Infinity_SetINIValue('Game Options','QuicklootENumber','Ten')
-		end
-		QuicklootStartPref = Infinity_GetINIString('Game Options','QuicklootStartPreference',1)
-		groundItemsButtonToggle = 1
-		if QuicklootStartPref ~= UIStrings.UI_Visible then
-			QuicklootStartPref = UIStrings.UI_Hidden
-			Infinity_SetINIValue('Game Options','QuicklootStartPreference',UIStrings.UI_Hidden)
-			groundItemsButtonToggle = 0
-		end
-		JournalSize = Infinity_GetINIString('Game Options','SelectedJournalSize',1)
-		if JournalSize ~= UIStrings.UI_Small then
-			JournalSize = UIStrings.UI_Large
-			Infinity_SetINIValue('Game Options','SelectedJournalSize',UIStrings.UI_Large)
-		end
 		canContinue = startEngine:HasGameToContinue()
 		Infinity_PlayMovie('flames','flames')
-		LeftSideMenu = Infinity_GetINIValue('Game Options','LeftSideMenu',0)
-		ClassicDialog = Infinity_GetINIValue('Game Options','ClassicDialog',0)
-		if ClassicDialog ~= 1 then
-			ClassicDialog = 0
-			Infinity_SetINIValue('Game Options','ClassicDialog',0)
-		end
-		MultiPortraitPicker = Infinity_GetINIValue('Game Options','MultiPortraitPicker',1)
-		if MultiPortraitPicker ~= 0 then
-			MultiPortraitPicker = 1
-			Infinity_SetINIValue('Game Options','MultiPortraitPicker',1)
-		end
-		LargePortraits = Infinity_GetINIValue('Game Options','LargePortraits',0)
-		if LargePortraits ~= 1 then
-			LargePortraits = 0
-			Infinity_SetINIValue('Game Options','LargePortraits',0)
-		end
-		PermThief = Infinity_GetINIValue('Game Options','PermThief',0)
-		if PermThief ~= 1 then
-			PermThief = 0
-			Infinity_SetINIValue('Game Options','PermThief',0)
-		end
+		duiInitSettings({ doFirstLoad = true })
 		getMenuPanelArea()
 		e:CheckGUISong()
 		local state = startEngine:GetEngineState()
