@@ -66,7 +66,7 @@ menu
 		area		106 130 400 46
 		action		"
 			ClassicDialog = duiToggle(ClassicDialog, 0, 1)
-			local history = ClassicDialog == 1 and 'On' or 'Off'
+			local history = ClassicDialog == 0 and 'On' or 'Off'
 			Infinity_SetINIValue('Game Options', 'ShowMessageHistory', history)
 			Infinity_SetINIValue('Game Options', 'ClassicDialog', ClassicDialog)
 		"
