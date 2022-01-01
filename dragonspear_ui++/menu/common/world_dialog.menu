@@ -16,7 +16,7 @@ menu
 		Infinity_PushMenu('WORLD_MESSAGEBOXHISTORY')
 		Infinity_PopMenu('JOURNAL')
 		SMH = Infinity_GetINIString('Game Options','ShowMessageHistory',1)
-		if SMH ~= 'On' then
+		if ClassicDialog ~= 0 or SMH ~= 'On' then
 			SMH = 'Off'
 			showWorldMessages = 0
 			Infinity_SetINIValue('Game Options','ShowMessageHistory','Off')
