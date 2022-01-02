@@ -180,6 +180,6 @@
 --MenuCampB1 96 902  230 902  364 902
 --MenuCampLabel1 100 840  98 838
 
-#if GAME_VERSION == 'sod' then
+#if GAME_VERSION == 'sod' or GAME_VERSION == 'bg2' then
 	usingSODStartMenu = 1
 #end
