@@ -111,6 +111,59 @@ menu
 		align right center
 	}
 
+-- adapted from LeUI --
+#if ENABLE_BUYSELL_SELECT_ALL then
+	button
+	{
+		enabled "storeScreen:IsContainer()"
+		area 78 680 32 32
+		bam ROUNDBUT
+		action
+		"
+			local items, doSelect = duiBuySellSelectAllHelper(store.storeItems)
+			for _, k in ipairs(items) do
+				storeScreen:SelectStoreItem(k, doSelect)
+				if doSelect then
+					local maxCount = store.storeItems[k + 1].maxCount
+					if maxCount > 1 then
+						storeScreen:SetStoreItemCount(k, maxCount)
+					end
+					if not storeScreen:IsBuyItemButtonClickable() then
+						storeScreen:SelectStoreItem(k, false)
+						break
+					end
+				end
+			end
+		"
+	}
+	button
+	{
+		area 752 680 32 32
+		bam ROUNDBUT
+		action
+		"
+			local items, doSelect = duiBuySellSelectAllHelper(store.groupItems)
+			for _, k in ipairs(items) do
+				storeScreen:SelectGroupItem(k, doSelect)
+				if doSelect then
+					local v = store.groupItems[k + 1]
+					local count = v.item.count
+					local stock = v.numInStock or 0
+					if count > 1 then
+						storeScreen:SetGroupItemCount(k, count)
+					elseif stock > 1 then
+						storeScreen:SetGroupItemCount(k, stock)
+					end
+					if not storeScreen:IsSellItemButtonClickable() then
+						storeScreen:SelectGroupItem(k, false)
+						break
+					end
+				end
+			end
+		"
+	}
+#end
+
 	label
 	{
 		area 28 122 386 34

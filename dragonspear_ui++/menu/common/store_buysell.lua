@@ -65,3 +65,19 @@ function GroupContainsSearchString(rowNumber)
 		return nil --does not contain search string
 	end
 end
+
+function duiBuySellSelectAllHelper(items)
+	local selected, unselected = {}, {}
+	local indices = unselected
+
+	for k, v in ipairs(items) do
+		if v.valid == 1 then
+			if v.highlight == 1 and indices == unselected then
+				indices = selected
+			end
+			table.insert(indices, k - 1)
+		end
+	end
+
+	return indices, indices == unselected
+end
