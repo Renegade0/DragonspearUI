@@ -28,7 +28,7 @@ PDD = {
 	"AC: -1 \nCritical hit: +1" ,
 	"Off-hand THAC0: +2",
 	"Off-hand THAC0: +4",
-	"Main-hand THAC0: +2\nOff-hand THAC0: +6"	
+	"Main-hand THAC0: +2\nOff-hand THAC0: +6"
 }
 
 duiStrings = {
@@ -78,7 +78,7 @@ duiStrings = {
 	RG_UI_QUICKLOOT = "Quickloot bar On/Off by default",
 	RG_UI_QUICKLOOT1 = "Toggling this option on will cause quickloot menu to be always on, when starting or loading the game.",
 	RG_RANDOM = "Random Character",
-	RG_PP_TOOLTIP = "Choose your portrait from the list. For more information about custom portraits, press the 'Custom' button.", 
+	RG_PP_TOOLTIP = "Choose your portrait from the list. For more information about custom portraits, press the 'Custom' button.",
 	RG_PP_TOOLTIP1 = "To use a custom portrait, place the desired portrait in 'Documents/Baldur's Gate - Enhanced Edition/portraits' (you may need to create the portraits folder). The image must be in 24-bit BMP format, and the file name must be no more than seven characters long.",
 	RG_PP_TOOLTIP2 = "Note that the standard dimensions for portraits are 210x330; images that are larger or smaller will be resized to fit the frame. No image may be larger than 1024 in either dimension.",
 	RG_PP_TOOLTIP3 = "For updating the portrait list, run the WeiDU 'Portrait Picker' component again. Adding 'f#' (for female) or 'm#' (for male) prefix to the portrait filename before running the WeiDU will automatically set its gender. Portrait filenames that end with 'm' or 's' will not show in the list. Instead, if the filename ends with 'l' and another portrait has the exact same filename except it ends with 'm', the latter will be used as a small portrait in the right sidebar. For adding a description and setting the gender manually, you will be able to use the 'Portrait Picker' tool, which will be coming soon.",
@@ -100,4 +100,12 @@ duiStrings = {
 	RG_UI_THIEFBUTT = "Permanent thieving button",
 	RG_UI_THIEFBUTT1 = "Toggling this option on will display a permanent thieving button in the bottom right section of the screen. This is useful for Cleric / Thiefs.",
 	RG_UI_THIEFBUTT_WARN = "Requires an assigned thieving key binding.",
+	RG_MENU_BG1_CAMPAIGN = "Baldur's Gate EE Campaigns",
+	RG_MENU_BG1_CAMPAIGN1 = "Baldur's Gate",
+	RG_MENU_BG1_CAMPAIGN2 = "Siege of Dragonspear",
+	RG_MENU_BG1_CAMPAIGN3 = "Los Fosos Negros",
+	RG_MENU_BG2_CAMPAIGN = "Baldur's Gate 2 EE Campaigns",
+	RG_MENU_BG2_CAMPAIGN1 = "Shadows of Amn",
+	RG_MENU_BG2_CAMPAIGN2 = "Throne of Bhaal",
+	RG_MENU_BG2_CAMPAIGN3 = "Los Fosos Negros 2",
 }

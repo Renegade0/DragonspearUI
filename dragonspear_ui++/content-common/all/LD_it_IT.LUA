@@ -53,7 +53,7 @@ PDD = {
 	"AC: -1 \nColpo critico: +1" ,
 	"THAC0 Mano Sinistra: +2",
 	"THAC0 Mano Sinistra: +4",
-	"THAC0 Mano Destra: +2\nTHAC0 Mano Sinistra: +6"	
+	"THAC0 Mano Destra: +2\nTHAC0 Mano Sinistra: +6"
 }
 
 duiStrings = {
@@ -125,4 +125,12 @@ duiStrings = {
 	RG_UI_THIEFBUTT = "Permanent thieving button",
 	RG_UI_THIEFBUTT1 = "Toggling this option on will display a permanent thieving button in the bottom right section of the screen. This is useful for Cleric / Thiefs.",
 	RG_UI_THIEFBUTT_WARN = "Requires an assigned thieving key binding.",
+	RG_MENU_BG1_CAMPAIGN = "Baldur's Gate EE Campaigns",
+	RG_MENU_BG1_CAMPAIGN1 = "Baldur's Gate",
+	RG_MENU_BG1_CAMPAIGN2 = "Siege of Dragonspear",
+	RG_MENU_BG1_CAMPAIGN3 = "The Black Pits",
+	RG_MENU_BG2_CAMPAIGN = "Baldur's Gate 2 EE Campaigns",
+	RG_MENU_BG2_CAMPAIGN1 = "Shadows of Amn",
+	RG_MENU_BG2_CAMPAIGN2 = "Throne of Bhaal",
+	RG_MENU_BG2_CAMPAIGN3 = "The Black Pits 2",
 }

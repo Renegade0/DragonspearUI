@@ -270,7 +270,7 @@ menu
 			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BG or isTob ~= 0 then
 			highlightedCampaign = 1;
 			end
-			campaignsString = t('RG_MENU_CAMPAIGN1')
+			campaignsString = t('RG_MENU_BG2_CAMPAIGN1')
 		"
 		actionExit
 		"
@@ -300,7 +300,7 @@ menu
 			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BG or isTob ~= 1 then
 			highlightedCampaign = 2;
 			end
-			campaignsString = t('RG_MENU_CAMPAIGN2')
+			campaignsString = t('RG_MENU_BG2_CAMPAIGN2')
 		"
 		actionExit
 		"
@@ -330,7 +330,7 @@ menu
 			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BP then
 			highlightedCampaign = 3;
 			end
-			campaignsString = t('RG_MENU_CAMPAIGN3')
+			campaignsString = t('RG_MENU_BG2_CAMPAIGN3')
 		"
 		actionExit
 		"
@@ -355,7 +355,7 @@ menu
 		text style "title"
 		text color '5'
 		text align left center
-		text lua "t('RG_MENU_CAMPAIGN') .. ': ' .. campaignsString"
+		text lua "t('RG_MENU_BG2_CAMPAIGN') .. ': ' .. campaignsString"
 	}
 	label
 	{
@@ -365,6 +365,6 @@ menu
 		--text shadow 5
 		text color '$'
 		text align left center
-		text lua "t('RG_MENU_CAMPAIGN') .. ': ' .. campaignsString"
+		text lua "t('RG_MENU_BG2_CAMPAIGN') .. ': ' .. campaignsString"
 	}
 }

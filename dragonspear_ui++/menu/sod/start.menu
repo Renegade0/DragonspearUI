@@ -262,7 +262,7 @@ menu
 			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_`campaign.name` then
 			highlightedCampaign = `i`;
 			end
-			campaignsString = t('RG_MENU_CAMPAIGN`campaign.index`')
+			campaignsString = t('RG_MENU_BG1_CAMPAIGN`campaign.index`')
 		"
 		actionExit
 		"
@@ -288,7 +288,7 @@ menu
 		text style "title"
 		text color '5'
 		text align left center
-		text lua "t('RG_MENU_CAMPAIGN') .. ': ' .. campaignsString"
+		text lua "t('RG_MENU_BG1_CAMPAIGN') .. ': ' .. campaignsString"
 	}
 	label
 	{
@@ -298,6 +298,6 @@ menu
 		--text shadow 5
 		text color '$'
 		text align left center
-		text lua "t('RG_MENU_CAMPAIGN') .. ': ' .. campaignsString"
+		text lua "t('RG_MENU_BG1_CAMPAIGN') .. ': ' .. campaignsString"
 	}
 }

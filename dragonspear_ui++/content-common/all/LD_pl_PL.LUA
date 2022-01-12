@@ -53,7 +53,7 @@ PDD = {
 	"KP: -1 \nTrafienie krytyczne: +1" ,
 	"TraK0 drugiej ręki: +2",
 	"TraK0 drugiej ręki: +4",
-	"TraK0 pierwszej ręki: +2\nTraK0 drugiej ręki: +6"	
+	"TraK0 pierwszej ręki: +2\nTraK0 drugiej ręki: +6"
 }
 
 duiStrings = {
@@ -103,7 +103,7 @@ duiStrings = {
 	RG_UI_QUICKLOOT = "Domyślne włączenie/wyłączenie paska szybkiego łupu",
 	RG_UI_QUICKLOOT1 = "Włączenie tej opcji sprawi, że pasek szybkiego łupu będzie zawsze włączony w trakcie zaczynania, bądź ładowania gry.",
 	RG_RANDOM = "Losowa Postać",
-	RG_PP_TOOLTIP = "Wybierz swój portret z listy. By uzyskać więcej informacji na temat własnych portretów naciśnij przycisk 'Inne'.", 
+	RG_PP_TOOLTIP = "Wybierz swój portret z listy. By uzyskać więcej informacji na temat własnych portretów naciśnij przycisk 'Inne'.",
 	RG_PP_TOOLTIP1 = "By używać własnego portretu, umieść pożądany obraz w folderze 'Documents/Baldur's Gate - Enhanced Edition/portraits' (możesz być zmuszony stworzyć go samemu). Musi być zapisany w dwudziestoczterobitowym formacie BMP i posiadać nazwę nie dłuższą niż siedem liter.",
 	RG_PP_TOOLTIP2 = "Standardowa rozdzielczość portretów wynosi 210x330; większe i mniejsze portrety będą przeskalowane. Żaden obraz nie może być większy niż 1024x1024.",
 	RG_PP_TOOLTIP3 = "By zaktualizować listę portretów włącz ponownie komponent WeiDU 'Portrait Picker'. Dodanie prefiksu 'f#' (dla kobiet) i 'm#' (dla mężczyzn) do nazwy portretu przed uruchomieniem WeiDU automatycznie ustawi jego płeć. Portrety, które kończą się na 'm' albo 's' nie będą pojawiać się na liście. Zamiast tego, jeśli nazwa kończy się na 'l', a inny portret ma dokładnie taką samą nazwę, z wyjątkiem tego że kończy się na 'm', to ten drugi będzie użyty jako mały portret po prawej stronie. By dodać ręcznie opis i ustawić płeć, będziesz mógł użyć narzędzia 'Portrait Picker', które pojawi się wkrótce.",
@@ -125,4 +125,12 @@ duiStrings = {
 	RG_UI_THIEFBUTT = "Permanent thieving button",
 	RG_UI_THIEFBUTT1 = "Toggling this option on will display a permanent thieving button in the bottom right section of the screen. This is useful for Cleric / Thiefs.",
 	RG_UI_THIEFBUTT_WARN = "Requires an assigned thieving key binding.",
+	RG_MENU_BG1_CAMPAIGN = "Baldur's Gate EE Campaigns",
+	RG_MENU_BG1_CAMPAIGN1 = "Baldur's Gate",
+	RG_MENU_BG1_CAMPAIGN2 = "Siege of Dragonspear",
+	RG_MENU_BG1_CAMPAIGN3 = "Kręgi Podmroku",
+	RG_MENU_BG2_CAMPAIGN = "Baldur's Gate 2 EE Campaigns",
+	RG_MENU_BG2_CAMPAIGN1 = "Cienie Amn",
+	RG_MENU_BG2_CAMPAIGN2 = "Tron Bhaala",
+	RG_MENU_BG2_CAMPAIGN3 = "Kręgi Podmroku 2",
 }

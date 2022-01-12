@@ -130,23 +130,12 @@ duiStrings = {
 	RG_UI_THIEFBUTT1 = "Toggling this option on will display a permanent thieving button in the bottom right section of the screen. This is useful for Cleric / Thiefs.",
 	RG_UI_THIEFBUTT_WARN = "Requires an assigned thieving key binding.",
 	RG_ABILITY_BONUSES = 'Ability bonuses',
+	RG_MENU_BG1_CAMPAIGN = "Baldur's Gate EE Campaigns",
+	RG_MENU_BG1_CAMPAIGN1 = "Baldur's Gate",
+	RG_MENU_BG1_CAMPAIGN2 = "Siege of Dragonspear",
+	RG_MENU_BG1_CAMPAIGN3 = "The Black Pits",
+	RG_MENU_BG2_CAMPAIGN = "Baldur's Gate 2 EE Campaigns",
+	RG_MENU_BG2_CAMPAIGN1 = "Shadows of Amn",
+	RG_MENU_BG2_CAMPAIGN2 = "Throne of Bhaal",
+	RG_MENU_BG2_CAMPAIGN3 = "The Black Pits 2",
 }
-
--- 0 = BGEE, 1 = BG2EE, 2 = IWDEE
-if engine_mode == 0 then
-	updateTable(duiStrings, {
-		RG_MENU_CAMPAIGN = "Baldur's Gate EE Campaigns",
-		RG_MENU_CAMPAIGN1 = "Baldur's Gate",
-		RG_MENU_CAMPAIGN2 = "Siege of Dragonspear",
-		RG_MENU_CAMPAIGN3 = "The Black Pits",
-	})
-elseif engine_mode == 1 then
-	updateTable(duiStrings, {
-		RG_MENU_CAMPAIGN = "Baldur's Gate 2 EE Campaigns",
-		RG_MENU_CAMPAIGN1 = "Shadows of Amn",
-		RG_MENU_CAMPAIGN2 = "Throne of Bhaal",
-		RG_MENU_CAMPAIGN3 = "The Black Pits 2",
-	})
-else
-	Infinity_Log(('Unsupported engine_mode "%s"'):format(engine_mode))
-end

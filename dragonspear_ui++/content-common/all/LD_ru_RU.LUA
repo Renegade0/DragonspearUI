@@ -130,4 +130,12 @@ duiStrings = {
 	RG_UI_THIEFBUTT1 = "Если этот параметр включен, в правом нижнем углу экрана будет отображаться кнопка воровства. Полезно для Священников / Воров.",
 	RG_UI_THIEFBUTT_WARN = "Requires an assigned thieving key binding.",
 	RG_ABILITY_BONUSES = 'Бонусы способностей',
+	RG_MENU_BG1_CAMPAIGN = "Врата Балдура",
+	RG_MENU_BG1_CAMPAIGN1 = "Врата Балдура",
+	RG_MENU_BG1_CAMPAIGN2 = "Осада Драконьего Копья",
+	RG_MENU_BG1_CAMPAIGN3 = "Черные Копи",
+	RG_MENU_BG2_CAMPAIGN = "Врата Балдура 2",
+	RG_MENU_BG2_CAMPAIGN1 = "Тени Амна",
+	RG_MENU_BG2_CAMPAIGN2 = "Трон Баала",
+	RG_MENU_BG2_CAMPAIGN3 = "Черные Копи 2",
 }

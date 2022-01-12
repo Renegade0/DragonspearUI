@@ -125,4 +125,12 @@ duiStrings = {
 	RG_UI_THIEFBUTT = "Permanent thieving button",
 	RG_UI_THIEFBUTT1 = "Toggling this option on will display a permanent thieving button in the bottom right section of the screen. This is useful for Cleric / Thiefs.",
 	RG_UI_THIEFBUTT_WARN = "Requires an assigned thieving key binding.",
+	RG_MENU_BG1_CAMPAIGN = "Baldur's Gate EE Campaigns",
+	RG_MENU_BG1_CAMPAIGN1 = "Baldur's Gate",
+	RG_MENU_BG1_CAMPAIGN2 = "Le Siège de Vougedragon",
+	RG_MENU_BG1_CAMPAIGN3 = "Les Fosses Noires",
+	RG_MENU_BG2_CAMPAIGN = "Baldur's Gate 2 EE Campaigns",
+	RG_MENU_BG2_CAMPAIGN1 = "Les Ombres de l'Amn",
+	RG_MENU_BG2_CAMPAIGN2 = "Le Trône de Bhaal",
+	RG_MENU_BG2_CAMPAIGN3 = "Les Fosses Noires 2",
 }
