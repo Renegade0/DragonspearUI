@@ -139,6 +139,11 @@ menu
 				enabled "rowNumber == 2 and scrolled"
 				text lua "worldMessageBoxText"
 				text style "gamelog"
+
+				-- with some font sizes the last line sometimes is not visible
+				-- adding a hidden scrollbar as a hack seems to work
+				scrollbar	'RGSCRBR'
+				scrollbar hide lua "1"
 			}
 			text
 			{
@@ -147,6 +152,10 @@ menu
 				enabled "rowNumber == 2 and not scrolled"
 				text lua "worldNPCDialogText:gsub('\n', ': ', 1)"
 				text style "gamelog"
+
+				-- see worldMessageBoxText above
+				scrollbar	'RGSCRBR'
+				scrollbar hide lua "1"
 			}
 			label
 			{

@@ -142,12 +142,8 @@
 		-- assume screenHeight >= 129, i.e. maxHeight >= 3
 		local maxHeight = math.floor(screenHeight * 8 / 10) - 100
 		if choicesHeight + npcH > maxHeight then
-			if maxHeight < npcH then
-				choicesHeight = math.min(50, choicesHeight - 40, math.floor(maxHeight / 3))
-				npcH = maxHeight - choicesHeight
-			else
-				choicesHeight = maxHeight - npcH
-			end
+			choicesHeight = math.min(choicesHeight - 40, maxHeight / 2)
+			npcH = maxHeight - choicesHeight
 			desiredHeight = choicesHeight + 100 + npcH
 		end
 
