@@ -1,0 +1,63 @@
+menu
+{
+	name 'WORLD_LEVEL_UP_BUTTONS'
+	align right top
+	offset -65 0
+	ignoreesc
+	enabled "0" --disable this menu for now.
+	button
+	{
+		enabled "Infinity_CanLevelUp(0)"
+		bam GUIOSW
+		area 0 14 44 44
+		sequence 0
+		action "Infinity_ActivateRecord(0)"
+		pulse 1
+	}
+	button
+	{
+		enabled "Infinity_CanLevelUp(1)"
+		bam GUIOSW
+		area 0 106 44 44
+		sequence 0
+		action "Infinity_ActivateRecord(1)"
+		pulse 1
+	}
+	button
+	{
+		enabled "Infinity_CanLevelUp(2)"
+		bam GUIOSW
+		area 0 198 44 44
+		sequence 0
+		action "Infinity_ActivateRecord(2)"
+		pulse 1
+	}
+	button
+	{
+		enabled "Infinity_CanLevelUp(3)"
+		bam GUIOSW
+		area 0 290 44 44
+		sequence 0
+		action "Infinity_ActivateRecord(3)"
+		pulse 1
+	}
+	button
+	{
+		enabled "Infinity_CanLevelUp(4)"
+		bam GUIOSW
+		area 0 382 44 44
+		sequence 0
+		action "Infinity_ActivateRecord(4)"
+		pulse 1
+	}
+	button
+	{
+		enabled "Infinity_CanLevelUp(5)"
+		bam GUIOSW
+		area 0 474 44 44
+		sequence 0
+		action "Infinity_ActivateRecord(5)"
+		pulse 1
+	}
+
+}

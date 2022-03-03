@@ -1,0 +1,249 @@
+menu
+{
+	name 'CHARGEN_CHOOSE_SPELLS'
+	align center center
+	ignoreesc
+	onOpen "
+		rgspelldesc = 0
+		table.sort(chargen.choose_spell, sortBySpellName)
+		currentChargenChooseMageSpell = nil
+
+		if currentChargenKit == nil then
+			currentChargenKit = 0
+		end
+
+		local currentKitName = ''
+
+		--gnome illusionists
+		if currentChargenRace ~= 6 and chargen.kit then
+			local kit = chargen.kit[currentChargenKit]
+			if kit then
+				currentKitName = Infinity_FetchString(kit.name)
+			end
+		else
+			currentKitName = Infinity_FetchString(`REF_KIT_NAME_ILLUSION`)
+		end
+
+		if currentKitName == Infinity_FetchString(`REF_KIT_NAME_ABJURATION`) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('ABJURATION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(`REF_KIT_NAME_CONJURATION`) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('CONJURATION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(`REF_KIT_NAME_DIVINATION`) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('DIVINATION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(`REF_KIT_NAME_ENCHANTMENT`) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('ENCHANTMENT_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(`REF_KIT_NAME_ILLUSION`) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('ILLUSION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(`REF_KIT_NAME_EVOCATION`) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('EVOCATION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(`REF_KIT_NAME_NECROMANCY`) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('NECROMANCY_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(`REF_KIT_NAME_TRANSMUTATION`) then
+			setStringTokenLua('<SCHOOLTOKEN>',t('TRANSMUTATION_SCHOOL_TOKEN'))
+		elseif currentKitName == Infinity_FetchString(`REF_KIT_NAME_WILD_MAGE`) then
+			setStringTokenLua('<SCHOOLTOKEN>',Infinity_FetchString(`REF_KIT_NAME_WILD_MAGE`))
+		end
+		rgUnlearnDefault()
+
+		choose_spell = { page_info = '1 / 1', offset = 0, total = #chargen.choose_spell }
+		scrollSpellSlots(0) -- init
+		"
+	label
+	{
+		area 0 0 1444 818
+		mosaic RGCSPEL
+	}
+	label
+	{
+		area 378 80 686 52
+		text lua "t(chargen.title) .. ': ' .. t('LEVEL_LABEL') .. ' ' .. chargen.currentSpellLevelChoice"
+		text style "title"
+	}
+	list
+	{
+		column
+		{
+			width 16
+
+			label
+			{
+				bam GUIPFC
+				area 4 19 16 16
+				align center center
+				enabled "chargen.choose_spell[rowNumber].enabled or chargen.choose_spell[rowNumber].known"
+			}
+			label
+			{
+				bam GUIBTBUT
+				area 20 0 52 52
+				align center center
+				frame lua "specialistFrame(rowNumber)"
+			}
+			label
+			{
+				area 20 0 52 52
+				greyscale lua "chargen.choose_spell[rowNumber].enabled == false"
+				bam lua "spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[rowNumber].key].groundicon"
+				align center center
+			}
+		}
+		column
+		{
+			width 84
+			label
+			{
+				area 4 0 -1 -1
+				text lua "Infinity_FetchString(spellBook[chargen.currentSpellLevelChoice][chargen.choose_spell[rowNumber].key].name)"
+				text style "normal"
+
+				glow lua "chargen.choose_spell[rowNumber].enabled"
+				align left center
+
+			}
+		}
+
+--		scrollbar	'GUISCRC'
+		rowheight 52
+--		area 256 174 480 438
+		table "chargen.choose_spell"
+		var currentChargenChooseMageSpell
+		action "
+			if cellNumber == 1 and not chargen.choose_spell[currentChargenChooseMageSpell].known then
+				createCharScreen:OnLearnMageSpellButtonClick(currentChargenChooseMageSpell)
+			end
+		"
+	}
+
+	button
+	{
+		enabled "choose_spell.total > 30"
+		clickable lua "choose_spell.offset > 0"
+		area		90 180 42 42
+		bam "GUIPRC"
+		scaleToClip
+		sequence 3
+		action "scrollSpellSlots(-1)"
+		actionScroll "scrollSpellSlots()"
+	}
+
+	button
+	{
+		enabled "choose_spell.total > 30"
+		clickable lua "choose_spell.offset + 30 <= choose_spell.total"
+		area		265 180 42 42
+		bam "GUIPRC"
+		scaleToClip
+		sequence 2
+		action "scrollSpellSlots(1)"
+		actionScroll "scrollSpellSlots()"
+	}
+
+	label {
+		enabled "choose_spell.total > 30"
+		area	137 180 123 42
+		text lua "choose_spell.page_info"
+		text style "title"
+		align center center
+		actionScroll "scrollSpellSlots()"
+	}
+
+	-- to be able to scroll without hovering spell slots
+	label {
+		area 322 174 406 480
+		actionScroll "scrollSpellSlots()"
+	}
+
+#for y = 0, 5 do
+#for x = 0, 4 do
+#local i = y * 5 + x + 1
+	label	{
+		bam GUIBTBUT
+		area `347 + x * 72 + 10` `178 + y * 80 + 10` 52 52
+		align center center	frame 0
+		enabled "choose_spell[`i`] == nil"
+		ignoreEvents
+	}
+	list	{	column	{	width 100	label	{	bam RGCMHI	area 0 0 72 72	align center center	enabled "choose_spell[`i`].enabled or choose_spell[`i`].known"	}
+			label	{	bam GUIBTBUT	area 10 10 52 52 	align center center	frame lua "specialistFrame(`i`)"	}
+			label	{	area 10 10 52 52	bam lua "spellBook[chargen.currentSpellLevelChoice][choose_spell[`i`].key].groundicon"	align center center	}	}
+		enabled "choose_spell[`i`] ~= nil"
+		rowwidth 72	hideHighlight	area `347 + x * 72` `178 + y * 80` 72 72	table "{1}"	var currentChargenChooseMageSpell
+		action "onSpellSlotClick(`i`)"	actionEnter "onSpellSlotEnter(`i`)"	actionScroll "scrollSpellSlots()" }
+#end
+#end
+
+	text
+	{
+		enabled "rgspelldesc == 1"
+		area 748 180 344 517
+		text lua "Infinity_FetchString(desc)"
+		text style "normal"
+		scrollbar	'GUISCRC'
+	}
+	text
+	{
+		enabled "rgspelldesc ~= 1"
+		area 748 180 344 517
+		text lua "chargen.helpText"
+		text style "normal"
+		scrollbar	'GUISCRC'
+	}
+
+	label
+	{
+		area 474 654 192 48
+		text "SPELLS_REMAINING_NORMAL"
+		text style "normal"
+		text align right center
+	}
+	label
+	{
+		area 666 654 36 48
+		text lua "chargen.extraSpells"
+		text style "normal"
+		text align center center
+	}
+	-- TODO: maybe need to change the area and fill props
+	label
+	{
+		area 350 660 352 39
+		enabled "shouldShowSpecialistMessage()"
+		text lua "t('SPECIALIST_SPELL_REQ')"
+		text style "normal"
+		text align center center
+		fill 0 0 0 255
+	}
+
+	button
+	{
+--		area 240 654 230 40
+		bam GUIBUTMT
+		text lua "spellLearnOrUnlearnText()"
+		text style "button"
+--		clickable lua "spellLearnOrUnlearnClickable()"
+--		action "createCharScreen:OnLearnMageSpellButtonClick(currentChargenChooseMageSpell)"
+--		action "rgUnlearnDefault()"
+	}
+
+	button
+	{
+		on escape
+		area 408 724 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		clickable lua "not chargen.levelingUp"
+		action "Infinity_PopMenu(); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		area 806 724 230 40
+		bam GUIBUTMT
+		text lua "nextOrDone()"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action "createCharScreen:OnDoneButtonClick()"
+	}
+
+}

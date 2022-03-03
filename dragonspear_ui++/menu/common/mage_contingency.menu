@@ -1,0 +1,161 @@
+menu
+{
+	name 'MAGE_CONTINGENCY'
+
+	align center center
+	modal
+
+	onopen "refreshMageContingency()"
+
+	label
+	{
+		area 0 0 864 710
+		mosaic "GUIPOPF"
+	}
+	label --Title
+	{
+		area 40 104 790 106
+		text "SPELLS_PREPARED_LABEL"
+		text style "label"
+		text align left top
+	}
+	label
+	{
+		area 60 37 744 44
+		text "CONTINGENCY_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 238 258 190 36
+		text "CONDITION_LABEL"
+		text style "label"
+		text align left center
+	}
+	label
+	{
+		area 428 258 200 36
+		text "TARGET_LABEL"
+		text style "label"
+		text align left center
+	}
+
+	label
+	{
+		area 628 258 196 36
+		text "SPELL_LABEL"
+		text style "label"
+		text align left center
+	}
+
+	list
+	{
+		column
+		{
+			width 25
+			label
+			{
+				area	0 0 -1 -1
+				text lua "t(mageBookStrings[preparedSpells[rowNumber].resref].title)"
+				text style "label"
+				align	left center
+			}
+
+		}
+		column
+		{
+			width 25
+			label
+			{
+				area	0 0 -1 -1
+				text lua "Infinity_FetchString(preparedSpells[rowNumber].condition)"
+				text style "label"
+				align	left center
+			}
+
+		}
+		column
+		{
+			width 25
+			label
+			{
+				area	0 0 -1 -1
+				text lua "Infinity_FetchString(preparedSpells[rowNumber].target)"
+				text style "label"
+				align	left center
+			}
+
+		}
+
+		column
+		{
+			width 5
+			label
+			{
+				enabled "preparedSpells[rowNumber].spells[1] ~= nil"
+				area	0 0 -1 -1
+				bam	lua "preparedSpells[rowNumber].spells[1].icon"
+				align	center center
+			}
+		}
+		column
+		{
+			width 5
+			label
+			{
+				enabled "preparedSpells[rowNumber].spells[2] ~= nil"
+				area	0 0 -1 -1
+				bam	lua "preparedSpells[rowNumber].spells[2].icon"
+				align	center center
+			}
+		}
+		column
+		{
+			width 5
+			label
+			{
+				enabled "preparedSpells[rowNumber].spells[3] ~= nil"
+				area	0 0 -1 -1
+				bam	lua "preparedSpells[rowNumber].spells[3].icon"
+				align	center center
+			}
+		}
+		column
+		{
+			width 5
+			label
+			{
+				area	0 0 -1 -1
+				bam	"GUISTMPC"
+				sequence 2
+				align	center center
+				enabled "preparedSpells[rowNumber].dispellable"
+			}
+		}
+
+		area 44 294 780 300
+
+		rowheight	56
+		table		"preparedSpells"
+		var		"currentContingencySpell"
+		action		"
+			if (cellNumber == 7) and preparedSpells[currentContingencySpell].dispellable then
+				if Infinity_GetOption(41, 9) == 1 then
+					popup2Button(`REF_CONFIRM_DISPELL_CONTINGENCY`, 'YES_BUTTON', function() mageScreen:OnDispellButtonClick(currentContingencySpell) end, 'NO_BUTTON')
+				else
+					mageScreen:OnDispellButtonClick(currentContingencySpell)
+				end
+			end
+		"
+	}
+
+
+	button
+	{
+		area 316 650 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu('MAGE_CONTINGENCY')"
+	}
+}

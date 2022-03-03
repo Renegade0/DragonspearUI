@@ -1,0 +1,68 @@
+menu
+{
+	name 'AREA_MAP_TITLE'
+	align center top
+	opacity lua "notesAlpha"
+	ignoreEsc
+	label
+	{
+		name "AREA_MAP_BACKGROUND"
+		area 66 0 662 92
+		rectangle 0
+	}
+	label
+	{
+		area 74 8 184 74
+		name "AREA_MAP_TITLE"
+		text lua "Infinity_FetchString(`REF_AREA_MAP_TITLE`)"
+		text style title
+	}
+		label
+	{
+		area 300 8 170 36
+		action "mapScreen:ToggleDisplayExploredMap()"
+		text "WORLDMAP_HIGHLIGHT_LABEL"
+		text style "label"
+		text align left center
+
+	}
+	button
+	{
+		area 264 8 206 36
+		bam "4CHECK"
+		sequence lua "mapScreen:DisplayExploredMap() and 0 or 1"
+		action "mapScreen:ToggleDisplayExploredMap()"
+	}
+
+	label
+	{
+		area 300 42 170 40
+		toggle showNotes
+		text "WORLD_MAP_NOTES_LABEL"
+		text style "label"
+		text align left center
+
+	}
+	button
+	{
+		area 264 42 206 40
+		bam "4CHECK"
+		sequence lua "showNotes == 1 and 0 or 1"
+		toggle showNotes
+	}
+
+	button
+	{
+		area 478 24 230 40
+		bam GUIBUTMT
+		sequence 0
+		text style "button"
+		text "WORLD_MAP_BUTTON"
+		action
+		"
+			worldMapScreen:StartWorldMap(0)
+			e:SelectEngine(worldMapScreen)
+		"
+	}
+
+}

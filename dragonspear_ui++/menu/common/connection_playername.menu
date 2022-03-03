@@ -1,0 +1,82 @@
+menu
+{
+	name 'CONNECTION_PLAYERNAME'
+	align center center
+	ignoreEsc
+	modal
+
+	onOpen
+	"
+		connectionPlayerNameEdit = Infinity_GetINIString('Multiplayer', 'Player Name', 'Player Name')
+		Infinity_FocusTextEdit('connectionPlayerNameEditArea')
+	"
+	label
+	{
+		area 0 0 512 651
+		mosaic "GUICONNB"
+	}
+	label
+	{
+		area 83 59 338 32
+		text style "label"
+		text "CURRENT_PLAYERS_LABEL"
+	}
+	label
+	{
+		area 83 446 338 32
+		text style "label"
+		text "PLAYER_NAME_LABEL"
+	}
+
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 -1
+				text lua "connection.currentPlayers[rowNumber].name"
+				text style "edit"
+				align center center
+			}
+		}
+
+		action
+		"
+		"
+
+		rowheight 50
+		area 83 99 350 338
+		table "connection.currentPlayers"
+		var connectionSelectedPlayer
+	}
+
+	edit
+	{
+		name		"connectionPlayerNameEditArea"
+		area		83 479 338 32
+		var			connectionPlayerNameEdit
+		text style	"edit"
+		text align  center center
+		maxlines	1
+		maxchars 	32
+		fill            112 111 111 64
+	}
+	button
+	{
+		clickable 	lua "connectionPlayerNameEdit ~= ''"
+		area		150 535 230 40
+		bam			GUIBUTMT
+		sequence	0
+		text  		"DONE_BUTTON"
+		text style	"button"
+		on			return
+		action
+		"
+			Infinity_PopMenu();
+			Infinity_PopMenu();
+			connectionScreen:SetPlayerName(connectionPlayerNameEdit)
+		"
+	}
+}

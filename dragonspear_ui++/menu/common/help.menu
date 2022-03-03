@@ -1,0 +1,102 @@
+menu
+{
+	name 'HELP'
+	align center center
+	ignoreEsc
+	onOpen
+	"
+		currentButtonHelp = 11
+		Infinity_PushMenu('LEFT_SIDEBAR_HELP')
+		Infinity_PushMenu('RIGHT_SIDEBAR_HELP')
+		Infinity_PushMenu('WORLD_ACTIONBAR_HELP')
+	"
+	onClose
+	"
+		Infinity_PopMenu('LEFT_SIDEBAR_HELP')
+		Infinity_PopMenu('RIGHT_SIDEBAR_HELP')
+		Infinity_PopMenu('WORLD_ACTIONBAR_HELP')
+	"
+	label
+	{
+		area 0 0 912 244
+		mosaic GUIERR7
+	}
+	label
+	{
+		enabled "buttonHelp[currentButtonHelp][3] == -1 and buttonHelp[currentButtonHelp][4] == 0 and buttonHelp[currentButtonHelp][5] == 0 and buttonHelp[currentButtonHelp][6] == -1"
+		area 34 24 75 54
+		bam lua "buttonHelp[currentButtonHelp][1]"
+		sequence lua "buttonHelp[currentButtonHelp][2]"
+	}
+	label
+	{
+		enabled "buttonHelp[currentButtonHelp][3] == -1 and buttonHelp[currentButtonHelp][4] == 0 and buttonHelp[currentButtonHelp][5] ~= 0 and buttonHelp[currentButtonHelp][6] == -1"
+		area 34 24 44 44
+		bam lua "buttonHelp[currentButtonHelp][1]"
+		sequence lua "buttonHelp[currentButtonHelp][2]"
+		scaleToClip
+	}
+	label
+	{
+		enabled "buttonHelp[currentButtonHelp][3] == -1 and buttonHelp[currentButtonHelp][4] == 0 and buttonHelp[currentButtonHelp][5] == 0 and buttonHelp[currentButtonHelp][6] ~= -1"
+		area 34 24 75 54
+		bam lua "buttonHelp[currentButtonHelp][1]"
+		frame lua "buttonHelp[currentButtonHelp][2]"
+	}
+	button
+	{
+		area 34 24 64 90
+		enabled "buttonHelp[currentButtonHelp][3] ~= -1"
+		portrait lua "buttonHelp[currentButtonHelp][3]"
+	}
+
+	label
+	{
+		enabled "buttonHelp[currentButtonHelp][4] ~= 0"
+		area 29 16 95 120
+		bam "CGEAR"
+		frame lua "timer:GetCurrentTime() % 24"
+	}
+	label
+	{
+		enabled "buttonHelp[currentButtonHelp][4] ~= 0"
+		area 29 16 95 120
+		bam "CDIAL"
+		frame lua "timer:GetCurrentHour() % timer.TIMESCALE_HOUR_PER_DAY"
+	}
+	label
+	{
+		enabled "buttonHelp[currentButtonHelp][4] ~= 0"
+		area 29 16 95 120
+		bam "CPEN"
+		frame lua "timer:GetCurrentTime() % 24"
+	}
+
+	label
+	{
+		enabled "buttonHelp[currentButtonHelp][7] ~= ''"
+		area 34 24 52 52
+		align center center
+		bam lua "buttonHelp[currentButtonHelp][7]"
+		frame lua "buttonHelp[currentButtonHelp][7]"
+	}
+
+	label
+	{
+		area 118 24 752 120
+		text lua "t(buttonHelp[currentButtonHelp][8])"
+		text style	"label"
+		text align left top
+	}
+	button
+	{
+		area 306 164 300 40
+		bam GUIBUTWT
+		text "DONE_BUTTON"
+		text style	"button"
+		action
+		"
+			Infinity_PopMenu('HELP')
+		"
+	}
+}

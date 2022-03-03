@@ -1,0 +1,103 @@
+menu
+{
+	name 'RIGHT_SIDEBAR_HELP'
+	align right top
+	ignoreEsc
+	onOpen
+	"
+		Infinity_PushMenu('RIGHT_SIDEBAR_BOTTOM_HELP')
+	"
+	onClose
+	"
+		Infinity_PopMenu('RIGHT_SIDEBAR_BOTTOM_HELP')
+	"
+	label
+	{
+		name 'rightSidebarBackground'
+		area 0 0 80 1536
+		mosaic GUIWRSP
+	}
+	label
+	{
+		area 0 1536 80 1536
+		mosaic GUIWRSP
+	}
+	button
+	{
+		area 11 14 64 90
+		portrait 0
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 0"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 17
+		"
+		tooltip lua "Infinity_GetPortraitTooltip(0)"
+	}
+	button
+	{
+		area 11 106 64 90
+		portrait 1
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 1"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 18
+		"
+		tooltip lua "Infinity_GetPortraitTooltip(1)"
+	}
+	button
+	{
+		area 11 198 64 90
+		portrait 2
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 2"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 19
+		"
+		tooltip lua "Infinity_GetPortraitTooltip(2)"
+	}
+	button
+	{
+		area 11 290 64 90
+		portrait 3
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 3"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 20
+		"
+		tooltip lua "Infinity_GetPortraitTooltip(3)"
+	}
+	button
+	{
+		area 11 382 64 90
+		portrait 4
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 4"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 21
+		"
+		tooltip lua "Infinity_GetPortraitTooltip(4)"
+	}
+	button
+	{
+		area 11 474 64 90
+		portrait 5
+		bam GUIRSP10
+		enabled "Infinity_GetNumCharacters() > 5"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 22
+		"
+		tooltip lua "Infinity_GetPortraitTooltip(5)"
+	}
+}

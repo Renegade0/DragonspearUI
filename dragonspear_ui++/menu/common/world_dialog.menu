@@ -1,0 +1,370 @@
+menu
+{
+	name 'WORLD_DIALOG'
+	align left top
+	ignoreEsc
+	onOpen
+	"
+		Infinity_PopMenu('ITEM_DESCRIPTION')
+		ClassicDialog = Infinity_GetINIValue('Game Options','ClassicDialog',0)
+		disableDialogOnSpace = Infinity_GetINIValue('Game Options', 'Disable Space Key In Conversations', 1)
+		WorldDialog:restore()
+
+		SetBottomPosition()
+		resizeDialog()
+		greySidebars()
+		Infinity_PushMenu('WORLD_MESSAGEBOXHISTORY')
+		Infinity_PopMenu('JOURNAL')
+		SMH = Infinity_GetINIString('Game Options','ShowMessageHistory',1)
+		if ClassicDialog ~= 0 or SMH ~= 'On' then
+			SMH = 'Off'
+			showWorldMessages = 0
+			Infinity_SetINIValue('Game Options','ShowMessageHistory','Off')
+		else
+			SMH = 'On'
+			showWorldMessages = 1
+			Infinity_SetINIValue('Game Options','ShowMessageHistory','On')
+		end
+		alreadyAdded = 0
+		Infinity_PushMenu('WORLD_DIALOG_CONFIRM')
+		greySidebars()
+		previousTop = nil
+		scrolled = false
+		scrollToBottom = false
+
+		-- This adds convenient answer dialog buttons on the sides
+		-- of the screen for touch devices.
+		if isTouchActionbar() and not dialogViewMode then
+			Infinity_PushMenu('WORLD_DIALOG_LEFT')
+			Infinity_PushMenu('WORLD_DIALOG_RIGHT')
+			Infinity_PopMenu('LEFT_SIDEBAR_BOTTOM')
+			Infinity_PopMenu('RIGHT_SIDEBAR_BOTTOM')
+			worldDialogSidebars = true
+
+			-- make sure the enhanced dialog is not covered
+			local x = Infinity_GetArea('worldDialogBackground')
+			if ClassicDialog ~= 1 and x < 90 then
+				dragDialogX(90 - x)
+			end
+		end
+	"
+	onClose
+	"
+		-- TODO: review
+		if worldDialogSidebars then
+			Infinity_PopMenu('WORLD_DIALOG_LEFT')
+			Infinity_PopMenu('WORLD_DIALOG_RIGHT')
+			Infinity_PushMenu('LEFT_SIDEBAR_BOTTOM')
+			Infinity_PushMenu('RIGHT_SIDEBAR_BOTTOM')
+			worldDialogSidebars = nil
+		end
+
+		ungreySidebars()
+		dialogButtonText = ''
+		Infinity_PopMenu('WORLD_MESSAGEBOXHISTORY')
+		worldNPCDialogPortrait='NONE'
+		if groundItemsButtonToggle == 1 then
+			Infinity_PushMenu('WORLD_QUICKLOOT')
+		end
+		Infinity_PopMenu('WORLD_DIALOG_CONFIRM')
+
+		WorldDialog:save()
+	"
+
+	-- Optionally disable continuing dialog on space bar
+	label
+	{
+		on space
+		name "worldDialogOnSpaceLabel"
+		enabled "disableDialogOnSpace == 1"
+	}
+
+	--classic dialog
+	label
+	{
+		enabled "ClassicDialog == 1"
+		name "worldDialogBackgroundBottom"
+		area 125 0 863 303
+		mosaic RGDBBOX1
+	}
+	label
+	{
+		enabled "ClassicDialog == 1"
+		name "worldDialogBackgroundBottom1"
+		area 125 270 863 83
+		mosaic RGDBBOX2
+	}
+	label
+	{
+		enabled "worldNPCDialogPortrait~='NONE' and worldNPCDialogPortrait~='' and ClassicDialog == 1"
+		name "worldDialogPortraitAreaBottom"
+		area 24 70 108 170
+		bitmap lua "worldNPCDialogPortrait"
+	}
+	label
+	{
+		enabled "worldNPCDialogPortrait~='NONE' and worldNPCDialogPortrait~='' and ClassicDialog == 1"
+		name "worldDialogPortraitBackgroundBottom"
+		area 13 50 125 209
+		mosaic "rgboxp1"
+	}
+	--label
+	--{
+	--	enabled "ClassicDialog == 1"
+	--	name "worldDialogBackgroundBottom"
+	--	area 0 0 863 253
+	--	rectangle 4
+	--}
+	--label
+	--{
+	--	enabled "ClassicDialog == 1"
+	--	name "worldDialogPortraitAreaBottom"
+	--	area 24 24 54 84
+	--	bitmap lua "worldNPCDialogPortrait"
+	--}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 1
+				enabled "rowNumber == 1 and not scrolled"
+			}
+			text
+			{
+				area 0 0 -1 -1
+				pad 0 0 0 12
+				enabled "rowNumber == 2 and scrolled"
+				text lua "worldMessageBoxText"
+				text style "gamelog"
+
+				-- with some font sizes the last line sometimes is not visible
+				-- adding a hidden scrollbar as a hack seems to work
+				scrollbar	'RGSCRBR'
+				scrollbar hide lua "1"
+			}
+			text
+			{
+				area 0 0 -1 -1
+				pad 0 0 0 12
+				enabled "rowNumber == 2 and not scrolled"
+				text lua "worldNPCDialogText:gsub('\n', ': ', 1)"
+				text style "gamelog"
+
+				-- see worldMessageBoxText above
+				scrollbar	'RGSCRBR'
+				scrollbar hide lua "1"
+			}
+			label
+			{
+				area 0 0 -1 -1
+				pad 12 0 0 0
+				enabled "rowNumber > 2 and dialogEntryGreyed()"
+				rectangle 1
+				rectangle opacity 100
+			}
+			text
+			{
+				area 0 0 -1 -1
+				pad 12 0 0 0
+				enabled "rowNumber > 2"
+				text lua "getDialogEntryText(rowNumber)"
+				text style "gamelog"
+			}
+		}
+		enabled "ClassicDialog == 1"
+		name "worldPlayerDialogChoicesListBottom"
+		area 88 24 806 265
+		rowheight dynamic
+		hideHighlight
+		table "mergeDialog(worldPlayerDialogChoices)"
+		var "worldPlayerDialogSelection"
+		scrollbar 'RGSCRBR'
+		scrollbar func "dialogScroll"
+		actionEnter
+		"
+			worldPlayerDialogSelection = mouseoverRow
+		"
+		actionExit
+		"
+			worldPlayerDialogSelection = 0
+		"
+		action
+		"
+			if (worldPlayerDialogChoices[worldPlayerDialogSelection - 2] == nil) then return end
+			worldScreen:OnDialogReplyClick(worldPlayerDialogChoices[worldPlayerDialogSelection - 2].marker)
+			worldPlayerDialogSelection = 0
+		"
+	}
+	--enhanced dialog
+	button
+	{
+		enabled "ClassicDialog ~= 1"
+		area 0 0 500 330
+		name "worldDialogBackground"
+		mosaic RGDBOX1
+	}
+	label
+	{
+		enabled "worldNPCDialogPortrait~='NONE' and worldNPCDialogPortrait~='' and ClassicDialog ~= 1"
+		name "worldDialogPortraitArea"
+		area 496 70 108 170
+		bitmap lua "worldNPCDialogPortrait"
+	}
+	label
+	{
+		enabled "worldNPCDialogPortrait~='NONE' and worldNPCDialogPortrait~='' and PortPosition == 'Right' and ClassicDialog ~= 1"
+		name "worldDialogPortraitBackgroundL"
+		area -112 50 125 209
+		mosaic "rgboxp1"
+	}
+	label
+	{
+		enabled "worldNPCDialogPortrait~='NONE' and worldNPCDialogPortrait~='' and PortPosition == 'Left' and ClassicDialog ~= 1"
+		name "worldDialogPortraitBackgroundR"
+		area 488 50 125 209
+		mosaic "rgboxp2"
+	}
+	text
+	{
+		enabled "ClassicDialog ~= 1"
+		name "worldNPCDialog"
+		area 30 50 440 133
+		text lua "worldNPCDialogText"
+		text style "gamelog"
+		scrollbar	'GUISCRC'
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 -1
+				enabled "dialogEntryGreyed()"
+				fill 0 0 0 100
+			}
+			text
+			{
+				area 0 0 -1 -1
+				text lua "getDialogEntryText(rowNumber)"
+				text style "gamelog"
+			}
+		}
+		enabled "ClassicDialog ~= 1"
+		name "worldPlayerDialogChoicesList"
+		area 30 193 440 40
+		rowheight dynamic
+		hideHighlight
+		table "worldPlayerDialogChoices"
+		var "worldPlayerDialogSelection"
+		scrollbar	'GUISCRC'
+		actionEnter
+		"
+			if(gameOptions.m_bConfirmDialog == true) then return end
+			glowTest = mouseoverRow
+			worldPlayerDialogSelection = mouseoverRow
+		"
+		actionExit
+		"
+			if(gameOptions.m_bConfirmDialog == true) then return end
+			glowTest = nil
+			worldPlayerDialogSelection = 0
+		"
+		action
+		"
+			--In confirm mode, just highlight the choice.
+			if((gameOptions.m_bConfirmDialog == true) or (worldPlayerDialogSelection <= 0)) then return end
+			worldScreen:OnDialogReplyClick(worldPlayerDialogChoices[worldPlayerDialogSelection].marker)
+			worldPlayerDialogSelection = 0
+			alreadyAdded = 0
+		"
+	}
+	button
+	{
+		enabled "ClassicDialog ~= 1"
+		name "worldDialogHandle"
+		area 0 285 500 83
+		mosaic "RGDBOX2"
+	}
+	handle
+	{
+		enabled "ClassicDialog ~= 1"
+		name "worldDialogHandleDrag"
+		area 0 0 500 30
+		actionDrag
+		"
+			dragDialogX(motionX)
+		"
+	}
+	button
+	{
+		enabled "ClassicDialog ~= 1"
+		name "worldDialogButton1"
+		tooltip lua "t('LOG_HISTORY_TOOLTIP')"
+		area 340 13 36 22
+		bam "RGDBUTT"
+		sequence 1
+		action
+		"
+			if SMH == 'Off' then
+				SMH = 'On'
+				Infinity_SetINIValue('Game Options','ShowMessageHistory','On')
+			else
+				SMH = 'Off'
+				Infinity_SetINIValue('Game Options','ShowMessageHistory','Off')
+			end
+			toggleDialogShowMessages()
+		"
+	}
+	button
+	{
+		enabled "ClassicDialog ~= 1"
+		name "worldDialogButton2"
+		area 380 13 36 22
+		bam "RGDBUTT"
+		sequence 0
+		action
+		"
+			SetPosition()
+		"
+	}
+	button
+	{
+		enabled "ClassicDialog ~= 1"
+		name "worldDialogButton3"
+		area 420 13 36 22
+		bam "RGDBUTT"
+		sequence 2
+		action
+		"
+			AddNewNote(worldNPCDialogText)
+		"
+	}
+	button
+	{
+		area 103 320 294 38
+		name "worldDialogConfirm"
+		bam "RGBOXD"
+		text lua "dialogButtonText"
+		enabled "getDialogButtonEnabled() and ClassicDialog ~= 1"
+		clickable lua "getDialogButtonClickable()"
+		text style "button"
+		action
+		"
+			if(gameOptions.m_bConfirmDialog == true and (#worldPlayerDialogChoices > 0)) then
+				if worldPlayerDialogSelection <= 0 then return end
+				-- if confirm dialog and choices available.
+				worldScreen:OnDialogReplyClick(worldPlayerDialogChoices[worldPlayerDialogSelection].marker)
+				worldPlayerDialogSelection = 0
+			else
+				-- no choices, just step.
+				worldScreen:StepDialog()
+			end
+			alreadyAdded = 0
+		"
+	}
+}

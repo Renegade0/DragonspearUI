@@ -1,0 +1,63 @@
+menu
+{
+	name 'CONNECTION_IP'
+	modal
+	align center center
+
+	onopen "Infinity_FocusTextEdit('ConnectionTCPIPEditArea')"
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label --Title
+	{
+		area 42 20 572 64
+		text  20681
+		text style	"label"
+	}
+	button
+	{
+		area		370 170 230 40
+		bam		GUIBUTMT
+		sequence	0
+		text  "DONE_BUTTON"
+		text style	"button"
+		on		return
+		clickable lua "connectionScreen:IsValidAddress(connectionTCPIPEdit)"
+		action
+		"
+			Infinity_PopMenu();
+			connectionScreen:JoinGameIPAddress(connectionTCPIPEdit)
+		"
+	}
+	button
+	{
+		area		88 170 230 40
+		bam		GUIBUTMT
+		sequence	1
+		text  "CANCEL_BUTTON"
+		text style	"button"
+		on 		escape
+		action
+		"
+			Infinity_PopMenu();
+			chooseNetworkProtocol(1)
+		"
+	}
+
+	label
+	{
+		area 56 84 544 44
+		fill 112 111 111 64
+	}
+
+	edit
+	{
+		name		"ConnectionTCPIPEditArea"
+		area		64 90 528 28
+		var		connectionTCPIPEdit
+		text style	"edit"
+		maxlines	1
+	}
+}

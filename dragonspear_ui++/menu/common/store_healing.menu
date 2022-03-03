@@ -1,0 +1,116 @@
+menu
+{
+	name 'STORE_HEALING'
+	align center center
+	onOpen "storeScreen:UpdateBuySpellPanel()"
+	ignoreEsc
+	label
+	{
+		area 0 0 864 756
+		mosaic GUISTIDB
+	}
+	label
+	{
+		area 0 32 864 44
+		text "HEALING_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 0 76 864 36
+		text lua "Infinity_FetchString(storeScreen:GetStoreName())"
+		text style "label"
+	}
+--	label
+--	{
+--		area 719 70 110 48
+--		text lua "game:GetPartyGold()"
+--		text style "gold"
+--	}
+	label
+	{
+		area 26 122 144 35
+		text "COST_LABEL"
+		text style "label"
+		align left center
+	}
+	label
+	{
+		area 328 125 94 32
+		text lua "storeScreen:GetSpellCost()"
+		text style "gold"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 64 60
+				bam STONSL10
+				frame lua "getStoreSlotHighlight(store.healingSpells[rowNumber].highlight)"
+				icon lua "store.healingSpells[rowNumber].icon"
+				tint lua "store.healingSpells[rowNumber].tint"
+				align center center
+			}
+			label
+			{
+				area 75 0 240 60
+				text lua "Infinity_FetchString(store.healingSpells[rowNumber].name)"
+				text style "normal"
+				text align left center
+			}
+			label
+			{
+				area 315 0 91 60
+				text style "gold"
+				text align center center
+				text lua "store.healingSpells[rowNumber].value"
+			}
+			label
+			{
+				enabled "store.healingSpells[rowNumber].valid == 0"
+				area 0 0 304 56
+				fill 0 0 0 150
+			}
+		}
+		area 15 157 407 507
+		hidehighlight
+		rowheight	60
+		table		"store.healingSpells"
+		var			"healingSpellsVar"
+		rowbackground	 GUISTBK2
+		scrollbar 'GUISCRC'
+		action
+		"
+			local highlight = true
+			if(store.healingSpells[healingSpellsVar].highlight == 1) then highlight = false end
+			if(highlight == true and store.healingSpells[healingSpellsVar].valid == 0) then return end
+			storeScreen:SelectSpellItem( healingSpellsVar - 1,  highlight)
+		"
+		actionAlt
+		"
+			local spell = store.healingSpells[healingSpellsVar]
+			popupDetails(16189, spell.name, spell.description,spell.icon)
+		"
+	}
+	button
+	{
+		area 118 676 200 40
+		bam GUIBUTNT
+		text "BUY_BUTTON"
+		text style "button"
+		action
+		"
+			storeScreen:OnBuySpellButtonClick()
+		"
+	}
+	text
+	{
+		area 461 150 371 500
+		text lua "store.spellText"
+		text style "normal_parchment"
+		scrollbar 'GUISCRP'
+	}
+}

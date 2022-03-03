@@ -1,0 +1,33 @@
+menu
+{
+	name 'START_DLC_STATUS'
+	align center center
+
+	label
+	{
+		area 0 0 472 514
+		mosaic 'GUIERR'
+	}
+
+	label
+	{
+		area 124 136 224 112
+		text style "label"
+		text lua "getDLCStatusText()"
+	}
+
+	button
+	{
+		bam 'GUIBUTNT'
+		sequence 0
+		area 132 360 202 40
+		align center center
+		text style "button"
+		text lua "dlcStatusButtonText"
+		enabled "dlcStatusState ~= DLC_STATE_DOWNLOADING"
+		action
+		"
+			dlcScreen:OnErrorButtonClick();
+		"
+	}
+}

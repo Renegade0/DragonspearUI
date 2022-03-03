@@ -1,0 +1,31 @@
+menu
+{
+	name 'CONNECTION_ERROR'
+	modal
+	align center center
+
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label --Title
+	{
+		area 30 20 600 64
+		text lua "Infinity_FetchString(CONNECTION_ERROR_MESSAGE)"
+		text style	"label"
+	}
+	button
+	{
+		area		222 170 230 40
+		bam		GUIBUTMT
+		sequence	0
+		text  		"CANCEL_BUTTON"
+		text style	"button"
+		on		escape
+		action
+		"
+			Infinity_PopMenu();
+		"
+	}
+}

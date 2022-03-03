@@ -1,0 +1,92 @@
+menu
+{
+	name 'CHARACTER_SOUND'
+	align center center
+	ignoreesc
+	onOpen
+	"
+		currentPanelID = const.SOUND_ID
+		Infinity_OnSoundItemSelect(0)
+		doneEnabled = characterScreen:IsDoneButtonClickable(currentID)
+		prepareSounds(list_GUIREC_20_5)
+	"
+	label
+	{
+		area 0 0 864 710
+		mosaic GUICGSND
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 -1
+				text lua "getSoundStringRef(rowNumber, list_GUIREC_20_5)"
+				text style	"list"
+				pad 8 0 0 0
+			}
+		}
+		area 46 86 312 346
+		rowheight	18
+		table		"list_GUIREC_20_5"
+		var			"list_GUIREC_20_5_idx"
+		scrollbar	'GUISCRC'
+		action
+		"
+			Infinity_OnSoundItemSelect(list_GUIREC_20_5[list_GUIREC_20_5_idx].index - 1)
+			doneEnabled = characterScreen:IsDoneButtonClickable(currentID)
+		"
+	}
+	text
+	{
+		area 398 90 420 505
+		text 11315
+		scrollbar 'GUISCRC'
+		text style	normal
+	}
+	button
+	{
+		clickable lua "list_GUIREC_20_5_idx"
+		bam 'GUIBUTWT'
+		sequence 0
+		area 45 462 300 40
+		text style "button"
+		text	"PLAY_SOUND_BUTTON"
+		action
+		"
+			characterScreen:OnPlayButtonClick();
+		"
+	}
+	button
+	{
+		on escape
+		bam 'GUIBUTMT'
+		sequence 0
+		area 196 653 230 40
+		text style "button"
+		text	"CANCEL_BUTTON"
+		action
+		"
+			characterScreen:OnCancelButtonClick()
+			Infinity_PopMenu()
+			currentPanelID = 17
+		"
+	}
+	button
+	{
+		clickable lua "doneEnabled"
+		bam 'GUIBUTMT'
+		sequence 0
+		area  438 653 230 40
+		text style "button"
+		text "DONE_BUTTON"
+		action
+		"
+			characterScreen:OnDoneButtonClick()
+			Infinity_PopMenu()
+			currentPanelID = 17
+		"
+	}
+}

@@ -1,0 +1,50 @@
+menu
+{
+	name	'CREDITS'
+	align center center
+	modal
+	onOpen
+	"
+		generateMegaCredits()
+	"
+	label
+	{
+		area	0 0 1444 818
+		mosaic	RGOPTIO2
+	}
+	label
+	{
+		area	180 82 1080 644
+		rectangle 3
+	}
+
+	label
+	{
+		area 236 36 970 36
+		text "CREDITS_TITLE"
+		text style "title"
+	}
+
+	text
+	{
+		area 204 104 1032 602
+		text lua "megacredits"
+		scrollbar	'GUISCRC'
+		scrollbar func "resetScrollbar"
+		text style "normal"
+		text align center top
+	}
+
+	button
+	{
+		area		598 730 230 40
+		bam			GUIBUTMT
+		sequence	6
+		text  "DONE_BUTTON"
+		text style "button"
+		action
+		"
+			Infinity_PopMenu();
+		"
+	}
+}

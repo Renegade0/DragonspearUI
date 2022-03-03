@@ -1,0 +1,117 @@
+menu
+{
+	name 'CHARGEN_HIGH_LEVEL_ABILITIES'
+	align center center
+	ignoreesc
+	modal
+	onOpen
+	"
+		currentHLASelection = nil
+	"
+	label
+	{
+		area 0 0 864 710
+		mosaic RGGHLA
+	}
+	label
+	{
+		area 74 10 716 52
+		text "HIGH_LEVEL_ABILITIES_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 54 122 760 44
+		text lua "chargen.numHLAs"
+		text style "normal"
+		align center center
+	}
+	text
+	{
+		area 534 190 290 422
+		text lua "Infinity_FetchString(chargenHLADescription())"
+		text style "normal"
+		scrollbar	'GUISCRC'
+	}
+
+	list
+	{
+		column
+		{
+			width 15
+
+			label
+			{
+				bam GUIBTBUT
+				area 0 0 52 52
+				align center center
+				icon lua "chargen.HLAs[rowNumber].icon"
+				glow lua "chargen.HLAs[rowNumber].count > 0"
+				count lua "chargen.HLAs[rowNumber].count"
+			}
+		}
+		column
+		{
+			width 61
+			label
+			{
+				area 4 0 -1 -1
+				text lua "Infinity_FetchString(chargen.HLAs[rowNumber].name)"
+				text style "normal"
+				align left center
+
+			}
+		}
+		column
+		{
+			width 12
+			label
+			{
+				area 0 4 45 42
+				bam GUIOSW
+				frame lua "chargenHLAPlusMinusFrame(3, rowNumber)"
+				sequence 0
+			}
+		}
+		column
+		{
+			width 12
+			label
+			{
+				area 0 4 45 42
+				bam GUIOSW
+				frame lua "chargenHLAPlusMinusFrame(4, rowNumber)"
+				sequence 1
+
+			}
+		}
+
+
+		scrollbar	'GUISCRC'
+		rowheight 52
+		area 58 194 414 404
+		table "chargen.HLAs"
+		var currentHLASelection
+		action
+		"
+			if cellNumber == 3 and chargenHLAPlusMinusFrame(3, currentHLASelection) ~= 3 then
+				createCharScreen:OnHLAButtonClick(currentHLASelection, 1)
+			elseif cellNumber == 4 and chargenHLAPlusMinusFrame(4, currentHLASelection) ~= 3 then
+				createCharScreen:OnHLAButtonClick(currentHLASelection, -1)
+			end
+			cellNumber = nil
+		"
+	}
+	button
+	{
+		area 322 642 230 44
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action
+		"
+			createCharScreen:OnDoneButtonClick()
+		"
+	}
+}

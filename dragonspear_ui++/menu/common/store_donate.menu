@@ -1,0 +1,113 @@
+menu
+{
+	name 'STORE_DONATE'
+	align center center
+	ignoreEsc
+	onOpen
+	"
+		storeScreen:UpdateDonatePanel()
+		store.donateText = ''
+	"
+	label
+	{
+		area 0 0 864 756
+		mosaic GUISTDOB
+	}
+	label
+	{
+		area 0 32 864 44
+		text "DONATE_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 0 76 864 36
+		text lua "Infinity_FetchString(storeScreen:GetStoreName())"
+		text style "label"
+	}
+	label
+	{
+		area 68 151 311 267
+		bam "DONATE"
+		frame lua "getDonationFrame()"
+	}
+	label
+	{
+		area 51 431 346 38
+		text "ENTER_DONATION_LABEL"
+		text style "label"
+	}
+	edit
+	{
+		name		"storeDonateAmountEditArea"
+		area		106 476 122 48
+		var			storeDonateAmountEdit
+		text style	"edit"
+		text align left center
+		maxlines	1
+		fill            112 111 111 64
+		action
+		"
+			-- only permit numbers as letters.
+			if(tonumber(letter_pressed) ~= nil or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
+	}
+	button
+	{
+		bam GUIOSW
+		area 244 481 44 44
+		sequence 0
+		action
+		"
+			changeDonationAmount(1)
+		"
+		actionHold
+		"
+			changeDonationAmount(1)
+		"
+	}
+	button
+	{
+		bam GUIOSW
+		area 288 481 44 44
+		sequence 1
+		clickable lua "tonumber(storeDonateAmountEdit) > 0"
+		action
+		"
+			changeDonationAmount(-1)
+		"
+		actionHold
+		"
+			changeDonationAmount(-1)
+		"
+	}
+	button
+	{
+		area 118 676 200 40
+		bam GUIBUTNT
+		text "DONATE_BUTTON"
+		text style "button"
+		clickable lua "storeScreen:IsDonateButtonClickable()"
+		action
+		"
+			storeScreen:OnDonateButtonClick()
+		"
+	}
+--	label
+--	{
+--		area 700 73 110 48
+--		text lua "game:GetPartyGold()"
+--		text style "gold"
+--	}
+	text
+	{
+		area 473 151 345 489
+		text lua "store.donateText"
+		text style "normal_parchment"
+		scrollbar 'GUISCRP'
+	}
+}

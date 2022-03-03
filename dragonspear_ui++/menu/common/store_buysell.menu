@@ -1,0 +1,563 @@
+menu
+{
+	name 'STORE_BUYSELL'
+	align center center
+	onOpen
+	"
+	storeScreen:UpdateBuySellPanel()
+	StoreSearchString = ''
+	GroupSearchString = ''
+	"
+	ignoreEsc
+	label
+	{
+		area 0 0 864 756
+		mosaic GUISTBSC
+	}
+	label
+	{
+		area 0 32 864 44
+		text lua "checkContainerText('BUY_SELL_TITLE','CONTAINER_TITLE')"
+		text style "title"
+	}
+	label
+	{
+		area 0 76 864 36
+		text lua "Infinity_FetchString(storeScreen:GetStoreName())"
+		text style "label"
+	}
+	edit
+	{
+		area	20 644 220 18
+		var StoreSearchString
+		placeholder "..."
+		text style "edit"
+		text color 'D'
+		maxlines 1
+		align left center
+		fill		112 111 111 64
+	}
+	edit
+	{
+		area	446 644 220 18
+		var GroupSearchString
+		placeholder "..."
+		text style "edit"
+		text color 'D'
+		maxlines 1
+		align left center
+		fill		112 111 111 64
+	}
+	button
+	{
+		area 666 645 15 17
+		enabled "GroupSearchString ~= ''"
+		mosaic RGXBUT
+		action
+		"
+			StoreSearchString = ''
+			GroupSearchString = ''
+		"
+	}
+	button
+	{
+		area 240 645 15 17
+		enabled "StoreSearchString ~= ''"
+		mosaic RGXBUT
+		action
+		"
+			StoreSearchString = ''
+			GroupSearchString = ''
+		"
+	}
+--	label
+--	{
+--		area 719 112 108 30
+--		enabled "not storeScreen:IsContainer()"
+--		text lua "game:GetPartyGold()"
+--		text style "gold"
+--		align right center
+--	}
+	label
+	{
+		area 268 637 47 30
+		enabled "not storeScreen:IsContainer()"
+		text "COST_LABEL"
+		text style "label"
+		align right center
+	}
+	label
+	{
+		area 315 637 93 30
+		enabled "not storeScreen:IsContainer()"
+		text lua "storeScreen:GetStoreCost()"
+		text style "normal"
+		align right center
+	}
+	label
+	{
+		area 696 637 47 30
+		enabled "not storeScreen:IsContainer()"
+		text "PRICE_LABEL"
+		text style "label"
+		align right center
+	}
+	label
+	{
+		area 743 637 93 30
+		enabled "not storeScreen:IsContainer()"
+		text lua "storeScreen:GetGroupCost()"
+		text style "normal"
+		align right center
+	}
+
+-- adapted from LeUI --
+#if ENABLE_BUYSELL_SELECT_ALL then
+	button
+	{
+		enabled "storeScreen:IsContainer()"
+		area 78 680 32 32
+		bam ROUNDBUT
+		action
+		"
+			local items, doSelect = duiBuySellSelectAllHelper(store.storeItems)
+			for _, k in ipairs(items) do
+				storeScreen:SelectStoreItem(k, doSelect)
+				if doSelect then
+					local maxCount = store.storeItems[k + 1].maxCount
+					if maxCount > 1 then
+						storeScreen:SetStoreItemCount(k, maxCount)
+					end
+					if not storeScreen:IsBuyItemButtonClickable() then
+						storeScreen:SelectStoreItem(k, false)
+						break
+					end
+				end
+			end
+		"
+	}
+	button
+	{
+		area 752 680 32 32
+		bam ROUNDBUT
+		action
+		"
+			local items, doSelect = duiBuySellSelectAllHelper(store.groupItems)
+			for _, k in ipairs(items) do
+				storeScreen:SelectGroupItem(k, doSelect)
+				if doSelect then
+					local v = store.groupItems[k + 1]
+					local count = v.item.count
+					local stock = v.numInStock or 0
+					if count > 1 then
+						storeScreen:SetGroupItemCount(k, count)
+					elseif stock > 1 then
+						storeScreen:SetGroupItemCount(k, stock)
+					end
+					if not storeScreen:IsSellItemButtonClickable() then
+						storeScreen:SelectGroupItem(k, false)
+						break
+					end
+				end
+			end
+		"
+	}
+#end
+
+	label
+	{
+		area 28 122 386 34
+		text lua "checkContainerText('STORE_LABEL',Infinity_FetchString(storeScreen:GetStoreName()))"
+		text style "label"
+		align left center
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 		0 56 407 -1
+				enabled	"StoreContainsSearchString(rowNumber)"
+				mosaic	RGSLINE
+				respectClipping
+				align		center center
+			}
+			label
+			{
+				enabled	"StoreContainsSearchString(rowNumber)"
+				area 0 0 64 60
+				bam STONSL10
+				frame lua "getStoreSlotHighlight(store.storeItems[rowNumber].highlight)"
+				icon lua "store.storeItems[rowNumber].item.icon"
+				tint lua "store.storeItems[rowNumber].item.tint"
+				usages lua "store.storeItems[rowNumber].amountSelected" --how many selected
+				count lua "store.storeItems[rowNumber].item.stackSize" --How many to a stack
+				align center center
+			}
+			label
+			{
+				enabled	"StoreContainsSearchString(rowNumber)"
+				area 75 0 240 60
+				text lua "store.storeItems[rowNumber].label"
+				text style "normal"
+				text align left center
+			}
+			label
+			{
+				enabled	"StoreContainsSearchString(rowNumber) and not storeScreen:IsContainer()"
+				area 310 0 91 60
+				text lua "store.storeItems[rowNumber].value"
+				text style "gold"
+			}
+			label
+			{
+				enabled "store.storeItems[rowNumber].valid == 0 and store.storeItems[rowNumber].highlight == 0 and StoreContainsSearchString(rowNumber)"
+				area 0 0 436 56
+				fill 0 0 0 150
+			}
+		}
+		area 15 157 407 480
+		hidehighlight
+		rowheight	dynamic
+		table		"store.storeItems"
+		var			"storeItemsVar"
+--		rowbackground	 GUISTBK2
+		scrollbar 'GUISCRC'
+		action
+		"
+			if store.storeItems[storeItemsVar].clickable == 1 then
+				if not storeScreen:IsContainer() then
+					if not storeScreen:IsCloseBagButtonClickable() or store.storeItems[storeItemsVar].valid == 1 then
+						local highlight = true
+						if(store.storeItems[storeItemsVar].highlight == 1) then highlight = false end
+						storeScreen:SelectStoreItem(storeItemsVar - 1,  highlight)
+					end
+				elseif (store.storeItems[storeItemsVar].highlight == 1) then
+					storeScreen:SelectStoreItem(storeItemsVar - 1,  false)
+				else
+					storeScreen:SelectStoreItem(storeItemsVar - 1,  true)
+					local count = store.storeItems[storeItemsVar].item.count or 0
+					local stock = store.storeItems[storeItemsVar].numInStock or 0
+					if (count > 1) then
+						storeScreen:SetStoreItemCount(storeItemsVar - 1, count)
+					elseif (stock > 1) then
+						storeScreen:SetStoreItemCount(storeItemsVar - 1, stock)
+					end
+				end
+			end
+		"
+		actionalt
+		"
+			showItemDescription(store.storeItems[storeItemsVar].item, 1)
+		"
+		actionDbl
+		"
+			if store.storeItems[storeItemsVar].clickable == 1 then
+				if not storeScreen:IsCloseBagButtonClickable() or store.storeItems[storeItemsVar].valid == 1 then
+					local maxCount = store.storeItems[storeItemsVar].maxCount
+					if(maxCount > 1) then
+						popupRequester(maxCount, storeSplitStack, false)
+						storeScreen:SelectStoreItem(storeItemsVar - 1, false)
+					end
+				end
+			end
+		"
+	}
+
+	label
+	{
+		area 455 122 385 34
+		text  lua "Infinity_GetSelectedCharacterName()"
+		text style "label"
+		align left center
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 		0 56 407 -1
+				enabled	"GroupContainsSearchString(rowNumber)"
+				mosaic	RGSLINE
+				respectClipping
+				align		center center
+			}
+			label
+			{
+				enabled	"GroupContainsSearchString(rowNumber)"
+				area 0 0 64 60
+				bam STONSL10
+				frame lua "getStoreSlotHighlight(store.groupItems[rowNumber].highlight)"
+				tint lua "store.groupItems[rowNumber].item.tint"
+				icon lua "store.groupItems[rowNumber].item.icon"
+				count lua "store.groupItems[rowNumber].count"
+				usages lua "store.groupItems[rowNumber].item.usages"
+				align center center
+			}
+			label
+			{
+				enabled	"GroupContainsSearchString(rowNumber)"
+				area 75 0 240 60
+				text lua "store.groupItems[rowNumber].label"
+				text style "normal"
+				text align left center
+			}
+			label
+			{
+				area 315 0 62 60
+				enabled "not storeScreen:IsContainer() and GroupContainsSearchString(rowNumber)"
+				text lua "store.groupItems[rowNumber].value"
+				text style "gold"
+			}
+			label
+			{
+				--#21242 We don't grey out bags, even though they're not selectable, because we can open them.
+				enabled "store.groupItems[rowNumber].valid == 0  and store.groupItems[rowNumber].item.isBag ~= 1 and GroupContainsSearchString(rowNumber)"
+				area 0 0 436 56
+				fill 0 0 0 150
+			}
+		}
+		area 442 157 407 480
+		enabled "not storeScreen:IsCloseBagButtonClickable()"
+		hidehighlight
+		rowheight	dynamic
+		table		"store.groupItems"
+		var			"storeGroupItemsVar"
+--		rowbackground	 GUISTBK2
+		scrollbar 'GUISCRC'
+		action
+		"
+			if store.groupItems[storeGroupItemsVar].valid ~= 0 then
+				if (store.groupItems[storeGroupItemsVar].highlight == 1) then
+					storeScreen:SelectGroupItem(storeGroupItemsVar - 1,  false)
+				else
+					storeScreen:SelectGroupItem(storeGroupItemsVar - 1,  true)
+					local count = store.groupItems[storeGroupItemsVar].item.count or 0
+					local stock = store.groupItems[storeGroupItemsVar].numInStock or 0
+					if (count > 1) then
+						storeScreen:SetGroupItemCount(storeGroupItemsVar - 1, count)
+					elseif (stock > 1) then
+						storeScreen:SetGroupItemCount(storeGroupItemsVar - 1, stock)
+					end
+				end
+			end
+		"
+		actionalt
+		"
+			showItemDescription(store.groupItems[storeGroupItemsVar].item, 1)
+		"
+		actionDbl
+		"
+			if(store.groupItems[storeGroupItemsVar].item.isBag == 1) then
+				showItemDescription(store.groupItems[storeGroupItemsVar].item, 1)
+				itemDescLeftButtonAction()
+			else
+				if store.groupItems[storeGroupItemsVar].valid ~= 0 then
+					local count = store.groupItems[storeGroupItemsVar].item.count or 0
+					local stock = store.groupItems[storeGroupItemsVar].numInStock or 0
+					if(count > 1) then
+						popupRequester(count, groupSplitStack, false)
+					elseif stock > 1 then
+						popupRequester(stock, groupSplitStack, false)
+					end
+					storeScreen:SelectGroupItem(storeGroupItemsVar - 1, false)
+				end
+			end
+		"
+	}
+
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 		0 56 407 -1
+				enabled	"GroupContainsSearchString(rowNumber)"
+				mosaic	RGSLINE
+				respectClipping
+				align		center center
+			}
+			label
+			{
+				enabled	"GroupContainsSearchString(rowNumber)"
+				area 0 0 64 60
+				bam STONSL10
+				frame lua "getStoreSlotHighlight(store.groupItems[rowNumber].highlight)"
+				tint lua "store.groupItems[rowNumber].item.tint"
+				icon lua "store.groupItems[rowNumber].item.icon"
+				count lua "store.groupItems[rowNumber].item.count"
+				usages lua "store.groupItems[rowNumber].count"
+				align center center
+			}
+			label
+			{
+				enabled	"GroupContainsSearchString(rowNumber)"
+				area 75 0 240 60
+				text lua "store.groupItems[rowNumber].label"
+				text style "normal"
+				text align left center
+			}
+			label
+			{
+				area 315 0 62 60
+				enabled "not storeScreen:IsContainer() and GroupContainsSearchString(rowNumber)"
+				text lua "store.groupItems[rowNumber].value"
+				text style "gold"
+			}
+			label
+			{
+				enabled "store.groupItems[rowNumber].valid == 0 and GroupContainsSearchString(rowNumber)"
+				area 0 0 436 56
+				fill 0 0 0 150
+			}
+		}
+		area 442 157 407 480
+		enabled "storeScreen:IsCloseBagButtonClickable()"
+		hidehighlight
+		rowheight	dynamic
+		table		"store.groupItems"
+		var			"storeGroupItemsVar"
+--		rowbackground	 GUISTBK2
+		scrollbar 'GUISCRC'
+		action
+		"
+			if store.groupItems[storeGroupItemsVar].valid ~= 0 then
+				if (store.groupItems[storeGroupItemsVar].highlight == 1) then
+					storeScreen:SelectGroupItem(storeGroupItemsVar - 1,  false)
+				else
+					storeScreen:SelectGroupItem(storeGroupItemsVar - 1,  true)
+					local count = store.groupItems[storeGroupItemsVar].item.count or 0
+					local stock = store.groupItems[storeGroupItemsVar].numInStock or 0
+					if (count > 1) then
+						storeScreen:SetGroupItemCount(storeGroupItemsVar - 1, count)
+					elseif (stock > 1) then
+						storeScreen:SetGroupItemCount(storeGroupItemsVar - 1, stock)
+					end
+				end
+			end
+		"
+		actionalt
+		"
+			showItemDescription(store.groupItems[storeGroupItemsVar].item, 1)
+		"
+		actionDbl
+		"
+			if store.groupItems[storeGroupItemsVar].valid ~= 0 then
+				local count = store.groupItems[storeGroupItemsVar].item.count or 0
+				local stock = store.groupItems[storeGroupItemsVar].numInStock or 0
+				if(count > 1) then
+					popupRequester(count, groupSplitStack, false)
+				elseif stock > 1 then
+					popupRequester(stock, groupSplitStack, false)
+				end
+				storeScreen:SelectGroupItem(storeGroupItemsVar - 1, false)
+			end
+		"
+	}
+
+
+	button
+	{
+		area 118 676 201 40
+		bam GUIBUTNT
+		text lua "checkContainerText('BUY_BUTTON', 'TO_BACKPACK_BUTTON')"
+		text style "button"
+		clickable lua "storeScreen:IsBuyItemButtonClickable()"
+		action
+		"
+			storeScreen:OnBuyItemButtonClick()
+		"
+	}
+	button
+	{
+		area 546 676 201 40
+		bam GUIBUTNT
+		text lua "checkContainerText('SELL_BUTTON','TO_CONTAINER_BUTTON')"
+		text style "button"
+		clickable lua "storeScreen:IsSellItemButtonClickable()"
+		action
+		"
+			storeScreen:OnSellItemButtonClick()
+		"
+	}
+	button
+	{
+		area 332 676 201 40
+		enabled "(not storeScreen:IsContainer()) and storeScreen:IsStealEnabled()"
+		bam GUIBUTNT
+		text "STEAL_BUTTON"
+		text style "button"
+		clickable lua "canSteal()"
+		action
+		"
+			local toSteal = {}
+			for k, v in pairs(store.storeItems) do
+				if v.highlight == 1 then
+					table.insert(toSteal, v.label)
+					storeScreen:SelectStoreItem(k - 1,  false)
+				end
+			end
+
+			for _, label in pairs(toSteal) do
+				local steal = 0
+				for k, v in pairs(store.storeItems) do
+					if v.highlight == 1 then
+						steal = 0
+						break
+					end
+					if v.label == label then
+						steal = k
+					end
+				end
+
+				if steal == 0 then
+					break
+				end
+
+				storeScreen:SelectStoreItem(steal - 1,  true)
+				storeScreen:OnStealItemButtonClick()
+			end
+		"
+	}
+	button
+	{
+		area 332 676 201 40
+		enabled "storeScreen:IsCloseBagButtonClickable()"
+		bam GUIBUTNT
+		text "CLOSE_CONTAINER_BUTTON"
+		text style "button"
+		action
+		"
+			storeScreen:OnCloseBagButtonClick()
+		"
+	}
+--	button
+--	{
+--		area 16 629 68 90
+--		encumbrance
+--	}
+
+	-- Added by patch 2.5
+	label
+	{
+		area 15 157 407 480
+		enabled "storeScreen:IsSpriteOrderable() == false"
+		mosaic "RGJBACK"
+		ignoreEvents
+	}
+
+	label
+	{
+		area 442 157 407 480
+		enabled "storeScreen:IsSpriteOrderable() == false"
+		mosaic "RGJBACK"
+		ignoreEvents
+	}
+
+}

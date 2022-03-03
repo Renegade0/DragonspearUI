@@ -1,0 +1,89 @@
+menu
+{
+	name 'CHARACTER_BIOGRAPHY'
+	align center center
+	ignoreesc
+	onOpen
+	"
+		recBioEditBackup = recBioEdit
+		currentPanelID = 23
+	"
+	label
+	{
+		area 0 0 864 710
+		mosaic GUICGWDE
+	}
+	label
+	{
+		area 82 37 700 44
+		text	"BIOGRAPHY_TITLE"
+		text style	'title'
+	}
+	label
+	{
+		area		372 92 466 498
+		fill        112 111 111 64
+	}
+	edit
+	{
+		name		"recBioEditArea"
+		area		372 92 466 498
+		var			recBioEdit
+		scrollbar	'GUISCRC'
+		text style	"edit"
+	}
+
+	button
+	{
+		bam 'GUIBUTWS'
+		sequence 0
+		area	23 100 340 32
+		text style "button"
+		text	"CLEAR_BUTTON"
+		action
+		"
+			recBioEdit = ''
+		"
+	}
+	button
+	{
+		bam 'GUIBUTWS'
+		sequence 0
+		area 23 133 340 32
+		text style "button"
+		text "REVERT_BUTTON"
+		action
+		"
+			recBioEdit = recBioEditBackup
+		"
+	}
+	button
+	{
+		on escape
+		bam 'GUIBUTMT'
+		sequence 0
+		area 196 653 230 40
+		text style "button"
+		text	"CANCEL_BUTTON"
+		action
+		"
+			characterScreen:OnCancelButtonClick()
+			Infinity_PopMenu()
+			currentPanelID = 17
+		"
+	}
+	button
+	{
+		bam 'GUIBUTMT'
+		sequence 0
+		area  438 653 230 40
+		text style "button"
+		text "DONE_BUTTON"
+		action
+		"
+			characterScreen:OnDoneButtonClick()
+			Infinity_PopMenu()
+			currentPanelID = 17
+		"
+	}
+}

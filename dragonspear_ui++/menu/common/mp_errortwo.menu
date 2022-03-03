@@ -1,0 +1,77 @@
+menu
+{
+	name 'MP_ERRORTWO'
+	align center center
+	modal
+	label
+	{
+		mosaic 'GUIERR6'
+		area 0 0 657 253
+	}
+	label
+	{
+		area 29 21 600 126
+		text lua "Infinity_FetchString( mpErrorText )"
+		text style "normal"
+		align center center
+	}
+	button
+	{
+		on return
+		enabled "mpErrorState == 2"
+		area 343 170 230 40
+		text "MODIFY_BUTTON" -- modify
+		text style "button"
+		align center center
+		bam GUIBUTMT
+		action
+		"
+			Infinity_PopMenu()
+			multiplayerScreen:ModifyCharacters()
+		"
+	}
+	button
+	{
+		on return
+		enabled "mpErrorState == 3"
+		area 343 170 230 40
+		text "KICK_BUTTON" -- kick player
+		text style "button"
+		align center center
+		bam GUIBUTMT
+		action
+		"
+			Infinity_PopMenu()
+			multiplayerScreen:KickPlayer()
+		"
+	}
+	button
+	{
+		on return
+		enabled "mpErrorState == 4"
+		area 343 170 230 40
+		text "LOGOUT_BUTTON" -- log out
+		text style "button"
+		align center center
+		bam GUIBUTMT
+		action
+		"
+			local index = 1
+			Infinity_PopMenu()
+			multiplayerScreen:Logout()
+		"
+	}
+	button
+	{
+		on escape
+		area 79 170 230 40
+		text "CANCEL_BUTTON" -- cancel
+		text style "button"
+		align center center
+		bam GUIBUTMT
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}

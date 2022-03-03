@@ -1,0 +1,63 @@
+menu
+{
+	name 'BACKGROUND'
+	align top left
+	onOpen "
+	Infinity_PlayMovie('RGDBACK1','RGDBACK1')
+	Infinity_PlayMovie('RGDBACK2','RGDBACK2')
+	Infinity_PlayMovie('RGDBACK3','RGDBACK3')
+	getBackgroundSize()
+	"
+	movie
+	{
+	#if GAME_VERSION == 'sod' or GAME_VERSION == 'bg1' then
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG"
+	#else
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 0"
+	#end
+		name "RGDBACK1"
+		area 0 0 1920 1080
+	}
+	movie
+	{
+	#if GAME_VERSION == 'sod' then
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
+	#else
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 1"
+	#end
+		name "RGDBACK2"
+		area 0 0 1920 1080
+	}
+	movie
+	{
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
+		name "RGDBACK3"
+		area 0 0 1920 1080
+	}
+	label
+	{
+	#if GAME_VERSION == 'sod' or GAME_VERSION == 'bg1' then
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG"
+	#else
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 0"
+	#end
+		area 0 0 10000 8000
+		mosaic "RGBACK1"
+	}
+	label
+	{
+	#if GAME_VERSION == 'sod' then
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
+	#else
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 1"
+	#end
+		area 0 0 10000 8000
+		mosaic "RGBACK2"
+	}
+	label
+	{
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
+		area 0 0 10000 8000
+		mosaic "RGBACK3"
+	}
+}

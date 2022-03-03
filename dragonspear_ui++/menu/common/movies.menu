@@ -1,0 +1,87 @@
+menu
+{
+	name 'MOVIES'
+	align center center
+	modal
+
+	button
+	{
+		on escape
+		action
+		"
+			--Return to world screen on escape
+			e:SelectEngine(optionsScreen)
+		"
+	}
+	label
+	{
+		area 0 0 1444 818
+		mosaic "RGOPTIO2"
+	}
+	label
+	{
+		area 504 88 422 622
+		rectangle 3
+	}
+	label
+	{
+		area 246 32 948 44
+		text "MOVIES_TITLE"
+		text style "title"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 384 18
+				text lua "list_GUIMOVIE_0_0[rowNumber].description"
+				text style	"list"
+				pad 8 2 0 0
+				text align left center
+			}
+		}
+		area 528 114 376 574
+		rowheight	28
+		table		"list_GUIMOVIE_0_0"
+		var		"list_GUIMOVIE_0_0_idx"
+		scrollbar	'GUISCRC'
+		action
+		"
+			moviesScreen:OnMovieItemSelect(list_GUIMOVIE_0_0[list_GUIMOVIE_0_0_idx].movieCode)
+		"
+	}
+	button
+	{
+		area 566 724 300 40
+		bam GUIBUTWT
+		text "PLAY_MOVIE_BUTTON"
+		text style "button"
+		action "moviesScreen:OnPlayButtonClick()"
+	}
+	button
+	{
+		area 160 724 300 40
+		bam GUIBUTWT
+		text "`MOVIES_CREDITS_BUTTON`"
+		text style "button"
+		action "moviesScreen:OnCreditsButtonClick()"
+	}
+	button
+	{
+		area 984 724 300 40
+		bam GUIBUTWT
+		text "DONE_BUTTON"
+		text style "button"
+		action
+		"
+			-- TODO: do we need the pop menu call? not present in SOD v2.5, but is in BG2 v2.5
+			Infinity_PopMenu('MOVIES')
+			moviesScreen:OnDoneButtonClick()
+		"
+	}
+
+
+}

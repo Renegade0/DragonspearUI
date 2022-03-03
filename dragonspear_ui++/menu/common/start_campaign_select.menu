@@ -1,0 +1,76 @@
+#if GAME_VERSION ~= 'eet' then
+menu
+{
+	name 'START_CAMPAIGN_SELECT'
+	align center center
+	ignoreEsc
+	modal
+	onOpen
+	"
+		if e:IsTouchUI() then
+			startEngine:DismissChooseCampaignPopup()
+		end
+	"
+
+	label
+	{
+		area 0 0 672 672
+		mosaic "RECENTEV"
+		enabled "not e:IsTouchUI()"
+	}
+	label
+	{
+		area 158 52 354 46
+		text style "title"
+		text "SELECT_CAMPAIGN_TITLE"
+		enabled "not e:IsTouchUI()"
+	}
+	label
+	{
+		area 136 120 406 258
+		text style "normal"
+		text "WELCOME_NORMAL"
+		enabled "not e:IsTouchUI()"
+	}
+	button
+	{
+		area 198 408 300 40
+		bam GUIBUTWT
+		text style "button"
+		text "SIEGE_OF_DRAGONSPEAR_BUTTON"
+		enabled "not e:IsTouchUI()"
+		action
+		"
+			startEngine:DismissChooseCampaignPopup()
+			startEngine:OnCampaignButtonClick('SOD',true)
+		"
+	}
+		button
+	{
+		area 198 458 300 40
+		bam GUIBUTWT
+		text style "button"
+		text "BALDURS_GATE_BUTTON"
+		enabled "not e:IsTouchUI()"
+		action
+		"
+			--selected by default, just close this menu.
+			startEngine:DismissChooseCampaignPopup()
+		"
+	}
+	button
+	{
+		area 198 508 300 40
+		bam GUIBUTWT
+		text style "button"
+		text "BLACK_PITS_BUTTON"
+		enabled "not e:IsTouchUI()"
+		action
+		"
+			startEngine:DismissChooseCampaignPopup()
+			startEngine:OnTBPButtonClick(true)
+		"
+	}
+
+}
+#end

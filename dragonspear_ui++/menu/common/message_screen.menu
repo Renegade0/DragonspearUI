@@ -1,0 +1,16 @@
+menu
+{
+	name 'MESSAGE_SCREEN'
+	align center center
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label
+	{
+		area 29 21 580 126
+		text lua "Infinity_FetchString(messageScreenText)"
+		text style	"label"
+	}
+}

@@ -1,0 +1,341 @@
+menu
+{
+	name 'LOAD'
+	align top left
+	ignoreEsc
+	onOpen
+	"
+		if gameSaves.isImporting == 1 and e:IsIOS() and (gameSaves.files == nil or #(gameSaves.files) == 0) then
+			popupInfo(Infinity_FetchString(71373))
+		end
+		LeftSideMenu = Infinity_GetINIValue('Game Options','LeftSideMenu',0)
+		getLoadArea()
+	"
+	button
+	{
+		area	0 0 1024 768
+--		mosaic	GUISMBM --GUISRSVB
+		action
+		"
+			currentSave = nil
+		"
+	}
+--	label
+--	{
+		--center this under the menu
+		--(2160/2) - (768/2) = 696
+--		area 1500 0 390 1080
+--		bam "STRTSIDE"
+--		frame lua "getSidebarFrame()"
+--	}
+	label
+	{
+		name "LoadPanel"
+		area 1476 190 368 470
+		mosaic "RGMMENU"
+	}
+	label
+	{
+		name "SaveAreaPanel"
+		area 326 0 1012 2160
+		mosaic "RGLOAD"
+	}
+	label
+	{
+		name "LoadFilterLabel1"
+		area 1536 300 249 45
+		bam		'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+	}
+	label
+	{
+		name "LoadFilterLabel2"
+		area 1536 250 249 45
+		bam		'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+	}
+	label
+	{
+		name "LoadFilterLabel3"
+		area 1536 350 249 45
+		bam		'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+	}
+	edit
+	{
+		name "LoadFilter1"
+		area	1550 300 225 45
+		var LoadSearchString
+		placeholder 'RG_FILTER1'
+		text style "edit"
+		maxlines 1
+		align left center
+	}
+	edit
+	{
+		name "LoadFilter2"
+		area	1550 250 225 45
+		var LoadSearchString1
+		placeholder 'RG_FILTER2'
+		text style "edit"
+		maxlines 1
+		align left center
+	}
+	edit
+	{
+		name "LoadFilter3"
+		area	1550 350 225 45
+		var LoadSearchString2
+		placeholder 'RG_FILTER3'
+		text style "edit"
+		maxlines 1
+		align left center
+	}
+#if GAME_VERSION == 'bg1' or GAME_VERSION == 'sod' then
+	label
+	{
+		name "LoadTitle1"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG"
+		area 1434 46 450 121
+		mosaic 'RGTITLE2'
+--		sequence 0
+--		frame 0
+	}
+	label
+	{
+		name "LoadTitle2"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
+		area 1410 42 494 120
+		mosaic 'RGTITLE'
+--		sequence 0
+--		frame 1
+	}
+	label
+	{
+		name "LoadTitle3"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
+		area 1388 60 504 94
+		bam 'TITLE'
+		sequence 0
+		frame 0
+		scaleToClip
+	}
+#else
+	label
+	{
+		name "LoadTitle1"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 0"
+		area 1410 78 488 96
+		bam 'RGTITLE'
+		sequence 0
+		frame 0
+	}
+	label
+	{
+		name "LoadTitle2"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 1"
+		area 1410 78 488 96
+		bam 'RGTITLE'
+		sequence 0
+		frame 1
+	}
+	label
+	{
+		name "LoadTitle3"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
+		area 1388 78 488 96
+		bam 'RGTITLE'
+		sequence 0
+		frame 2
+	}
+#end
+	label
+	{
+		name"MenuLoadLabel"
+		area 1536 205 249 40
+		text lua "getLoadMenuTitle()"
+		text style "title"
+	}
+	list
+	{
+		column
+		{
+			width	100
+			label
+			{
+				area 		0 0 928 -1
+				enabled	"LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber)"
+				mosaic lua	'getSaveBackground(rowNumber)'
+				respectClipping
+				align		center center
+				}
+			button
+			{
+				enabled		"LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasScreenShot"
+				area		0 0 60 60
+				bitmap res 	"gameSaves.files[rowNumber].screenshot"
+				bitmap area	8 8 130 82
+				align		center center
+			}
+
+			label
+			{
+				area	416 21 298 30
+				enabled	"LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber)"
+				text	lua "gameSaves.files[rowNumber].slotName"
+				text style "label"
+				align	left top
+			}
+
+			label
+			{
+				area	414 57 468 30
+				enabled	"LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber)"
+				text	lua "gameSaves.files[rowNumber].chapter .. ' ' .. gameSaves.files[rowNumber].time"
+				text style "label"
+				align	right top
+			--	pad		0 0 -200 0
+			}
+			label
+			{
+				area	714 21 168 30
+				enabled	"LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber)"
+				text	lua "gameSaves.files[rowNumber].sName"
+				text style "label"
+				align	right top
+			}
+			button
+			{
+				enabled		 "LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait0"
+				area	163 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait0"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+			button
+			{
+				enabled		 "LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait1"
+				area	198 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait1"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+			button
+			{
+				enabled		 "LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait2"
+				area	234 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait2"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+			button
+			{
+				enabled		 "LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait3"
+				area	269 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait3"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+			button
+			{
+				enabled		 "LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait4"
+				area	304 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait4"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+			button
+			{
+				enabled		 "LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber) and LoadContainsSearchString2(rowNumber) and gameSaves.files[rowNumber].hasPortrait5"
+				area	339 34 30 64
+				bitmap res "gameSaves.files[rowNumber].portrait5"
+				bitmap area	0 0 30 48
+				align	center center
+			}
+		}
+--		column
+--		{
+--			width	25
+--			label
+--			{
+--				area 		-684,0,928,-1
+--				enabled	"LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber)"
+--				mosaic lua	'getSaveBackground(rowNumber)'
+--				respectClipping
+--				align		center center
+--			}
+--			label
+--			{
+--				area	8 20 195 100
+--				enabled	"LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber)"
+--				text	lua "gameSaves.files[rowNumber].sName"
+--				text style "label_loadname"
+--				align	center center
+--			}
+--		}
+
+		actionDbl
+		"
+			Infinity_PlaySound('GAM_09')
+			loadScreen:LoadGame(gameSaves.files[currentSave].fileName)
+		"
+
+		name "SaveArea"
+		area 368 0 928 1080
+		rowheight	dynamic
+		hidehighlight
+		table		"gameSaves.files"
+		var		currentSave
+		scrollbar	'GUISCRC'
+--		seperator	"LoadContainsSearchString(rowNumber) and LoadContainsSearchString1(rowNumber)"
+	}
+
+	button
+	{
+		name "LoadButton1"
+		area		1536 450 249 45
+		bam			'STARTBUT'
+		clickable	lua	"currentSave"
+		text		lua "getLoadMenuTitle()"
+		text style	"button"
+		sequence lua "getCampaignButtonSequence()"
+		action
+		"
+			loadScreen:LoadGame(gameSaves.files[currentSave].fileName)
+		"
+	}
+	button
+	{
+		name "LoadButton2"
+		enabled 	"gameSaves.isImporting ~= 1"
+		area		1536 500 249 45
+		bam			'STARTBUT'
+		clickable	lua	"currentSave"
+		text		"DELETE_BUTTON"
+		text style	"button"
+		sequence lua "getCampaignButtonSequence()"
+		action
+		"
+			popup2Button(15305, 'DELETE_BUTTON',
+			function() loadScreen:DeleteGame(gameSaves.files[currentSave].slotIndex) end)
+		"
+	}
+	button
+	{
+		name "LoadButton3"
+		area		1536 550 249 45
+		bam			'STARTBUT'
+		text		"BACK_BUTTON"
+		text style	"button"
+		sequence lua "getCampaignButtonSequence()"
+		on escape
+		action
+		"
+				LoadSearchString = ''
+				LoadSearchString1 = ''
+				LoadSearchString2 = ''
+
+				loadScreen:OnMainCancelButtonClick()
+		"
+	}
+}

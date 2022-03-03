@@ -1,0 +1,67 @@
+menu
+{
+	name 'ITEM_IDENTIFY'
+	align center center
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	text
+	{
+		area 29 21 580 126
+		text 19394
+		text style "label"
+		align center center
+	}
+	button
+	{
+		area 440 170 200 40
+		bam GUIBUTNT
+		text style "button"
+		text "SPELL_BUTTON"
+
+		clickable lua "Infinity_GetSpellIdentifyEnabled(characters[id].equipment[selectedSlot].id)"
+		action
+		"
+			Infinity_OnSpellIdentify(characters[id].equipment[selectedSlot].id);
+			Infinity_PopMenu()
+			itemDesc.item = characters[id].equipment[selectedSlot].item --update itemDesc item
+		"
+	}
+	button
+	{
+		on escape
+		area 228 170 200 40
+		bam GUIBUTNT
+		text style "button"
+		text "CANCEL_BUTTON"
+		action
+		"
+			Infinity_PopMenu()
+			-- TODO: review, present in BG2 v2.5.16.2 but not in SOD v2.5.17.0
+			if createCharScreen:GetEngineState() == 7 then
+				--If we're in import character mode, go back to the import screen.
+				e:SelectEngine(startEngine)
+				startEngine:OnImportCharacterButtonClick()
+			end
+		"
+	}
+	button
+	{
+		area 18 170 200 40
+		bam GUIBUTNT
+		text style "button"
+		text "SCROLL_BUTTON"
+
+		clickable lua "Infinity_GetScrollIdentifyEnabled(characters[id].equipment[selectedSlot].id)"
+		action
+		"
+			Infinity_OnScrollIdentify(characters[id].equipment[selectedSlot].id)
+			Infinity_PopMenu()
+			itemDesc.item = characters[id].equipment[selectedSlot].item --update itemDesc item
+		"
+	}
+
+
+}

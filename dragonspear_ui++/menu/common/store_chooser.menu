@@ -1,0 +1,113 @@
+menu
+{
+	name 'STORE_CHOOSER'
+	align center center
+	onOpen
+	"
+		local menuName = storeScreen:GetMenuName(storeCurMenuId)
+		Infinity_PushMenu(menuName)
+		pushSidebars()
+		local buttonId = storeScreen:GetPanelButtonId(storeCurMenuId)
+		storePanelButtonHighlightGroup = Infinity_FindUIItemByName('BUTTON_storechooser_' .. buttonId)
+		Infinity_PopMenu('WORLD_QUICKLOOT')
+	"
+	onClose
+	"
+		local menuName = storeScreen:GetMenuName(storeCurMenuId)
+		Infinity_PopMenu(menuName)
+		popSidebars()
+	"
+	ignoreEsc
+
+	label
+	{
+		area 0 0 1364 756
+		mosaic RGSTORE
+	}
+	label
+	{
+		area 131 172 80 70
+		bam lua "store.icon"
+	}
+	button
+	{
+		on escape
+		area 1132 674 140 40
+		bam RGSTBT
+		text "DONE_BUTTON"
+		text style "button"
+		action
+		"
+			storeScreen:OnMainDoneButtonClick()
+		"
+	}
+	button
+	{
+		name 'BUTTON_storechooser_0'
+		area 132 254 62 64
+		enabled "storeScreen:GetPanelButtonEnabled(0)"
+		bam GUISTBBC
+		highlightgroup storePanelButtonHighlightGroup
+		sequence lua "storeScreen:GetPanelButtonSequence(0)"
+		tooltip lua "getBuySellTooltip()"
+		action
+		"
+			setStoreMainPanel(0)
+		"
+	}
+	button
+	{
+		name 'BUTTON_storechooser_1'
+		area 132 328 62 64
+		enabled "storeScreen:GetPanelButtonEnabled(1)"
+		bam GUISTBBC
+		highlightgroup storePanelButtonHighlightGroup
+		sequence lua "storeScreen:GetPanelButtonSequence(1)"
+		tooltip lua "Infinity_FetchString(storeScreen:GetPanelButtonToolTip(1))"
+		action
+		"
+			setStoreMainPanel(1)
+		"
+	}
+	button
+	{
+		name 'BUTTON_storechooser_2'
+		area 132 402 62 64
+		enabled "storeScreen:GetPanelButtonEnabled(2)"
+		bam GUISTBBC
+		highlightgroup storePanelButtonHighlightGroup
+		sequence lua "storeScreen:GetPanelButtonSequence(2)"
+		tooltip lua "Infinity_FetchString(storeScreen:GetPanelButtonToolTip(2))"
+		action
+		"
+			setStoreMainPanel(2)
+		"
+	}
+	button
+	{
+		name 'BUTTON_storechooser_3'
+		area 132 476 62 64
+		enabled "storeScreen:GetPanelButtonEnabled(3)"
+		bam GUISTBBC
+		highlightgroup storePanelButtonHighlightGroup
+		sequence lua "storeScreen:GetPanelButtonSequence(3)"
+		tooltip lua "Infinity_FetchString(storeScreen:GetPanelButtonToolTip(3))"
+		action
+		"
+			setStoreMainPanel(3)
+		"
+	}
+	label
+	{
+		area 1154 226 94 36
+--		enabled "not storeScreen:IsContainer()"
+		text lua "game:GetPartyGold()"
+		text style "gold"
+		align center center
+	}
+	button
+	{
+		area 1166 339 68 90
+		encumbrance
+	}
+}

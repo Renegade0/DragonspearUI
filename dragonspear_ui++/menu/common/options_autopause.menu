@@ -1,0 +1,198 @@
+menu
+{
+	name	'OPTIONS_AUTOPAUSE'
+	modal
+	align center center
+	onOpen
+	"
+		panelID = 10
+		selOptAP = 0
+		autopauseString = 18044
+
+		for index, var in pairs(autoPauseToggles) do
+			var[5] = Infinity_GetOption(var[3], panelID)
+			if var[5] == 0 then
+				var[4] = 0
+			else
+				var[4] = 2
+			end
+		end
+
+		for index, var in pairs(characterPauseToggles) do
+			var[5] = Infinity_GetOption(var[3], panelID)
+			if var[5] == 0 then
+				var[4] = 0
+			else
+				var[4] = 2
+			end
+		end
+	"
+
+	button
+	{
+		area 0 0 864 710
+		mosaic	GUICHISD
+		action
+		"
+			autopauseString = 18044
+			selOptAP = 0
+		"
+	}
+	label
+	{
+		area		94 8 674 44
+		text		"AUTO_PAUSE_TITLE"
+		text style	title
+	}
+	list
+	{
+
+		column
+		{
+			width 85
+			label
+			{
+				area 10 0 -1 -1
+				text lua "t( autoPauseToggles[rowNumber][1])"
+				text style "normal"
+				text align left center
+			}
+		}
+		column
+		{
+			width 15
+			label
+			{
+				area		20 12 32 32
+				bam			ROUNDBUT
+				scaleToClip
+				frame		lua "autoPauseToggles[rowNumber][4]"
+			}
+		}
+
+		area 448 186 372 428
+
+		rowheight	50
+		table		"autoPauseToggles"
+		var		selOptAP
+		scrollbar	'GUISCRC'
+
+		action
+		"
+			selOptAPC = 0
+			autopauseString = autoPauseToggles[selOptAP][2]
+
+			if(cellNumber == 2) then
+				Infinity_PlaySound('GAM_09')
+
+				autoPauseToggles[selOptAP][4] = toggleFrame(autoPauseToggles[selOptAP][4])
+
+				if autoPauseToggles[selOptAP][4] == 0 then
+					autoPauseToggles[selOptAP][5] = 0
+				else
+					autoPauseToggles[selOptAP][5] = 1
+				end
+			end
+		"
+	}
+	list
+	{
+
+		column
+		{
+			width 85
+			label
+			{
+				area 10 0 -1 -1
+				text lua "t( characterPauseToggles[rowNumber][1])"
+				text style "normal"
+				text align left center
+			}
+		}
+		column
+		{
+			width 15
+			label
+			{
+				area		20 12 32 32
+				bam			ROUNDBUT
+				scaleToClip
+				frame		lua "characterPauseToggles[rowNumber][4]"
+			}
+		}
+
+		area 34 186 372 428
+
+		rowheight	50
+		table		"characterPauseToggles"
+		var		selOptAPC
+		scrollbar	'GUISCRC'
+
+		action
+		"
+			selOptAP = 0
+			autopauseString = characterPauseToggles[selOptAPC][2]
+
+			if(cellNumber == 2) then
+				Infinity_PlaySound('GAM_09')
+
+				characterPauseToggles[selOptAPC][4] = toggleFrame(characterPauseToggles[selOptAPC][4])
+
+				if characterPauseToggles[selOptAPC][4] == 0 then
+					characterPauseToggles[selOptAPC][5] = 0
+				else
+					characterPauseToggles[selOptAPC][5] = 1
+				end
+
+				--Infinity_ChangeOption(characterPauseToggles[selOptAPC][3], characterPauseToggles[selOptAPC][5], panelID )
+			end
+		"
+	}
+
+	text
+	{
+		area		54 118 758 44
+		text		lua "Infinity_FetchString(autopauseString)"
+		text style	normal
+		scrollbar	'GUISCRC'
+	}
+
+
+	button
+	{
+		on escape
+		area		102 634 230 40
+		bam			GUIBUTMT
+		sequence	2
+		text 		"CANCEL_BUTTON"
+		text style	"button"
+		action
+		"
+			panelID = 8
+			helpString = 'GAMEPLAY_DESCRIPTION'
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		area		514 634 230 40
+		bam			GUIBUTMT
+		sequence	2
+		text 		"DONE_BUTTON" --Done
+		text style	"button"
+		action
+		"
+			panelID = 10
+
+			for index, var in pairs(autoPauseToggles) do
+				Infinity_ChangeOption( var[3], var[5], panelID)
+			end
+			for index, var in pairs(characterPauseToggles) do
+				Infinity_ChangeOption( var[3], var[5], panelID)
+			end
+
+			panelID = 8
+			Infinity_PopMenu()
+		"
+	}
+}

@@ -1,0 +1,21 @@
+menu
+{
+	name 'WORLD_DIALOG_RIGHT'
+	align right center
+	ignoreEsc
+	--ignoreFocus 1
+	enabled "canShowDialogButton(11)"
+	onOpen
+	"
+		Infinity_PushMenu('WORLD_DIALOG_RIGHT_BUTTONS')
+	"
+	onClose
+	"
+		Infinity_PopMenu('WORLD_DIALOG_RIGHT_BUTTONS')
+	"
+	label
+	{
+		area 0 0 80 1536
+		mosaic GUIWRSP
+	}
+}

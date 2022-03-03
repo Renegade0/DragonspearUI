@@ -1,0 +1,135 @@
+menu
+{
+	name 'LEFT_SIDEBAR_HELP'
+	align left top
+	ignoreEsc
+	onOpen
+	"
+		Infinity_PushMenu('LEFT_SIDEBAR_BOTTOM_HELP')
+	"
+	onClose
+	"
+		Infinity_PopMenu('LEFT_SIDEBAR_BOTTOM_HELP')
+	"
+	label
+	{
+		name 'leftSidebarBackground'
+		area 0 0 80 1536
+		mosaic GUIWLSP
+	}
+	label
+	{
+
+		area 0 1536 80 1536
+		mosaic GUIWLSP
+	}
+	button
+	{
+		area 3 14 73 55
+		bam GUILS10
+		sequence 0
+		tooltip lua "getTooltipWithHotkey(2,24364)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 1
+		"
+	}
+	button
+	{
+		area 3 69 73 55
+		bam GUILS10
+		sequence 1
+		tooltip lua "getTooltipWithHotkey(4,15418)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 2
+		"
+	}
+	button
+	{
+		area 3 124 73 55
+		bam GUILS10
+		sequence 2
+		tooltip lua "getTooltipWithHotkey(3,24359)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 3
+		"
+	}
+	button
+	{
+		area 3 179 73 55
+		bam GUILS10
+		sequence 3
+		tooltip lua "getTooltipWithHotkey(0,24358)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 4
+		"
+	}
+	button
+	{
+		area 3 234 73 55
+		bam GUILS10
+		sequence 4
+		tooltip lua "getTooltipWithHotkey(1,24356)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 5
+		"
+	}
+	button
+	{
+		area 3 289 73 55
+		bam GUILS10
+		sequence 5
+		tooltip lua "getTooltipWithHotkey(5,24360)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 6
+		"
+	}
+	button
+	{
+		area 3 344 73 55
+		bam GUILS10
+		sequence 6
+		tooltip lua "getTooltipWithHotkey(6,24357)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 7
+		"
+	}
+	button
+	{
+		area 3 399 73 55
+		bam GUILS10
+		sequence 7
+		tooltip lua "getTooltipWithHotkey(7,24362)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 8
+		"
+	}
+	button
+	{
+		area 3 454 73 55
+		enabled "e:IsMultiplayer()"
+		bam GUILS10
+		sequence 8
+		tooltip lua "getTooltipWithHotkey(8,24363)"
+		glow lua "true"
+		action
+		"
+			currentButtonHelp = 9
+		"
+	}
+}

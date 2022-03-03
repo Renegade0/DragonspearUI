@@ -1,0 +1,37 @@
+menu
+{
+	name 'AREA_MAP'
+	align left top
+	ignoreesc
+	onOpen "Infinity_PopMenu('WORLD_QUICKLOOT'); pushSidebars(); Infinity_PushMenu('AREA_MAP_TITLE'); notesAlpha = 0"
+	onClose "popSidebars(); Infinity_PopMenu('AREA_MAP_TITLE');"
+	opacity lua "getAndIncrementNotesAlpha()"
+	template
+	{
+		button
+		{
+			enabled "showNote(instanceId)"
+			area 0 0 45 42
+			bam "FLAG1"
+			sequence lua "mapnoteSettings[instanceId].sequence"
+			tooltip force lua "showAreaMapNoteTooltip(instanceId)"
+			tooltip force top
+			tooltip lua "Infinity_FetchString(mapnoteSettings[instanceId].text)"
+			tooltip position 3
+			actionAlt
+			"
+				mapScreen:OnUserNoteClick(instanceId, mapnoteSettings[instanceId].worldCoord.x, mapnoteSettings[instanceId].worldCoord.y)
+				Infinity_PushMenu('NOTE_ADD',0,0)
+			"
+			actionEnter
+			"
+				areaMapHover = instanceId
+			"
+			actionExit
+			"
+				areaMapHover = -1
+			"
+		}
+		name "TEMPLATE_mapnote"
+	}
+}

@@ -1,0 +1,261 @@
+menu
+{
+	name 'CONNECTION'
+	align center center
+	onOpen
+	"
+		connectionFilterNoPasswords = 0
+		connectionFilterNoFullGames = 0
+		connectionIsHosting = false
+		connectionBuildGameList()
+
+		if connectionPlayerNameEdit == '' then
+			connectionSetDefaultGameSettings()
+		end
+	"
+	label -- Background
+	{
+		area 0 0 1444 818
+		mosaic RGMPCON
+	}
+	label -- Title
+	{
+		area 250 34 946 40
+		text  "JOIN_GAME_TITLE"
+		text style title
+	}
+	label
+	{
+		area 204 200 498 36
+		text lua "t('GAME_NAME_LABEL')"
+		text style "label_parchment"
+		align center center
+	}
+	label
+	{
+		area 766 200 84 36
+		text lua "t('PASSWORD_LABEL')"
+		text style "label_parchment"
+		align center center
+	}
+	label
+	{
+		area 864 200 70 36
+		text lua "t('PLAYERS_LABEL')"
+		text style "label_parchment"
+		align center center
+	}
+	label
+	{
+		area 956 200 186 36
+		text lua "t('GAME_TYPE_LABEL')"
+		text style "label_parchment"
+		align center center
+	}
+	list -- Multiplayer sessions
+	{
+		column
+		{
+			width 60
+			label
+			{
+				area 20 0 500 40
+				text lua "connectionGetGameName(rowNumber)"
+				text style	"list_parchment"
+				align left center
+			}
+
+		}
+		column
+		{
+			width 10
+			label
+			{
+				area 20 0 210 40
+				text lua "gameHasPassword(rowNumber)"
+				text style	"list_parchment"
+				align left center
+			}
+
+		}
+		column
+		{
+			width 10
+			label
+			{
+				area 20 0 210 40
+				text lua "connectionGetNumPlayers(rowNumber)"
+				text style	"list_parchment"
+				align left center
+			}
+
+		}
+		column
+		{
+			width 20
+			label
+			{
+				area 20 0 210 40
+				text lua "connectionGetGameType(rowNumber)"
+				text style	"list_parchment"
+				align left center
+			}
+
+		}
+
+		area 204 254 972 412
+
+		rowheight	44
+		table		"mp_shownSessions"
+		var			selectedMp
+		scrollbar	'GUISCRC'
+		action
+		"
+			selectedIndex = mp_sessions[mp_shownSessions[selectedMp]['actualIndex']]['sessionIDString']
+		"
+	}
+
+	label -- player name
+	{
+		area 616 80 210 40
+		text  "PLAYER_NAME_LABEL"
+		text style "label"
+	}
+	label
+	{
+		area 612 118 218 44
+		fill 112 111 111 64
+	}
+	edit
+	{
+		name		"ConnectionPlayerNameEditArea"
+		area		616 124 210 38
+		var			connectionPlayerNameEdit
+		text 		style "edit"
+		maxlines	1
+		maxchars 	32
+	}
+
+	label -- filter options
+	{
+		area		961 84 215 40
+		text		style 'label'
+		text		"CONNECTION_NOT_PASSWORD_PROTECTED_LABEL"
+		align 		left center
+		tooltip lua "t('CONNECTION_NO_PASSWORDS_TOOLTIP')"
+	}
+	button
+	{
+		area		911 90 32 32
+		bam 		ROUNDBUT
+		glow lua	"connectionFilterNoPasswords"
+		scaleToClip
+		tooltip lua "t('CONNECTION_NO_PASSWORDS_TOOLTIP')"
+		action
+		"
+			connectionFilterNoPasswords = 1 - connectionFilterNoPasswords
+			connectionBuildGameList()
+		"
+	}
+	label
+	{
+		area		961 130 215 42
+		text		style 'label'
+		text		"CONNECTION_NOT_FULL_LABEL"
+		align 		left center
+		tooltip lua "t('CONNECTION_NO_FULL_GAMES_TOOLTIP')"
+	}
+	button
+	{
+		area		911 136 32 32
+		bam 		ROUNDBUT
+		glow lua	"connectionFilterNoFullGames"
+		scaleToClip
+		tooltip lua "t('CONNECTION_NO_FULL_GAMES_TOOLTIP')"
+		action
+		"
+			connectionFilterNoFullGames = 1 - connectionFilterNoFullGames
+			connectionBuildGameList()
+		"
+	}
+
+	button -- Create game
+	{
+		area		168 110 230 40
+		bam			GUIBUTMT
+		sequence	6
+		text  		"CONNECTION_CREATE_NEW_GAME_BUTTON"
+		text style	"button"
+		action
+		"
+			Infinity_PushMenu('CONNECTION_CREATE')
+		"
+	}
+	button -- Direct Connect
+	{
+		area		406 718 230 40
+		bam			GUIBUTMT
+		sequence	6
+		text  		"CONNECTION_DIRECT_CONNECTION_BUTTON"
+		text style	"button"
+		tooltip lua "t('CONNECTION_DIRECT_CONNECT_TOOLTIP')"
+		action
+		"
+			connectionIsHosting = false
+			chooseNetworkProtocol(2)
+		"
+	}
+	button -- refresh
+	{
+		area		1202 96 70 66
+		bam 		'GUMPBUTX'
+		sequence 	2
+		align 		center center
+		tooltip lua "t('CONNECTION_REFRESH_TOOLTIP')"
+		action
+		"
+			selectedMp = nil
+			mp_shownSessions = {}
+			mp_sessions = {}
+			connectionScreen:ClearSessions()
+		"
+	}
+
+	button -- Join game
+	{
+		area		1042 718 230 40
+		bam			GUIBUTMT
+		sequence	6
+		text  "JOIN_BUTTON"
+		text style	"button"
+		clickable lua	"joinGameEnabled()"
+		action
+		"
+			Infinity_GetPasswordRequired(mp_shownSessions[selectedMp]['actualIndex'])
+			if string.find(connectionPlayerNameEdit, '%S') == nil then
+				Infinity_PushMenu('CONNECTION_NAME')
+			elseif passwordReq == 0 then
+				Infinity_PopMenu();
+				Infinity_PopMenu();
+				mp_sessions[mp_shownSessions[selectedMp]['actualIndex']]['password'] = passwordMp
+				Infinity_JoinMultiplayerGame(mp_shownSessions[selectedMp]['actualIndex'])
+			else
+				Infinity_PushMenu('CONNECTION_PASSWORD')
+			end
+		"
+	}
+	button -- Back/ Log out
+	{
+		area		168 718 230 40
+		bam			GUIBUTMT
+		sequence	0
+		text  "BACK_BUTTON"
+		text style	"button"
+		on 			escape
+		action
+		"
+			Infinity_PopMenu();
+			connectionScreen:OnMainCancelButtonClick()
+		"
+	}
+}

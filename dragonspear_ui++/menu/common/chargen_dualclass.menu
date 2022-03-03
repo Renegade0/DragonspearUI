@@ -1,0 +1,90 @@
+menu
+{
+	name 'CHARGEN_DUALCLASS'
+	align center center
+	ignoreesc
+	label
+	{
+		area 0 0 864 710
+		mosaic guidcx
+	}
+	label
+	{
+		area 82 10 700 44
+		text "DUALCLASS_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 62 124 363 37
+		text lua "characters[currentID].name"
+		text style "label"
+	}
+	label
+	{
+		area 459 124 363 37
+		text lua "characters[currentID].class"
+		text style "label"
+	}
+	label
+	{
+		area 136 191 177 243
+		bitmap		lua "characters[currentID].portrait"
+	}
+	text
+	{
+		area 481 194 336 407
+		text 10811 --dual class info
+		text style "normal"
+		scrollbar	'GUISCRC'
+	}
+	button
+	{
+		area 57 495 340 32
+		clickable lua "createCharScreen:GetCurrentStep() == const.STEP_DUALCLASS_CLASS"
+		bam GUIBUTWS
+		text "CLASS_BUTTON"
+		text style "button"
+		action
+		"
+			createCharScreen:OnMenuButtonClick()
+		"
+	}
+	button
+	{
+		area 57 528 340 32
+		clickable lua "createCharScreen:GetCurrentStep() == const.STEP_DUALCLASS_PROFICIENCIES"
+		bam GUIBUTWS
+		text "SKILLS_BUTTON"
+		text style "button"
+		action
+		"
+			createCharScreen:OnMenuButtonClick()
+		"
+	}
+	button
+	{
+		area 438 653 230 40
+		bam GUIBUTMT
+		clickable lua "createCharScreen:GetCurrentStep() == const.STEP_DUALCLASS_DONE"
+		text "DONE_BUTTON"
+		text style "button"
+		action
+		"
+			createCharScreen:OnDoneButtonClick()
+		"
+	}
+	button
+	{
+		on escape
+		area 196 653 230 40
+		clickable lua "false"
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action
+		"
+			createCharScreen:OnCancelButtonClick()
+		"
+	}
+}

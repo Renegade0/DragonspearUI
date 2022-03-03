@@ -1,0 +1,498 @@
+menu
+{
+	name 'CHARGEN_PORTRAIT'
+	align center center
+	ignoreesc
+	onopen "
+		MultiPortraitPicker = Infinity_GetINIValue('Game Options','MultiPortraitPicker',1)
+		if MultiPortraitPicker == 1 then
+			IncPortraitArray()
+		end
+		PortraitSearchString = ''
+		PortSearchString = ''
+		toggleSex = ''
+		CurrentImage = ''
+		togs = ''
+		toggleSort = 0
+		CImage = 0
+		faNot = 0
+		fbNot = 0
+		if toggleMale == 1 then
+			toggleSex = 'M'
+		elseif toggleFemale == 1 then
+			toggleSex = 'F'
+		elseif Infinity_FetchString(characters[currentID].gender) == 'Male' then
+				toggleSex = 'M'
+		elseif Infinity_FetchString(characters[currentID].gender) == 'Female' then
+				toggleSex = 'F'
+		end
+		if toggleSex == 'F' then
+			togS = PPStrings.PP_CHAR_FEMALE
+		else
+			togS = PPStrings.PP_CHAR_MALE
+		end
+
+		duiAvailablePortraits = getAvailablePortraits()
+		UpdatePortraitPicker()
+	"
+	onclose "
+		duiAvailablePortraits = nil
+	"
+
+	label
+	{
+		enabled "MultiPortraitPicker == 1"
+		area 0 0 1444 818
+		mosaic 'RGCNAME'
+	}
+	label
+	{
+		area 474 84 500 42
+		text "APPEARANCE_TITLE"
+		text style "title"
+	}
+
+	button
+	{
+		enabled "MultiPortraitPicker == 1"
+		area 336 362 52 132
+		bam GUIPRC
+		sequence 0
+		action "DecPortraitArray()"
+	}
+	button
+	{
+		enabled "MultiPortraitPicker == 1"
+		area 1059 362 52 132
+		bam GUIPRC
+		sequence 1
+		action "IncPortraitArray()"
+	}
+
+	label { enabled "MultiPortraitPicker == 1" area 400 156 80 125 bitmap lua "GetPortrait(1)" }
+	label { enabled "MultiPortraitPicker == 1" area 494 156 80 125 bitmap lua "GetPortrait(2)" }
+	label { enabled "MultiPortraitPicker == 1" area 588 156 80 125 bitmap lua "GetPortrait(3)" }
+	label { enabled "MultiPortraitPicker == 1" area 682 156 80 125 bitmap lua "GetPortrait(4)" }
+	label { enabled "MultiPortraitPicker == 1" area 776 156 80 125 bitmap lua "GetPortrait(5)" }
+	label { enabled "MultiPortraitPicker == 1" area 870 156 80 125 bitmap lua "GetPortrait(6)" }
+	label { enabled "MultiPortraitPicker == 1" area 964 156 80 125 bitmap lua "GetPortrait(7)" }
+	label { enabled "MultiPortraitPicker == 1" area 400 295 80 125 bitmap lua "GetPortrait(8)" }
+	label { enabled "MultiPortraitPicker == 1" area 494 295 80 125 bitmap lua "GetPortrait(9)" }
+	label { enabled "MultiPortraitPicker == 1" area 588 295 80 125 bitmap lua "GetPortrait(10)" }
+	label { enabled "MultiPortraitPicker == 1" area 682 295 80 125 bitmap lua "GetPortrait(11)" }
+	label { enabled "MultiPortraitPicker == 1" area 776 295 80 125 bitmap lua "GetPortrait(12)" }
+	label { enabled "MultiPortraitPicker == 1" area 870 295 80 125 bitmap lua "GetPortrait(13)" }
+	label { enabled "MultiPortraitPicker == 1" area 964 295 80 125 bitmap lua "GetPortrait(14)" }
+	label { enabled "MultiPortraitPicker == 1" area 400 434 80 125 bitmap lua "GetPortrait(15)" }
+	label { enabled "MultiPortraitPicker == 1" area 494 434 80 125 bitmap lua "GetPortrait(16)" }
+	label { enabled "MultiPortraitPicker == 1" area 588 434 80 125 bitmap lua "GetPortrait(17)" }
+	label { enabled "MultiPortraitPicker == 1" area 682 434 80 125 bitmap lua "GetPortrait(18)" }
+	label { enabled "MultiPortraitPicker == 1" area 776 434 80 125 bitmap lua "GetPortrait(19)" }
+	label { enabled "MultiPortraitPicker == 1" area 870 434 80 125 bitmap lua "GetPortrait(20)" }
+	label { enabled "MultiPortraitPicker == 1" area 964 434 80 125 bitmap lua "GetPortrait(21)" }
+	label { enabled "MultiPortraitPicker == 1" area 400 573 80 125 bitmap lua "GetPortrait(22)" }
+	label { enabled "MultiPortraitPicker == 1" area 494 573 80 125 bitmap lua "GetPortrait(23)" }
+	label { enabled "MultiPortraitPicker == 1" area 588 573 80 125 bitmap lua "GetPortrait(24)" }
+	label { enabled "MultiPortraitPicker == 1" area 682 573 80 125 bitmap lua "GetPortrait(25)" }
+	label { enabled "MultiPortraitPicker == 1" area 776 573 80 125 bitmap lua "GetPortrait(26)" }
+	label { enabled "MultiPortraitPicker == 1" area 870 573 80 125 bitmap lua "GetPortrait(27)" }
+	label { enabled "MultiPortraitPicker == 1" area 964 573 80 125 bitmap lua "GetPortrait(28)" }
+
+	button { enabled "MultiPortraitPicker == 1" area 395 151 90 135 bam "rgcfram" toggle togglePort1 action "togglePortrait1(); OnPortraitArrayClick(1)" }
+	button { enabled "MultiPortraitPicker == 1" area 489 151 90 135 bam "rgcfram" toggle togglePort2 action "togglePortrait2(); OnPortraitArrayClick(2)" }
+	button { enabled "MultiPortraitPicker == 1" area 583 151 90 135 bam "rgcfram" toggle togglePort3 action "togglePortrait3(); OnPortraitArrayClick(3)" }
+	button { enabled "MultiPortraitPicker == 1" area 677 151 90 135 bam "rgcfram" toggle togglePort4 action "togglePortrait4(); OnPortraitArrayClick(4)" }
+	button { enabled "MultiPortraitPicker == 1" area 771 151 90 135 bam "rgcfram" toggle togglePort5 action "togglePortrait5(); OnPortraitArrayClick(5)" }
+	button { enabled "MultiPortraitPicker == 1" area 865 151 90 135 bam "rgcfram" toggle togglePort6 action "togglePortrait6(); OnPortraitArrayClick(6)" }
+	button { enabled "MultiPortraitPicker == 1" area 959 151 90 135 bam "rgcfram" toggle togglePort7 action "togglePortrait7(); OnPortraitArrayClick(7)" }
+	button { enabled "MultiPortraitPicker == 1" area 395 290 90 135 bam "rgcfram" toggle togglePort8 action "togglePortrait8(); OnPortraitArrayClick(8)" }
+	button { enabled "MultiPortraitPicker == 1" area 489 290 90 135 bam "rgcfram" toggle togglePort9 action "togglePortrait9(); OnPortraitArrayClick(9)" }
+	button { enabled "MultiPortraitPicker == 1" area 583 290 90 135 bam "rgcfram" toggle togglePort10 action "togglePortrait10(); OnPortraitArrayClick(10)" }
+	button { enabled "MultiPortraitPicker == 1" area 677 290 90 135 bam "rgcfram" toggle togglePort11 action "togglePortrait11(); OnPortraitArrayClick(11)" }
+	button { enabled "MultiPortraitPicker == 1" area 771 290 90 135 bam "rgcfram" toggle togglePort12 action "togglePortrait12(); OnPortraitArrayClick(12)" }
+	button { enabled "MultiPortraitPicker == 1" area 865 290 90 135 bam "rgcfram" toggle togglePort13 action "togglePortrait13(); OnPortraitArrayClick(13)" }
+	button { enabled "MultiPortraitPicker == 1" area 959 290 90 135 bam "rgcfram" toggle togglePort14 action "togglePortrait14(); OnPortraitArrayClick(14)" }
+	button { enabled "MultiPortraitPicker == 1" area 395 429 90 135 bam "rgcfram" toggle togglePort15 action "togglePortrait15(); OnPortraitArrayClick(15)" }
+	button { enabled "MultiPortraitPicker == 1" area 489 429 90 135 bam "rgcfram" toggle togglePort16 action "togglePortrait16(); OnPortraitArrayClick(16)" }
+	button { enabled "MultiPortraitPicker == 1" area 583 429 90 135 bam "rgcfram" toggle togglePort17 action "togglePortrait17(); OnPortraitArrayClick(17)" }
+	button { enabled "MultiPortraitPicker == 1" area 677 429 90 135 bam "rgcfram" toggle togglePort18 action "togglePortrait18(); OnPortraitArrayClick(18)" }
+	button { enabled "MultiPortraitPicker == 1" area 771 429 90 135 bam "rgcfram" toggle togglePort19 action "togglePortrait19(); OnPortraitArrayClick(19)" }
+	button { enabled "MultiPortraitPicker == 1" area 865 429 90 135 bam "rgcfram" toggle togglePort20 action "togglePortrait20(); OnPortraitArrayClick(20)" }
+	button { enabled "MultiPortraitPicker == 1" area 959 429 90 135 bam "rgcfram" toggle togglePort21 action "togglePortrait21(); OnPortraitArrayClick(21)" }
+	button { enabled "MultiPortraitPicker == 1" area 395 568 90 135 bam "rgcfram" toggle togglePort22 action "togglePortrait22(); OnPortraitArrayClick(22)" }
+	button { enabled "MultiPortraitPicker == 1" area 489 568 90 135 bam "rgcfram" toggle togglePort23 action "togglePortrait23(); OnPortraitArrayClick(23)" }
+	button { enabled "MultiPortraitPicker == 1" area 583 568 90 135 bam "rgcfram" toggle togglePort24 action "togglePortrait24(); OnPortraitArrayClick(24)" }
+	button { enabled "MultiPortraitPicker == 1" area 677 568 90 135 bam "rgcfram" toggle togglePort25 action "togglePortrait25(); OnPortraitArrayClick(25)" }
+	button { enabled "MultiPortraitPicker == 1" area 771 568 90 135 bam "rgcfram" toggle togglePort26 action "togglePortrait26(); OnPortraitArrayClick(26)" }
+	button { enabled "MultiPortraitPicker == 1" area 865 568 90 135 bam "rgcfram" toggle togglePort27 action "togglePortrait27(); OnPortraitArrayClick(27)" }
+	button { enabled "MultiPortraitPicker == 1" area 959 568 90 135 bam "rgcfram" toggle togglePort28 action "togglePortrait28(); OnPortraitArrayClick(28)" }
+
+	label
+	{
+		enabled "IsPortraitChosen() and MultiPortraitPicker == 1"
+		area 1142 248 210 330
+		bitmap lua "GetPortrait(portraitChoice)"
+	}
+	label
+	{
+		enabled "IsPortraitChosen() and MultiPortraitPicker == 1"
+		area 1134 604 230 44
+		text lua "GetPortrait(portraitChoice)"
+		text style "button"
+	}
+	button
+	{
+		on escape
+		enabled "MultiPortraitPicker == 1"
+		area 484 724 230 44
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu(); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		enabled "MultiPortraitPicker == 1"
+		area 730 724 230 44
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "IsPortraitChosen()"
+		action "ChoosePortrait(); Infinity_PopMenu(); createCharScreen:OnDoneButtonClick()"
+	}
+	label
+	{
+		enabled "MultiPortraitPicker == 0"
+		area 0 0 1444 818
+		mosaic 'RGCGAPP'
+	}
+--	label
+--	{
+--		area 82 90 178 44
+--		text lua "Infinity_FetchString(32297) .. ': ' .. t(togS)"
+--		text style "label"
+--		align left center
+--	}
+	label
+	{
+		enabled "MultiPortraitPicker == 0"
+		area 356 177 346 85
+		text 'RG_PP_TOOLTIP'
+		text style "label"
+		align left center
+	}
+	label
+	{
+		enabled "MultiPortraitPicker == 0"
+		area 356 498 346 82
+		text lua "t(PPStrings.PP_TOTAL) .. '\n' .. t(PPStrings.PP_DEFAULT) ..  t(#portraits) .. '\n' .. t(PPStrings.PP_CUSTOM) .. t(#BGImages)"
+		text style "label"
+		align left center
+	}
+	button
+	{
+		enabled "MultiPortraitPicker == 0"
+		area 0 0 0 0
+		bam GUIPRC
+		sequence 0
+		action "createCharScreen:DecCurrentPortrait()"
+	}
+	button
+	{
+		enabled "MultiPortraitPicker == 0"
+		area 0 0 0 0
+		bam GUIPRC
+		sequence 1
+		action "createCharScreen:IncCurrentPortrait()"
+	}
+	label
+	{
+		enabled "CurrentImage ~= '' and MultiPortraitPicker == 0"
+		area 1142 248 210 330
+		bitmap lua "createCharScreen:GetCurrentPortrait()"
+	}
+	label
+	{
+		enabled "CurrentImage == '' and MultiPortraitPicker == 0"
+		area 1142 248 210 330
+		bitmap "NOPORTMD"
+	}
+	button
+	{
+--		enabled "CurrentImage ==''"
+		enabled "MultiPortraitPicker == 0"
+		area 1134 604 230 40
+		bam GUIBUTMT
+		text "CUSTOM_BUTTON"
+		text style "button"
+		enabled "not e:IsTouchUI()"
+		action "
+--			TEXT_popup_big = 17188
+			Infinity_PushMenu('RG_PP_POPUP')
+			"
+	}
+	label
+	{
+--		area 1120 618 234 78
+		enabled "createCharScreen:GetCurrentPortrait() == CurrentImage or string.lower(createCharScreen:GetCurrentPortrait()) == string.lower(CurrentImage) and MultiPortraitPicker == 0"
+		rectangle 4
+	}
+	label
+	{
+		area 356 372 346 60
+		enabled "(createCharScreen:GetCurrentPortrait() == CurrentImage or string.lower(createCharScreen:GetCurrentPortrait()) == string.lower(CurrentImage)) and HasMediumPortrait == '' and MultiPortraitPicker == 0"
+		text lua "string.upper(t(PortraitPicker[CImage][1])) .. '\n' .. string.upper(t(PPStrings.PP_FILENAME)) .. t(PortraitPicker[CImage][3])"
+		text style "label"
+		align left center
+	}
+	label
+	{
+		area 356 372 346 60
+		enabled "(createCharScreen:GetCurrentPortrait() == CurrentImage or string.lower(createCharScreen:GetCurrentPortrait()) == string.lower(CurrentImage)) and HasMediumPortrait ~= '' and MultiPortraitPicker == 0"
+		text lua "string.upper(t(PortraitPicker[CImage][1])) .. '\n' .. string.upper(t(PPStrings.PP_FILENAME)) .. t(PortraitPicker[CImage][3]) .. ' & ' .. t(HasMediumPortrait)"
+		text style "label"
+		align left center
+	}
+	label
+	{
+		enabled "HasMediumPortrait ~= '' and CurrentImage ~= '' and MultiPortraitPicker == 0"
+		area 1206 108 76 108
+		rectangle 0
+	}
+	label
+	{
+		enabled "HasMediumPortrait ~= '' and CurrentImage ~= '' and MultiPortraitPicker == 0"
+		area 1217 120 54 85
+		bitmap lua "HasMediumPortrait"
+	}
+	label
+	{
+		enabled "MultiPortraitPicker == 0"
+		area 356 446 346 36
+		text lua "t(PPStrings.PP_SORT) .. t(tSort)"
+		text style "label"
+		align left center
+	}
+	button
+	{
+		on escape
+		enabled "MultiPortraitPicker == 0"
+		area 420 726 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu()
+			createCharScreen:OnCancelButtonClick()
+			PortraitSearchString = ''
+			PortSearchString = ''
+			toggleSex = ''
+			toggleMale = 0
+			toggleFemale = 0
+			PortraitPicker = {}
+			faNot = 0
+			fbNot = 0
+		"
+	}
+	button
+	{
+		on return
+		enabled "MultiPortraitPicker == 0"
+		area 806 726 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable() and CurrentImage ~=''"
+		action "
+			Infinity_PopMenu();
+			createCharScreen:OnDoneButtonClick()
+			PortraitSearchString = ''
+			PortSearchString = ''
+			toggleSex = ''
+			toggleMale = 0
+			toggleFrame = 0
+			PortraitPicker = {}
+			faNot = 0
+			fbNot = 0
+		"
+	}
+	edit
+	{
+		area	392 668 274 32
+		enabled "fbNot == 0 and MultiPortraitPicker == 0"
+		var PortraitSearchString
+		placeholder "..."
+		text style "edit"
+		text color 'D'
+		maxlines 1
+		align left center
+		glow lua "PortraitSearchString ~= ''"
+		fill 112 111 111 64
+	}
+	edit
+	{
+		area	392 668 274 32
+		enabled "fbNot == 1 and MultiPortraitPicker == 0"
+		var PortraitSearchString
+		placeholder "..."
+		text style "edit"
+		text color 180 0 0 255
+		maxlines 1
+		align left center
+		fill 112 111 111 64
+	}
+	button
+	{
+		enabled "PortraitSearchString ~= '' and MultiPortraitPicker == 0"
+		area 674 664 34 40
+		text "X"
+		text style "button"
+		action
+		"
+			PortraitSearchString = ''
+			fbNot = 0
+		"
+	}
+	button
+	{
+		enabled "MultiPortraitPicker == 0"
+		area 352 668 36 32
+		bam ROUNDBUT
+		glow lua "fbNot == 0"
+		action
+		"
+			if fbNot == 0 then
+				fbNot = 1
+			else
+				fbNot = 0
+			end
+		"
+	}
+	edit
+	{
+		area	392 628 274 32
+		enabled "faNot == 0 and MultiPortraitPicker == 0"
+		var PortSearchString
+		placeholder "..."
+		text style "edit"
+		text color 'D'
+		maxlines 1
+		align left center
+		glow lua "PortSearchString ~= ''"
+		fill 112 111 111 64
+	}
+	edit
+	{
+		area	392 628 274 32
+		enabled "faNot == 1 and MultiPortraitPicker == 0"
+		var PortSearchString
+		placeholder "..."
+		text style "edit"
+		text color 180 0 0 255
+		maxlines 1
+		align left center
+		fill 112 111 111 64
+	}
+	button
+	{
+		enabled "PortSearchString ~= '' and MultiPortraitPicker == 0"
+		area 674 624 34 40
+		text "X"
+		text style "button"
+		action
+		"
+			PortSearchString = ''
+			faNot = 0
+		"
+	}
+	button
+	{
+		enabled "MultiPortraitPicker == 0"
+		area 352 628 36 32
+		bam ROUNDBUT
+		glow lua "faNot == 0"
+		action
+		"
+			if faNot == 0 then
+				faNot = 1
+			else
+				faNot = 0
+			end
+		"
+	}
+	list
+	{
+		column
+		{
+			width	350
+			label
+			{
+				enabled "PortraitContainsSearchString(rowNumber) and PortContainsSearchString(rowNumber) and SexFilter(rowNumber) and string.lower(string.sub(PortraitPicker[rowNumber][3],-1)) ~='m' and string.lower(string.sub(PortraitPicker[rowNumber][3],-1)) ~= 's'"
+				area		0 0 329 90
+				mosaic lua 	'getPortraitBackground(rowNumber)'
+				respectClipping
+				align		center center
+			}
+			label
+			{
+				enabled "PortraitContainsSearchString(rowNumber) and PortContainsSearchString(rowNumber) and SexFilter(rowNumber) and string.lower(string.sub(PortraitPicker[rowNumber][3],-1)) ~='m' and string.lower(string.sub(PortraitPicker[rowNumber][3],-1)) ~= 's'"
+				area		0 0 255 90
+				text lua	"string.upper(PortraitPicker[rowNumber][1])"
+				text style	"label"
+				align		right center
+			}
+			button
+			{
+				enabled "PortraitContainsSearchString(rowNumber) and PortContainsSearchString(rowNumber) and SexFilter(rowNumber) and string.lower(string.sub(PortraitPicker[rowNumber][3],-1)) ~='m' and string.lower(string.sub(PortraitPicker[rowNumber][3],-1)) ~= 's'"
+				area		270 2 54 85
+				bitmap lua 	'string.lower(PortraitPicker[rowNumber][3])'
+				respectClipping
+				align		center center
+			}
+		}
+		enabled "MultiPortraitPicker == 0"
+		name		'Portrait_Picker'
+		area		742 178 350 522
+		rowheight	dynamic
+		hideHighlight
+		table		"PortraitPicker"
+		var			CImage
+		scrollbar	'GUISCRC'
+		action
+		"
+			if CurrentImage == string.lower(PortraitPicker[CImage][3]) then
+				CImage = 0
+				CurrentImage = ''
+			else
+				CurrentImage = string.lower(PortraitPicker[CImage][3])
+				GetMediumPortrait()
+				while string.lower(createCharScreen:GetCurrentPortrait()) ~= string.lower(CurrentImage) do
+					createCharScreen:IncCurrentPortrait()
+				end
+			end
+		"
+	}
+	button
+	{
+		enabled "MultiPortraitPicker == 0"
+		area 1010 146 68 35
+--		text lua "PPStrings.PP_SORT_LABEL"
+--		text style "button"
+		bam RGCSORT
+		action "
+			if toggleSort == 0 then
+				toggleSort = 1
+			elseif toggleSort == 1 then
+				toggleSort = 2
+			elseif toggleSort == 2 then
+				toggleSort = 3
+			elseif toggleSort == 3 then
+				toggleSort = 0
+			end
+			CurrentImage = ''
+			table.sort(PortraitPicker, compare2)
+		"
+	}
+
+
+}

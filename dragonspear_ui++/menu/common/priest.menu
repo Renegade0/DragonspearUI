@@ -1,0 +1,254 @@
+menu
+{
+	name 'PRIEST'
+	align center center
+
+	onopen
+	"
+		showPriestMemorizationFlash = false
+		pushSidebars()
+		prpage = nil
+		setPriestBookLevel(1)
+		helpTextString = ''
+		--currentSpell = ''
+		currentAnimationID = 1
+		updateCounterMemorizationSparkles = 1
+		Infinity_PopMenu('WORLD_QUICKLOOT');
+	"
+	onclose
+	"
+		popSidebars()
+		currentSpell = nil
+	"
+
+	button
+	{
+		enabled "currentSpell == nil"
+		on escape
+		action
+		"
+			--Return to world screen on escape
+			e:SelectEngine(worldScreen)
+		"
+	}
+
+	template
+	{
+		label
+		{
+			enabled "showMemorizationSparkle(instanceId)"
+			ignoreEvents
+			area 0 0 45 42
+			bam "FLASHBR"
+			usealpha lua "true"
+			frame lua "memorizationFlashes[instanceId][2]"
+			align center center
+		}
+		name "TEMPLATE_priestMemorizationSparkle"
+	}
+
+
+	label
+	{
+		area 0 0 1364 756
+		mosaic "GUIPRB2"
+	}
+	label
+	{
+		area		210 34 944 40
+		text		"PRIEST_SCROLL_TITLE"
+		text style	"title"
+	}
+	label
+	{
+		area		295 90 774 32
+		text lua	"characters[id].name"
+		text style	"label"
+		text align center center
+	}
+	label
+	{
+		area 		295 90 774 32
+		text lua	"priestName"
+		text style	"label"
+	}
+#for i = 1, 7 do
+	button
+	{
+		area		691 `184 + 55 * (i - 1)` 48 45
+		--bam		GUIPRTC
+--		--highlightgroup	prpage
+		--sequence	`i - 1`
+		--frame lua "getPrSpellButtHighlight(`i`)"
+		--enabled		"maxPriestPage > `i - 1`"
+		text '`i`'
+		text style "rg_trajan"
+		text align center center
+		action		"setPriestBookLevel(`i`)"
+	}
+#end
+	button
+	{
+		area		491 168 34 44
+		bam		RGSPARR
+		sequence	1
+		enabled		"currentSpellLevel < maxPriestPage or PriestBook:canScroll(1)"
+		action		"
+			if PriestBook:canScroll(1) then
+				PriestBook:scroll(1)
+			else
+				incrementPriestBookLevel()
+			end
+		"
+	}
+	button
+	{
+		area		280 168 34 44
+		bam		RGSPARR
+		sequence	0
+		enabled		"currentSpellLevel > 1 or PriestBook:canScroll(-1)"
+		action		"
+			if PriestBook:canScroll(-1) then
+				PriestBook:scroll(-1)
+			else
+				decrementPriestBookLevel()
+			end
+		"
+	}
+	label
+	{
+		area 		318 171 152 29
+		text lua	"Infinity_FetchString(7192) .. '  ' .. currentSpellLevel"
+		text style "rg_trajan"
+		--text color lua "parchment"
+		text align center center
+	}
+
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area	0 0 -1 -1
+				bam	lua "characters[id].priestSpells[currentSpellLevel][rowNumber].icon"
+				align	center center
+			}
+		}
+		name "bookListPriest"
+		rowwidth	40
+		table		"characters[id].priestSpells[currentSpellLevel]"
+		var		currentBookSpell
+		scrollbar	'GUISCRC'
+		action		"
+			if cellNumber == 1 then
+				if #bottomSpells < #bottomSpellsPlaceHolder then
+					createPriestMemorizationSparkle(3, 0, 40, 40, 'bookListPriest', -1)
+					Infinity_PlaySound('GAM_24')
+					showPriestMemorizationFlash = true
+				end
+				priestScreen:MemorizeSpell( characters[id].priestSpells[currentSpellLevel][currentBookSpell].level, characters[id].priestSpells[currentSpellLevel][currentBookSpell].index )
+			end
+			if lastCurrentBookSpell == currentBookSpell and cellNumber == 2 then
+				currentBookSpell = 0
+			else
+				lastCurrentBookSpell = currentBookSpell
+			end
+		"
+
+	}
+
+#for i = 1, 2 do
+	list {
+		column {
+			width 100
+			-- list item borders + icon + spell name
+			label { area 0 0 -1 -1  bam "RGKNSLOT"  align left center }
+			label { area 0 1 36 36  bam lua "PriestBook.columns[`i`][rowNumber].icon"  align center center }
+			label { area 5 0 -1 -1  text lua "Infinity_FetchString(PriestBook.columns[`i`][rowNumber].name)"
+					pad 37 1 0 1  text style "normal_parchment"  align left center }
+		}
+
+		hideHighlight
+		sound       ""
+		area        `134 + 260 * (i - 1)` 224 260 460
+		rowheight   38
+		name        "bookSpellsList`i`"
+		table       "PriestBook.columns[`i`]"
+		var         "index"
+		action      "PriestBook:memorizeSpell(PriestBook.columns[`i`][index], 'bookSpellsList`i`', index)"
+		actionAlt   "currentSpell = PriestBook.columns[`i`][index]"
+		actionScroll "PriestBook:scroll()"
+	}
+#end
+
+#for level = 1, 7 do
+#local y = 133 + 55 * level
+	list
+	{ column {  width 100 label { area	0 0 -1 -1 bam	"RGSPSLO1" sequence 0 align	center center } }
+		area 740 `y` 512 36
+		rowwidth	36 table		"bottomSpellsPlaceHolder`level`" enabled "currentSpell == nil"
+	}
+#end
+
+#for level = 1, 7 do
+#local y = 133 + 55 * level
+	list
+	{ column  {  width 100 label { area	0 0 -1 -1 bam	lua "bottomSpells`level`[rowNumber].icon" align	center center greyscale lua "bottomSpells`level`[rowNumber].castable == 0" } }
+		area 740 `y` 512 36
+		sound ""
+		name "memorizedListPriest`level`" enabled 	"#bottomSpells`level` ~= 0" rowwidth	36 table		"bottomSpells`level`" var		currentBottomSpell`level` enabled "currentSpell == nil"
+		action "PriestBook:unmemorizeSpell(`level`, bottomSpells`level`, currentBottomSpell`level`)"
+	}
+#end
+
+
+	label
+	{
+		area 1050 144 186 36
+		text lua "Infinity_FetchString(11944)"
+		text style "rg_trajan"
+--		text color '5'
+		enabled "currentSpell == nil"
+		text align right center
+	}
+	label
+	{
+		area 130 144 156 36
+		text lua "Infinity_FetchString(11945)"
+		text style "rg_trajan"
+--		text color '5'
+		text align left center
+	}
+
+	text
+	{
+		area		740 154 508 545
+		text		lua "Infinity_FetchString(currentSpell.description)"
+		text style	"normal_parchment"
+		scrollbar	'GUISCRP'
+		enabled 	"currentSpell ~= nil"
+		--mosaic "RGPRDESC"
+		--action "currentSpell = null"
+	}
+
+	button
+	{
+		on escape
+		area 1194 148 32 40
+		enabled "currentSpell ~= nil"
+		text "X"
+		text style "rg_trajan"
+		--text shadow 1
+		--text color lua "parchment"
+		action "currentSpell = nil"
+	}
+
+	label
+	{
+		area 0 0 1364 756
+		fill        0 0 0 176
+		enabled "priestBookEnabled == false"
+	}
+}

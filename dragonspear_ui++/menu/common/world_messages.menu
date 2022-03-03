@@ -1,0 +1,99 @@
+menu
+{
+	name 'WORLD_MESSAGES'
+	align center bottom
+	ignoreEsc
+	onOpen
+	"
+		Infinity_SetOffset('WORLD_MESSAGES', 0, -toolbarTop)
+		local x,y,w,h = Infinity_GetArea('messagesRect')
+		toolbarTop = toolbarTop + h
+		setMessagesY(worldMessageBoxTop - y)
+	"
+	onClose
+	"
+		local x,y,w,h = Infinity_GetArea('messagesRect')
+		toolbarTop = toolbarTop - h
+	"
+	label
+	{
+		name 'messagesRect'
+	#if GAME_VERSION == 'sod' then
+		area 0 78 792 175
+	#else
+		area 0 96 792 157
+	#end
+		mosaic RGBOXZ
+	}
+	label
+	{
+		area 0 201 792 56
+		mosaic RGBOXY
+	}
+	button
+	{
+		area 28 152 1 1
+		on pageup
+		action
+		"
+			dragMessagesY(-20)
+		"
+	}
+	button
+	{
+		area 28 152 1 1
+		on pagedown
+		action
+		"
+			dragMessagesY(20)
+		"
+	}
+	--text
+	--{
+	--	name "worldMessageBox"
+	--	area 28 102 745 135
+	--	text lua "worldMessageBoxText"
+	--	text style "gamelog"
+	--	scrollbar	'RGSCRBR'
+	--	scrollbar func "chatboxScroll"
+	--}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 745 -1
+					text lua "combatLog[rowNumber]"
+					text style "gamelog"
+			}
+		}
+		name "worldMessageBox"
+	#if GAME_VERSION == 'sod' then
+		area 28 102 745 135
+	#else
+		area 28 120 745 117
+	#end
+		rowheight dynamic
+		table "combatLog"
+		hideHighlight
+		scrollbar	'RGSCRBR'
+		scrollbar func "chatboxScroll"
+		scrollbar skipReset
+	}
+	handle
+	{
+		name 'messagesHandleY'
+	#if GAME_VERSION == 'sod' then
+		area 0 78 792 22
+	#else
+		area 0 96 792 22
+	#end
+		pulse lua "worldMessageBoxClickedOnce == 0"
+		actionDrag
+		"
+			dragMessagesY(motionY)
+		"
+	}
+}

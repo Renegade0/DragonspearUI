@@ -1,0 +1,30 @@
+menu
+{
+	name 'POPUP_BIG'
+	align center center
+	modal
+	label
+	{
+		area 0 0 864 710
+		mosaic GUIPOPF
+	}
+	text
+	{
+		area 40 98 788 496
+		text lua "Infinity_FetchString(TEXT_popup_big)"
+		text style	"label"
+		text align left top
+		scrollbar 'GUISCRC'
+	}
+	button
+	{
+		area 317 634 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style	"button"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}

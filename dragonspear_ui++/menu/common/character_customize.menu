@@ -1,0 +1,135 @@
+menu
+{
+	name 'CHARACTER_CUSTOMIZE'
+	align center center
+	modal
+	ignoreesc
+	onOpen
+	"
+		currentPanelID = const.CUSTOMIZE_ID
+	"
+	label
+	{
+		area 0 0 864 710
+		mosaic	GUICGWDE
+	}
+
+	text
+	{
+		area 380 100 446 490
+		text 11327 --Customize help text
+		scrollbar 'GUISCRC'
+		text style	normal
+	}
+	label
+	{
+		area	234 38 396 44
+		text	"CUSTOMIZE_TITLE"
+		text style	title
+	}
+	button
+	{
+		bam 'GUIBUTWS'
+		sequence 0
+		area 23 100 340 32
+		text style "button"
+		text "APPEARANCE_BUTTON"
+		clickable lua
+		"
+			characterScreen:IsAppearanceButtonClickable();
+		"
+		action
+		"
+			characterScreen:OnAppearanceButtonClick()
+		"
+	}
+	button
+	{
+		bam 'GUIBUTWS'
+		sequence 0
+		area 23 133 340 32
+		text style "button"
+		text "SOUNDS_BUTTON"
+		clickable lua
+		"
+			characterScreen:IsAppearanceButtonClickable();
+		"
+		action
+		"
+			characterScreen:OnSoundsButtonClick()
+		"
+	}
+	button
+	{
+		bam 'GUIBUTWS'
+		sequence 0
+		area 23 165 340 32
+		text style "button"
+		text "COLORS_BUTTON"
+		clickable lua
+		"
+			characterScreen:IsAppearanceButtonClickable();
+		"
+		action
+		"
+			characterScreen:OnHairSkinButtonClick()
+		"
+	}
+	button
+	{
+		bam 'GUIBUTWS'
+		sequence 0
+		area 23 198 340 32
+		text style "button"
+		text "SCRIPT_BUTTON"
+		action
+		"
+			characterScreen:OnScriptButtonClick()
+		"
+	}
+	button
+	{
+		bam 'GUIBUTWS'
+		sequence 0
+		area 23 231 340 32
+		text style "button"
+		text "BIOGRAPHY_BUTTON"
+		clickable lua
+		"
+			characterScreen:IsAppearanceButtonClickable();
+		"
+		action
+		"
+			characterScreen:OnCusomizeBiographyButtonClick()
+		"
+	}
+	button
+	{
+		on escape
+		bam 'GUIBUTMT'
+		sequence 0
+		area 196 653 230 40
+		text style "button"
+		text	"CANCEL_BUTTON"
+		action
+		"
+			characterScreen:OnCancelButtonClick()
+			currentPanelID = 0
+			Infinity_PopMenu('CHARACTER_CUSTOMIZE')
+		"
+	}
+	button
+	{
+		bam 'GUIBUTMT'
+		sequence 0
+		area  438 653 230 40
+		text style "button"
+		text "DONE_BUTTON"
+		action
+		"
+			characterScreen:OnDoneButtonClick()
+			currentPanelID = 0
+			Infinity_PopMenu('CHARACTER_CUSTOMIZE')
+		"
+	}
+}

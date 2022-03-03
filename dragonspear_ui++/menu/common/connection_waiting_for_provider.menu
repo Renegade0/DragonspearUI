@@ -1,0 +1,47 @@
+menu
+{
+	name 'CONNECTION_WAITING_FOR_PROVIDER'
+	modal
+	align center center
+
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label --Title
+	{
+		area 30 20 600 122
+		text "CONNECTION_FINDING_DEVICES"
+		text style	"label"
+	}
+	button
+	{
+		area 		44 170 234 40
+		bam			GUIBUTMT
+		sequence	0
+		text  		"CANCEL_BUTTON"
+		text style	"button"
+		on			escape
+		action
+		"
+			Infinity_PopMenu('CONNECTION_WAITING_FOR_PROVIDER')
+			Infinity_PopMenu('CONNECTION');
+			connectionScreen:OnMainCancelButtonClick()
+		"
+	}
+	button
+	{
+		area 		404 170 230 40
+		bam			GUIBUTMT
+		sequence	0
+		text  		"CONNECTION_LOCAL_NETWORK_GAME"
+		text style	"button"
+		on			return
+		action
+		"
+			Infinity_PopMenu('CONNECTION_WAITING_FOR_PROVIDER')
+			connectionScreen:StopConnectingToProvider()
+		"
+	}
+}

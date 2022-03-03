@@ -1,0 +1,200 @@
+menu
+{
+	name 'MP_OPTIONS'
+	align center center
+	modal
+	onOpen
+	"
+		multiplayerGameOptions[1][3] = multiplayer.listentojoin
+		multiplayerGameOptions[1][4] = multiplayerGameOptions[1][3]
+		multiplayerGameOptions[2][3] = multiplayer.allowreformparty
+		multiplayerGameOptions[2][4] = multiplayerGameOptions[2][3]
+		multiplayerImportOption = multiplayer.importsetting + 1
+	"
+
+	label
+	{
+		mosaic 'RECENTEV'
+		area 2 -2 664 668
+	}
+	label
+	{
+		area 106 68 460 44
+		text "OPTIONS_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 74 262 516 56
+		text "MULTIPLAYER_IMPORT_CHARACTER_RULES_LABEL"
+		text style "title"
+		align center center
+	}
+
+	button
+	{
+		area 210 148 32 32
+		bam ROUNDBUT
+		sequence 0
+		glow lua "multiplayerGameOptions[1][3] == true"
+		tooltip lua "t(multiplayerGameOptions[1][2])"
+		scaleToClip
+		action
+		"
+			multiplayerGameOptions[1][3] = not multiplayerGameOptions[1][3]
+		"
+	}
+	text
+	{
+		area 252 142 303 42
+		text lua "t(multiplayerGameOptions[1][1])"
+		text style "normal"
+		tooltip lua "t(multiplayerGameOptions[1][2])"
+		align left center
+	}
+	button
+	{
+		area 210 202 32 32
+		bam ROUNDBUT
+		sequence 0
+		glow lua "multiplayerGameOptions[2][3] == true"
+		tooltip lua "t(multiplayerGameOptions[2][2])"
+		scaleToClip
+		action
+		"
+			multiplayerGameOptions[2][3] = not multiplayerGameOptions[2][3]
+		"
+	}
+	text
+	{
+		area 252 196 303 42
+		text lua "t(multiplayerGameOptions[2][1])"
+		text style "normal"
+		tooltip lua "t(multiplayerGameOptions[2][2])"
+		align left center
+	}
+
+	button
+	{
+		area 210 332 32 32
+		bam ROUNDBUT
+		frame lua "currentCellCheck(3)"
+		sequence 0
+		glow lua "multiplayerImportOption == 1"
+		tooltip lua "t('IMPORT_RULES_TOOLTIP')"
+		scaleToClip
+		action
+		"
+			multiplayerImportOption = 1
+		"
+	}
+	text
+	{
+		area 252 326 303 42
+		text lua "t('MULTIPLAYER_IMPORT_CHARACTER_RULES_SEI')"
+		tooltip lua "t('IMPORT_RULES_TOOLTIP')"
+		text style "normal"
+		align left center
+	}
+	button
+	{
+		area 210 380 32 32
+		bam ROUNDBUT
+		frame lua "currentCellCheck(3)"
+		sequence 0
+		glow lua "multiplayerImportOption == 2"
+		tooltip lua "t('IMPORT_RULES_TOOLTIP')"
+		scaleToClip
+		action
+		"
+			multiplayerImportOption = 2
+		"
+	}
+	text
+	{
+		area 252 374 303 42
+		text lua "t('MULTIPLAYER_IMPORT_CHARACTER_RULES_SE')"
+		tooltip lua "t('IMPORT_RULES_TOOLTIP')"
+		text style "normal"
+		align left center
+	}
+	button
+	{
+		area 210 428 32 32
+		bam ROUNDBUT
+		frame lua "currentCellCheck(3)"
+		sequence 0
+		glow lua "multiplayerImportOption == 3"
+		tooltip lua "t('IMPORT_RULES_TOOLTIP')"
+		scaleToClip
+		action
+		"
+			multiplayerImportOption = 3
+		"
+	}
+	text
+	{
+		area 252 422 212 42
+		text lua "t('MULTIPLAYER_IMPORT_CHARACTER_RULES_S')"
+		tooltip lua "t('IMPORT_RULES_TOOLTIP')"
+		text style "normal"
+		align left center
+	}
+
+	button
+	{
+		bam GUIOSW
+		on esc
+		area 616 4 44 44
+		sequence 2
+		action
+		"
+			multiplayerScreen:OnCancelButtonClick()
+			Infinity_PopMenu()
+		"
+	}
+
+	--bottom buttons
+	button
+	{
+		on return
+		area 236 572 200 40
+		bam 'GUIBUTNT'
+		sequence 0
+		text "DONE_BUTTON" -- Done
+		text style 'button'
+		action
+		"
+			if multiplayerImportOption ~= multiplayer.importsetting + 1 then
+				multiplayerScreen:SetImportSetting(multiplayerImportOption - 1)
+				broadcastOptionChange(multiplayerImportOption+2)
+			end
+
+			if multiplayerGameOptions[1][3] ~= multiplayerGameOptions[1][4] then
+				broadcastOptionChange(1, multiplayerGameOptions[1][3])
+				multiplayerScreen:ToggleListenToJoin()
+			end
+
+			if multiplayerGameOptions[2][3] ~= multiplayerGameOptions[2][4] then
+				broadcastOptionChange(2, multiplayerGameOptions[2][3])
+				multiplayerScreen:ToggleAllowReformParty()
+			end
+
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		on escape
+		area 236 528 200 40
+		bam 'GUIBUTNT'
+		sequence 1
+		text "CANCEL_BUTTON" -- Cancel
+		text style 'button'
+		action
+		"
+			multiplayerScreen:OnCancelButtonClick()
+			Infinity_PopMenu()
+		"
+	}
+}

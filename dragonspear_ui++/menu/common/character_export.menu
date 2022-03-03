@@ -1,0 +1,108 @@
+menu
+{
+	name 'CHARACTER_EXPORT'
+	align center center
+	modal
+	ignoreEsc
+	onOpen
+	"
+		currentPanelID = const.EXPORT_ID;
+		Infinity_FocusTextEdit('characterExportCharacterEditArea');
+	"
+	label
+	{
+		area 0 0 864 710
+		mosaic	GUICGSND
+	}
+	label
+	{
+		area	220 34 426 44
+		text	"EXPORT_TITLE"
+		text style	title
+	}
+
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 -1
+				text lua "list_GUIREC_13_0[rowNumber]"
+				text style "list"
+				pad 8 0 0 0
+			}
+		}
+		area 28 88 340 290
+		rowheight	18
+		table		"list_GUIREC_13_0"
+		var			"list_GUIREC_13_0_idx"
+		scrollbar	'GUISCRC'
+		action
+		"
+			Infinity_OnCharacterItemSelect(list_GUIREC_13_0_idx - 1)
+		"
+	}
+	label
+	{
+		area		35 382 332 23
+		text		"EXPORT_FILENAME_LABEL"
+		text style	"label"
+		text color 	3
+	}
+	edit
+	{
+		name		"characterExportCharacterEditArea"
+		area		35 405 332 31
+		var			characterExportCharacterEdit
+		text style	"edit"
+		maxlines	1
+		fill            112 111 111 64
+		action
+		"
+			if(characterExportCharacterEdit:len() > 7 and key_pressed ~= 8) then
+				return 0
+			else
+				Infinity_UpdateCharacterRecordExportPanel()
+				return 1
+			end
+		"
+
+	}
+	text
+	{
+		area 404 88 420 500
+		text 10962
+		text style	normal
+		scrollbar 'GUISCRC'
+	}
+	button
+	{
+		bam 'GUIBUTMT'
+		on escape
+		sequence 0
+		area 196 653 230 40
+		text style "button"
+		text	"CANCEL_BUTTON"
+		action
+		"
+			characterScreen:OnCancelButtonClick()
+			Infinity_PopMenu('CHARACTER_EXPORT')
+			currentPanelID = 0
+		"
+	}
+	button
+	{
+		clickable	lua "characterScreen:IsDoneButtonClickable(currentID)"
+		bam 'GUIBUTMT'
+		sequence 0
+		area  438 653 230 40
+		text style "button"
+		text "DONE_BUTTON"
+		action
+		"
+			characterScreen:OnDoneButtonClick()
+		"
+	}
+}

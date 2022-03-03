@@ -1,0 +1,32 @@
+menu
+{
+	name 'CONNECTION_WAITING_FOR_SERVER'
+	modal
+	align center center
+
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label --Title
+	{
+		area 30 20 600 122
+		text "CONNECTION_WAITING_FOR_SERVER"
+		text style	"label"
+	}
+	button
+	{
+		area		216 166 202 40
+		bam			GUIBUTNT
+		sequence	0
+		text  		"CANCEL_BUTTON"
+		text style	"button"
+		on		escape
+		action
+		"
+			Infinity_PopMenu('CONNECTION_WAITING_FOR_SERVER')
+			connectionScreen:CancelJoinGame();
+		"
+	}
+}

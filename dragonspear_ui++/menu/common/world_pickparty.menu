@@ -1,0 +1,120 @@
+menu
+{
+	name 'WORLD_PICKPARTY'
+	align center bottom
+	ignoreEsc
+	label
+	{
+		area 0 0 845 160
+		mosaic GUWPKPC0
+	}
+	label
+	{
+		area 14 11 431 32
+		text "REMOVE_MEMBERS_LABEL"
+		text style "label"
+		align left center
+	}
+	button
+	{
+		area 13 54 61 91
+		bitmap lua "worldScreen:GetPickPartyPortrait(0)"
+		glow lua "worldScreen:GetPickPartyCharacterId(0) == worldScreen:GetPickPartyRemoveCharacterId()"
+		action
+		"
+			worldScreen:OnPickPartyPortraitButtonClick(0)
+		"
+	}
+	button
+	{
+		area 75 54 61 91
+		bitmap lua "worldScreen:GetPickPartyPortrait(1)"
+		glow lua "worldScreen:GetPickPartyCharacterId(1) == worldScreen:GetPickPartyRemoveCharacterId()"
+		action
+		"
+			worldScreen:OnPickPartyPortraitButtonClick(1)
+		"
+	}
+	button
+	{
+		area 137 54 61 91
+		bitmap lua "worldScreen:GetPickPartyPortrait(2)"
+		glow lua "worldScreen:GetPickPartyCharacterId(2) == worldScreen:GetPickPartyRemoveCharacterId()"
+		action
+		"
+			worldScreen:OnPickPartyPortraitButtonClick(2)
+		"
+	}
+	button
+	{
+		area 199 54 61 91
+		bitmap lua "worldScreen:GetPickPartyPortrait(3)"
+		glow lua "worldScreen:GetPickPartyCharacterId(3) == worldScreen:GetPickPartyRemoveCharacterId()"
+		action
+		"
+			worldScreen:OnPickPartyPortraitButtonClick(3)
+		"
+	}
+	button
+	{
+		area 261 54 61 91
+		bitmap lua "worldScreen:GetPickPartyPortrait(4)"
+		glow lua "worldScreen:GetPickPartyCharacterId(4) == worldScreen:GetPickPartyRemoveCharacterId()"
+		action
+		"
+			worldScreen:OnPickPartyPortraitButtonClick(4)
+		"
+	}
+	button
+	{
+		area 323 54 61 91
+		bitmap lua "worldScreen:GetPickPartyPortrait(5)"
+		glow lua "worldScreen:GetPickPartyCharacterId(5) == worldScreen:GetPickPartyRemoveCharacterId()"
+		action
+		"
+			worldScreen:OnPickPartyPortraitButtonClick(5)
+		"
+	}
+	button
+	{
+		area 385 54 61 91
+		bitmap lua "worldScreen:GetPickPartyPortrait(6)"
+		glow lua "worldScreen:GetPickPartyCharacterId(6) == worldScreen:GetPickPartyRemoveCharacterId()"
+		action
+		"
+			worldScreen:OnPickPartyPortraitButtonClick(6)
+		"
+	}
+	label
+	{
+		area 747 11 91 32
+		text lua "game:GetCharacterOverflowCount()"
+		text style "normal"
+		align center center
+	}
+	button
+	{
+		area 638 54 200 40
+		bam guibutnt
+		text "REMOVE_BUTTON"
+		text style "button"
+		clickable lua "worldScreen:IsPickPartyRemoveButtonClickable()"
+		action
+		"
+			popup2Button(17518, 'REMOVE_BUTTON', function() worldScreen:RemoveCharacterFromParty() end)
+		"
+	}
+	button
+	{
+		area 638 101 200 40
+		bam guibutnt
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "worldScreen:IsPickPartyDoneButtonClickable()"
+		on esc
+		action
+		"
+			worldScreen:OnPickPartyDoneButtonClick()
+		"
+	}
+}

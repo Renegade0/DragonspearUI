@@ -1,0 +1,47 @@
+menu
+{
+	name 'WORLD_MESSAGEBOXHISTORY'
+	align center bottom
+	ignoreEsc
+	onopen "
+		local x,y,w,h = Infinity_GetArea('messagesRect')
+		Infinity_SetArea('worldMessageBoxHistoryBackground',x,y-110,w,h)
+		Infinity_SetArea('worldMessageBoxHistoryHandle',nil,y-110,nil,nil)
+		Infinity_SetArea('worldMessageBoxHistory',x+28,y-86,w-47,h-40)
+	"
+	label
+	{
+		name 'worldMessageBoxHistoryBackground'
+		enabled "showWorldMessages"
+		area 0 -51 792 194
+		mosaic RGBOXZ
+	}
+	label
+	{
+		area 0 91 792 106
+		enabled "showWorldMessages"
+		mosaic RGBOXY
+	}
+	label
+	{
+		name "worldMessageBoxHistory"
+		enabled "showWorldMessages"
+		area 28 -27 745 154
+		text lua "worldMessageBoxText"
+		text style "gamelog"
+		scrollbar	'RGSCRBR'
+		scrollbar func "chatboxScroll"
+		scrollbar skipReset
+	}
+	handle
+	{
+		name "worldMessageBoxHistoryHandle"
+		enabled "showWorldMessages"
+		area 0 -51 792 30
+--		mosaic "RGTAB3"
+		actionDrag
+		"
+			dragMessagesBoxHistoryY(motionY)
+		"
+	}
+}

@@ -1,0 +1,1047 @@
+menu
+{
+	name 'CHARGEN_ABILITIES'
+	align center center
+	ignoreesc
+	onopen
+	"
+		ticksPassed = 0
+		ticksStarting = 0
+		MethodToggle = 0
+		MethDescToggle = 0
+		cheatMode = Infinity_GetINIValue('Game Options','CheatMode','1')
+		rgAbilityText()
+	"
+	label
+	{
+		area 0 0 1444 818
+		mosaic RGCGROL
+	}
+	label
+	{
+		enabled "Infinity_GetINIValue('Game Options','CheatMode','1')"
+		area 708 349 420 55
+		mosaic RGCROLX
+	}
+	label
+	{
+		area 504 84 426 40
+		text "ABILITIES_TITLE"
+		text style "title"
+	}
+	list
+	{
+		column
+		{
+			width 18
+			label
+			{
+				area 		0 0 50 55
+				text lua 	"chargen.ability[rowNumber].storedRoll"
+				text style 	"normal"
+				text color 	'$'
+				align 		center center
+			}
+		}
+		column
+		{
+			width 34
+			label
+			{
+				area 		0 0 125 55
+				text lua 	"t(chargen.ability[rowNumber].name)"
+				text style 	"normal"
+				align 		right center
+			}
+		}
+		column
+		{
+			width 20
+			label
+			{
+				area 15 0 50 55
+				text lua "chargen.ability[rowNumber].roll"
+				text style "normal"
+				align center center
+			}
+		}
+		column
+		{
+			width 15
+			label
+			{
+				area 11 6 45 42
+				bam GUIOSW
+				frame lua "currentCellCheck(4)"
+				sequence 0
+			}
+		}
+		column
+		{
+			width 15
+			label
+			{
+				area 0 6 45 42
+				bam GUIOSW
+				frame lua "currentCellCheck(5)"
+				sequence 1
+			}
+		}
+		action
+		"
+			if ticksStarting < 10 then
+				if cellNumber == 4 then
+					createCharScreen:OnAbilityPlusMinusButtonClick(currentChargenAbility, true)
+				elseif cellNumber == 5 then
+					createCharScreen:OnAbilityPlusMinusButtonClick(currentChargenAbility, false)
+				end
+			end
+			cellNumber = nil
+			ticksPassed = 0
+			ticksStarting = 0
+		"
+		actionUpdate
+		"
+			ticksStarting = ticksStarting + 1
+			if ticksStarting > 10 then
+				ticksPassed = ticksPassed + 1
+				if ticksPassed > 2 then
+					if cellNumber == 4 then
+						createCharScreen:OnAbilityPlusMinusButtonClick(currentChargenAbility, true)
+					elseif cellNumber == 5 then
+						createCharScreen:OnAbilityPlusMinusButtonClick(currentChargenAbility, false)
+					end
+					ticksPassed = 0
+				end
+			end
+		"
+
+		rowheight 54
+		hidehighlight
+		area 334 157 370 325
+		table "chargen.ability"
+		var currentChargenAbility
+	}
+	label
+	{
+		enabled 	"storedTotalRoll > 0"
+		area 		384 488 72 54
+		text 		"ACM_STORED_LABEL"
+		text style 	"normal"
+		text align 	left center
+		text color 	'$'
+	}
+	label
+	{
+		area 		446 488 80 54
+--		text 		"TOTAL_ROLL_NORMAL"
+		text		'RG_TOTAL'
+		text style 	"normal"
+		text align 	right center
+	}
+	label
+	{
+		enabled 	"storedTotalRoll > 0"
+		area 		336 488 48 54
+		text lua 	"storedTotalRoll"
+		text style 	"normal"
+		text align 	center center
+		text color 	'$'
+	}
+	label
+	{
+		area 		539 488 55 54
+		text lua 	"chargen.totalRoll"
+		text style 	"normal"
+		text align 	center center
+	}
+	label
+	{
+		enabled 	"chargen.extraAbilityPoints > 0"
+		area 		618 488 74 54
+		text lua 	"chargen.extraAbilityPoints"
+		text style 	"normal"
+		text align 	center center
+		text color 	'G'
+	}
+	text
+	{
+		name		'abilityText'
+		area 		724 157 388 193
+		text lua 	"abilityOrGeneralHelp()"
+		text style 	"normal"
+		scrollbar	'GUISCRC'
+	}
+--	label
+--	{
+--		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1')"
+--		area 		696 358 444 366
+--		Rectangle 	3
+--	}
+	label
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle > 0 and MethodToggle < 6"
+		area 		714 543 400 37
+		text		"ACM_ROLL_SPEED_LABEL"
+		text style 	"label"
+		text color 	'$'
+		align 		center center
+	}
+	slider
+	{
+		enabled "Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle > 0 and MethodToggle < 6"
+		area 806 586 212 22
+		position "arspeed"
+		bam	 'SLDRSTAR'
+		mosaic RGSCALE
+		sequence 0
+		frame	 1
+		settings 21
+		pad 4 0 6 0
+		action
+		"
+			arse = 2000 - ( arspeed * 80 ) + 80
+		"
+	}
+
+-- Cheat Method Submenu
+
+	text
+	{
+		enabled 	"MethodToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
+		area 		718 354 396 40
+		text 		"ACM_CHEAT_METHOD"
+		text style 	"normal"
+		text align 	center center
+		text color 	'$'
+	}
+	text
+	{
+		enabled 	"MethodToggle == 0 and MethDescToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
+		area 		724 542 390 154
+		text		"ACM_UF_DESCRIPTION"
+		text style 	"normal"
+		text align 	left top
+		text color 	'$'
+	}
+	button
+	{
+		enabled 	"MethodToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
+		area 		716 404 200 40
+		bam 		GUIBUTNT
+		text 		"ACM_AUTOROLL_BUTTON"
+		text style 	"label"
+		text color 	'$'
+		action "
+			MethodToggle = 1
+		"
+		actionenter "
+			MethDescToggle = 1
+		"
+		actionexit "
+			MethDescToggle = 0
+		"
+	}
+	button
+	{
+		enabled 	"MethodToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
+		area 		914 404 200 40
+		bam 		GUIBUTNT
+		text 		"ACM_RANGEROLL_BUTTON"
+		text style 	"label"
+		text color	'$'
+		action "
+			MethodToggle = 2
+		"
+		actionenter "
+			MethDescToggle = 2
+		"
+		actionexit "
+			MethDescToggle = 0
+		"
+	}
+	button
+	{
+		enabled 	"MethodToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
+		area 		716 448 200 40
+		bam 		GUIBUTNT
+		text 		"ACM_POINTBUY_BUTTON"
+		text style 	"label"
+		text color	'$'
+		action "
+			MethodToggle = 3
+		"
+		actionenter "
+			MethDescToggle = 3
+		"
+		actionexit "
+			MethDescToggle = 0
+		"
+	}
+	button
+	{
+		enabled 	"MethodToggle == 0 and HasExceptionalStrength() and Infinity_GetINIValue('Game Options','CheatMode','1')"
+		area 		716 492 200 40
+		bam 		GUIBUTNT
+		text 		"ACM_MINSTR_BUTTON"
+		text style 	"label"
+		text color	'$'
+		action "
+			MethodToggle = 4
+		"
+		actionenter "
+			MethDescToggle = 4
+		"
+		actionexit "
+			MethDescToggle = 0
+		"
+	}
+	button
+	{
+		enabled 	"MethodToggle == 0 and HasExceptionalStrength() and Infinity_GetINIValue('Game Options','CheatMode','1')"
+		area 		914 492 200 40
+		bam			GUIBUTNT
+		text 		"ACM_PRISTR_BUTTON"
+		text style 	"label"
+		text color	'$'
+		action "
+			MethodToggle = 5
+		"
+		actionenter "
+			MethDescToggle = 5
+		"
+		actionexit "
+			MethDescToggle = 0
+		"
+	}
+	button
+	{
+		enabled 	"MethodToggle == 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
+		area 		914 448 200 40
+		bam 		GUIBUTNT
+		text 		"ACM_MAXMAX_BUTTON"
+		text style 	"label"
+		text color 	'$'
+		action "
+			MethodToggle = 6
+			Infinity_SetINIValue('Program Options','Debug Mode','1')
+		"
+		actionenter "
+			MethDescToggle = 6
+		"
+		actionexit "
+			MethDescToggle = 0
+		"
+	}
+
+-- Method Descriptions
+
+	text
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 0 and MethDescToggle == 1"
+		area 		724 542 390 154
+		text		"ACM_AUTOROLL_DESCRIPTION"
+		text style 	"normal"
+		text align 	left top
+		text color 	'$'
+	}
+	text
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 0 and MethDescToggle == 2"
+		area 		724 542 390 154
+		text 		"ACM_RANGEROLL_DESCRIPTION"
+		text style 	"normal"
+		text align 	left top
+		text color 	'$'
+	}
+	text
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 0 and MethDescToggle == 3"
+		area 		724 542 390 154
+		text	 	"ACM_POINTBUY_DESCRIPTION"
+		text style 	"normal"
+		text align 	left top
+		text color 	'$'
+	}
+	text
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 0 and MethDescToggle == 4"
+		area 		724 542 390 154
+		text		"ACM_MINSTR_DESCRIPTION"
+		text style 	"normal"
+		text color 	'$'
+		text align 	left top
+	}
+	text
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 0 and MethDescToggle == 5"
+		area 		724 542 390 154
+		text		"ACM_PRISTR_DESCRIPTION"
+		text style 	"normal"
+		text color 	'$'
+		text align 	left top
+	}
+	text
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 0 and MethDescToggle == 6"
+		area 		724 542 390 154
+		text		"ACM_MAXMAX_DESCRIPTION"
+		text style 	"normal"
+		text color 	'$'
+		text align 	left top
+	}
+
+-- Change Method and Reset
+
+	button
+	{
+		enabled 		"MethodToggle > 0 and Infinity_GetINIValue('Game Options','CheatMode','1')"
+		clickable lua	"rolling==0"
+		area 			714 656 200 40
+		bam 			GUIBUTNT
+		text 			"ACM_CHANGEMETHOD_BUTTON"
+		text style 		"label"
+		text color 		'$'
+		action "
+			MethodToggle = 0
+			MethDescToggle = 0
+			downkeep = 0
+			fiftyStr = 0
+			seventyfiveStr = 0
+			ninetyStr = 0
+			ninetynineStr = 1
+			hundredStr = 2
+			minStr = 1
+			PBuy = 75
+			rollMinValue = 1
+			rollMaxValue = 108
+			createCharScreen:OnAbilityReRollButtonClick()
+			StoreRoll()
+			createCharScreen:OnAbilityStoreButtonClick()
+		"
+	}
+
+-- Cheat Method Submenu end
+
+-- Method 1, Auto Roller
+	text
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 1"
+		area 		720 354 394 40
+		text 		"ACM_SELMETHOD_AUTOROLL_TEXT"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+	}
+
+-- METHOD 2 = RANGE ROLL
+	text
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 2"
+		area 		712 354 402 40
+		text 		"ACM_SELMETHOD_RANGEROLL_TEXT"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+	}
+	edit
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 2"
+		clickable lua "rolling == 0"
+		area		810 478 64 40
+		var			rollMinValue
+		text style 	"edit"
+		text color 	'$'
+		align 		center center
+		maxlines	1
+		fill		112 111 111 64
+		action
+		"
+			-- only permit numbers as letters.
+			-- character limit of 3
+			if((tonumber(letter_pressed) ~= nil and #tostring(rollMinValue) < 3) or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
+	}
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 2"
+		area 		894 478 42 40
+		text 		"ACM_SELMETHOD_RANGEROLL_TO_TEXT"
+		text style	"normal"
+		text color 	'$'
+		text align 	center center
+	}
+	edit
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 2"
+		clickable lua "rolling == 0"
+		area		958 478 64 40
+		var			rollMaxValue
+		text style	"edit"
+		text color 	'$'
+		text align	center center
+		maxlines	1
+		fill		112 111 111 64
+		action
+		"
+			-- only permit numbers as letters.
+			-- character limit of 3
+			if((tonumber(letter_pressed) ~= nil and #tostring(rollMaxValue) < 3) or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
+	}
+
+-- Method 3 = Point Buy
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3"
+		area 		712 354 406 40
+		text 		"ACM_SELMETHOD_POINTBUY_TEXT"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+	}
+	button
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3"
+		area 		760 414 142 40
+		bam 		RGSTBT
+		text 		"75"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+		glow lua 	"PBuy == 75"
+		action "
+			PBuy = 75
+		"
+	}
+	button
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3"
+		area 		910 414 142 40
+		bam 		RGSTBT
+		text 		"80"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+		glow lua 	"PBuy == 80"
+		action "
+			PBuy = 80
+		"
+	}
+	button
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3"
+		area 		760 462 142 40
+		bam 		RGSTBT
+		text 		"85"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+		glow lua 	"PBuy == 85"
+		action "
+			PBuy = 85
+		"
+	}
+	button
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3"
+		area 		910 462 142 40
+		bam 		RGSTBT
+		text 		"90"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+		glow lua 	"PBuy == 90"
+		action "
+			PBuy = 90
+		"
+	}
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 3 and storedTotalRoll == PBuy and rolling == 1"
+		area 		712 626 402 30
+		text 		"ACM_SELMETHOD_POINTBUY_ACQUIRED"
+		text color 	'$'
+		text style 	"normal"
+		text align 	center center
+	}
+
+-- Method 4 = MIN STR%
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 4"
+		area 		720 354 394 40
+		text 		"ACM_SELMETHOD_MINSTR_TEXT"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+	}
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 4"
+		area 		810 430 118 38
+		text		"ACM_SELMETHOD_MINSTR_MINSTR"
+		text style 	"normal"
+		text color 	'$'
+		text align 	right center
+	}
+	edit
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 4"
+		area		944 430 64 38
+		var			minStr
+		text style	"normal"
+		text color	'$'
+		align 		center center
+		maxlines	1
+		fill		112 111 111 64
+		action "
+			-- only permit numbers as letters.
+			-- character limit of 3
+			if((tonumber(letter_pressed) ~= nil and #tostring(minStr) < 3) or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
+	}
+
+-- Method 5 = Priority Str%
+	text
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area 		720 354 394 40
+		text 		"ACM_SELMETHOD_PRISTR_TEXT"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+	}
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area 		738 414 86 38
+		text 		"1% to 50%"
+		text style 	"normal"
+		text color 	'$'
+		text align 	right center
+	}
+	edit
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area		836 414 64 38
+		var			fiftyStr
+		text style	"edit"
+		text color	'$'
+		align 		center center
+		maxlines	1
+		fill		112 111 111 64
+		action
+		"
+			-- only permit numbers as letters.
+			-- character limit of 1
+			if((tonumber(letter_pressed) ~= nil and #tostring(fiftyStr) < 1) or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
+	}
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area 		734 452 90 40
+		text 		"51% to 75%"
+		text style 	"normal"
+		text color 	'$'
+		text align 	right center
+	}
+	edit
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area		836 452 64 40
+		var			seventyfiveStr
+		text style	"edit"
+		text color	'$'
+		align 		center center
+		maxlines	1
+		fill		112 111 111 64
+		action
+		"
+			-- only permit numbers as letters.
+			-- character limit of 1
+			if((tonumber(letter_pressed) ~= nil and #tostring(seventyfiveStr) < 1) or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
+	}
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area 		910 414 98 38
+		text 		"76% to 90%"
+		text style 	"normal"
+		text color 	'$'
+		text align 	right center
+	}
+	edit
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area		1018 414 64 38
+		var			ninetyStr
+		text style	"edit"
+		text color	'$'
+		align		center center
+		maxlines	1
+		fill		112 111 111 64
+		action
+		"
+			-- only permit numbers as letters.
+			-- character limit of 1
+			if((tonumber(letter_pressed) ~= nil and #tostring(ninetyStr) < 1) or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
+	}
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area 		910 452 98 40
+		text 		"91% to 99%"
+		text style 	"normal"
+		text color 	'$'
+		text align 	right center
+	}
+	edit
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area		1018 452 64 40
+		var			ninetynineStr
+		text style	"edit"
+		text color	'$'
+		align 		center center
+		maxlines	1
+		fill		112 111 111 64
+		action
+		"
+			-- only permit numbers as letters.
+			-- character limit of 1
+			if((tonumber(letter_pressed) ~= nil and #tostring(ninetynineStr) < 1) or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
+	}
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area 		910 492 98 38
+		text		"100%"
+		text style 	"normal"
+		text color 	'$'
+		text align 	right center
+	}
+	edit
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 5"
+		area		1018 492 64 38
+		var			hundredStr
+		text style	"edit"
+		text color 	'$'
+		align 		center center
+		maxlines	1
+		fill		112 111 111 64
+		action
+		"
+			-- only permit numbers as letters.
+			-- character limit of 1
+			if((tonumber(letter_pressed) ~= nil and #tostring(hundredStr) < 1) or not letter_pressed) then
+				return 1
+			else
+				return 0
+			end
+		"
+	}
+-- METHOD 6 = ALL 18s
+	text
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 6"
+		area 		720 354 394 40
+		text 		"ACM_SELMETHOD_MAXMAX_TEXT"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+	}
+	text
+	{
+		enabled		"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle == 6"
+		area 		720 478 394 102
+		text		"ACM_SELMETHOD_MAXMAX_MAXMAX"
+		text style 	"normal"
+		text color 	'$'
+		text align 	center center
+	}
+
+-- Methods End
+
+
+-- Start And Stop Buttons
+
+	button
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle > 0 and MethodToggle < 6 and rolling == 0"
+		area 914 656 200 40
+		bam GUIBUTNT
+		sequence 0
+		text "ACM_START"
+		text style "label"
+		text color 	'$'
+		action
+		"
+			if rollMinValue == nil then
+				rollMinValue = 1
+			end
+			if rollMaxValue == nil then
+				rollMaxValue = 108
+			end
+			if tonumber(rollMinValue) >= tonumber(rollMaxValue) then
+				rollMaxValue = tonumber(rollMinValue)
+				rollMinValue = tonumber(rollMaxValue) - 5
+			end
+			if minStr == nil then
+				minStr = 1
+			end
+			if tonumber(minStr) <= 1 then
+				minStr = 1
+			elseif tonumber(minStr) > 100 then
+				minStr = 100
+			end
+
+			if fiftyStr == nil then
+				fiftyStr = 0
+			elseif tonumber(fiftyStr) > 9 then
+				fiftyStr = 9
+			end
+			if seventyfiveStr == nil then
+				seventyfiveStr = 0
+			elseif tonumber(seventyfiveStr) > 9 then
+				seventyfiveStr = 9
+			end
+			if ninetyStr == nil then
+				ninetyStr = 0
+			elseif tonumber(ninetyStr) > 9 then
+				ninetyStr = 9
+			end
+			if ninetynineStr == nil then
+				ninetynineStr = 1
+			elseif tonumber(ninetynineStr) > 9 then
+				ninetynineStr = 9
+			end
+			if hundredStr == nil then
+				hundredStr = 2
+			elseif tonumber(hundredStr) > 9 then
+				hundredStr = 9
+			end
+
+			chargen.ability[ 1 ].exceptional = tonumber( string.sub( chargen.ability[ 1 ].roll, 4 ) )
+			if chargen.ability[ 1 ].exceptional ~= nil then
+				if chargen.ability[ 1 ].exceptional == 0 then
+					chargen.ability[ 1 ].exceptional = 100
+				end
+			else
+				chargen.ability[ 1 ].exceptional = 0
+			end
+			storedTotalRoll = chargen.totalRoll
+			rolling = 1
+		"
+	}
+	button
+	{
+		enabled 	"Infinity_GetINIValue('Game Options','CheatMode','1') and MethodToggle > 0 and MethodToggle < 6 and rolling == 1"
+		on escape
+		area 914 656 200 40
+		bam GUIBUTNT
+		sequence 0
+		text "ACM_STOP"
+		text style "label"
+		text color 	'$'
+		action
+		"
+			rolling = 0
+			createCharScreen:OnAbilityRecallButtonClick()
+		"
+	}
+
+-- Start And Stop Buttons End
+
+	button
+	{
+		mosaic lua "UpdateAutoRoll()"
+		area 1 1 1 1
+	}
+--	label
+--	{
+--		area 550 564 152 136
+--		Rectangle 5
+--	}
+	text
+	{
+		area 556 570 142 38
+		text "ACM_VIEW"
+		text style "normal"
+		text align center center
+	}
+	button
+	{
+		clickable lua "rolling==0"
+		area 556 608 142 40
+		bam RGSTBT
+		sequence 0
+		text "ACM_FLATTEN"
+		text style "normal"
+		text align center center
+		action "
+			PointFlatten()
+			"
+	}
+	button
+	{
+		clickable lua "rolling==0"
+		area 556 652 142 40
+		bam RGSTBT
+		sequence 0
+		text "ACM_MINIMUM"
+		text style "normal"
+		text align center center
+		action "
+			PointReduction()
+			"
+	}
+	button
+	{
+		clickable lua "rolling==0"
+		area 334 564 200 40
+		bam GUIBUTNT
+		sequence 0
+		text "REROLL_BUTTON"
+		text style "button"
+		action "createCharScreen:OnAbilityReRollButtonClick()"
+	}
+	button
+	{
+		clickable lua "rolling==0"
+		area 334 608 200 40
+		bam GUIBUTNT
+		sequence 0
+		text "STORE_BUTTON"
+		text style "button"
+		action "
+			local exceptionalStrength = tonumber( string.sub( chargen.ability[ 1 ].roll, 4 ) )
+			if exceptionalStrength ~= nil then
+				if exceptionalStrength == 0 then
+					exceptionalStrength = 100
+				end
+			else
+				exceptionalStrength = 0
+			end
+			storedTotalRoll = chargen.totalRoll
+			chargen.ability[ 1 ].exceptional = exceptionalStrength
+			chargen.ability[ 1 ].storedRoll = chargen.ability[ 1 ].roll
+			chargen.ability[ 2 ].storedRoll = chargen.ability[ 2 ].roll
+			chargen.ability[ 3 ].storedRoll = chargen.ability[ 3 ].roll
+			chargen.ability[ 4 ].storedRoll = chargen.ability[ 4 ].roll
+			chargen.ability[ 5 ].storedRoll = chargen.ability[ 5 ].roll
+			chargen.ability[ 6 ].storedRoll = chargen.ability[ 6 ].roll
+			createCharScreen:OnAbilityStoreButtonClick()
+		"
+	}
+	button
+	{
+		clickable lua "rolling==0 and createCharScreen:IsAbilityRecallButtonClickable()"
+		area 334 652 200 40
+		bam GUIBUTNT
+		sequence 0
+		text "RECALL_BUTTON"
+		text style "button"
+		action "createCharScreen:OnAbilityRecallButtonClick()"
+	}
+
+	button
+	{
+		on '8'
+		action "createCharScreen:OnCheatyMcCheaterson()"
+
+
+	}
+
+	button
+	{
+		clickable lua "rolling==0"
+		on escape
+		area 410 728 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "
+			Infinity_PopMenu()
+			createCharScreen:OnCancelButtonClick()
+			RerollFrame = 0
+			storedTotalRoll = 0
+			ptflat = 0
+			MethodToggle = 0
+			MethDescToggle = 0
+			rolling = 0
+			fiftyStr = 0
+			seventyfiveStr = 0
+			ninetyStr = 0
+			ninetynineStr = 1
+			hundredStr = 2
+			minStr = 1
+			PBuy = 75
+			rollMinValue = 1
+			rollMaxValue = 108
+			downkeep = 0
+		"
+	}
+	button
+	{
+		clickable lua "rolling==0 and createCharScreen:IsDoneButtonClickable()"
+		on return
+		area 814 728 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu()
+			createCharScreen:OnDoneButtonClick()
+			RerollFrame = 0
+			storedTotalRoll = 0
+			ptflat = 0
+			MethodToggle = 0
+			MethDescToggle = 0
+			rolling = 0
+			fiftyStr = 0
+			seventyfiveStr = 0
+			ninetyStr = 0
+			ninetynineStr = 1
+			hundredStr = 2
+			minStr = 1
+			PBuy = 75
+			rollMinValue = 1
+			rollMaxValue = 108
+			downkeep = 0
+		"
+	}
+
+}

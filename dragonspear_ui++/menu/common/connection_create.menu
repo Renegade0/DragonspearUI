@@ -1,0 +1,175 @@
+menu
+{
+	name 'CONNECTION_CREATE'
+	align center center
+	ignoreEsc
+	modal
+
+	onOpen
+	"
+		connectionSetDefaultGameSettings()
+	"
+
+	label
+	{
+		area 0 0 664 666
+		mosaic "RECENTEV"
+	}
+	label
+	{
+		area		104 70 462 45
+		text		style 'title'
+		text		"CREATEGAME_TITLE"
+	}
+
+	label -- player
+	{
+		area		100 122 462 45
+		text		style 'label'
+		text		"PLAYER_NAME_LABEL"
+	}
+	label
+	{
+		area		164 167 344 45
+		fill            112 111 111 64
+	}
+	edit
+	{
+		name		"connectionPlayerNameEditArea"
+		area		170 174 334 32
+		var			connectionPlayerNameEdit
+		text style	"edit"
+		maxlines	1
+		maxchars 	32
+
+	}
+
+	label -- session
+	{
+		area		100 221 462 45
+		text		style 'label'
+		text		"SESSION_NAME_LABEL"
+	}
+	label
+	{
+		area		164 266 344 44
+		fill        112 111 111 64
+	}
+	edit
+	{
+		name		"connectionSessionNameEditArea"
+		area		170 272 334 32
+		var			connectionSessionNameEdit
+		text 		style	"edit"
+		maxlines	1
+	}
+
+
+	text -- password option
+	{
+		area		280 321 241 40
+		text		style 'label'
+		text		"CONNECTION_PASSWORD_PROTECTED"
+		tooltip lua "t('CONNECTION_PASSWORD_PROTECTED_TOOLTIP')"
+		align 		left center
+	}
+	button
+	{
+		area		237 328 32 32
+		bam 		ROUNDBUT
+		glow lua	"connectionPasswordProtected"
+		scaleToClip
+		tooltip lua "t('CONNECTION_PASSWORD_PROTECTED_TOOLTIP')"
+		action
+		"
+			connectionPasswordProtected = 1 - connectionPasswordProtected
+			if connectionPasswordProtected == 1 then
+				Infinity_FocusTextEdit('connectionSessionPasswordEditArea')
+			end
+		"
+	}
+
+	text -- local option
+	{
+		area		280 366 241 40
+		text		style 'label'
+		text		"CONNECTION_LOCAL_NETWORK_GAME"
+		tooltip lua "t('CONNECTION_LOCAL_NETWORK_GAME_TOOLTIP')"
+		align 		left center
+	}
+	button
+	{
+		area		237 373 32 32
+		bam 		ROUNDBUT
+		glow lua	"connectionLocalNetworkGame"
+		scaleToClip
+		tooltip lua "t('CONNECTION_LOCAL_NETWORK_GAME_TOOLTIP')"
+		action
+		"
+			if connectionScreen:HasServiceProvider() then
+				connectionLocalNetworkGame = 1 - connectionLocalNetworkGame
+			end
+		"
+	}
+
+	label -- password
+	{
+		area		100 416 462 45
+		text		style 'label'
+		text		"CHOOSE_PASSWORD_LABEL"
+		enabled 	connectionPasswordProtected
+	}
+	label
+	{
+		area		164 461 344 43
+		fill        112 111 111 64
+		enabled 	connectionPasswordProtected
+	}
+	edit
+	{
+		name		"connectionSessionPasswordEditArea"
+		area		170 466 334 32
+		var			connectionSessionPasswordEdit
+		text 		style "edit"
+		maxlines	1
+		enabled 	connectionPasswordProtected
+	}
+	button
+	{
+		clickable lua 	"connectionCreateGameClickable()"
+		area 			236 572 200 40
+		bam				'GUIBUTNT'
+		text style		"button"
+		text			"CREATEGAME_BUTTON"
+		action
+		"
+			local stringStart = string.find(connectionPlayerNameEdit, '%S');
+			connectionPlayerNameEdit = string.sub(connectionPlayerNameEdit, stringStart, string.len(connectionPlayerNameEdit))
+			stringStart = string.find(connectionSessionNameEdit, '%S');
+			connectionSessionNameEdit = string.sub(connectionSessionNameEdit, stringStart, string.len(connectionSessionNameEdit))
+
+			if connectionPasswordProtected == 1 then
+				stringStart = string.find(connectionSessionPasswordEdit, '%S');
+				connectionSessionPasswordEdit = string.sub(connectionSessionPasswordEdit, stringStart, string.len(connectionSessionPasswordEdit))
+			end
+
+			if connectionPasswordProtected == 0 then
+				connectionSessionPasswordEdit = ''
+			end
+
+			Infinity_PushMenu('CONNECTION_NEWORSAVED')
+		"
+	}
+	button
+	{
+		on escape
+		area 		236 528 200 40
+		bam			'GUIBUTNT'
+		text style	"button"
+		text		"BACK_BUTTON"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}

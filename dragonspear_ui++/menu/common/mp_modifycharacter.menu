@@ -1,0 +1,48 @@
+menu
+{
+	name 'MP_MODIFYCHARACTER'
+	align center center
+	modal
+	label
+	{
+		mosaic 'GUIERR6'
+		area 0 0 682 238
+	}
+	label
+	{
+		area 26 18 598 120
+		text lua "getModifyConfirmationLabel()"
+		text style "title"
+		align center center
+	}
+	button
+	{
+		on escape
+		area 44 170 230 40
+		text "CANCEL_BUTTON" -- cancel
+		text style "button"
+		bam GUIBUTMT
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		on return
+		area 404 170 230 40
+		text lua "multiplayerIsDelete()"
+		text style "button"
+		bam GUIBUTMT
+		action
+		"
+			Infinity_PopMenu()
+			multiplayerScreen:SetModifiedCharacterSlot(mpModifyingCharacter)
+			if (multiplayer.character[mpModifyingCharacter+1].portrait ~= '') then
+				multiplayerScreen:OnModifyCharacterDelete()
+			else
+				multiplayerScreen:UpdateModifyCharacterPanel()
+			end
+		"
+	}
+}

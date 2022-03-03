@@ -1,0 +1,66 @@
+menu
+{
+	name 'CHARGEN_IMPORT'
+	modal
+	align center center
+	ignoreesc
+	onOpen
+	"
+		list_GUICG_20_2_idx = 0
+	"
+	label
+	{
+		area 0 0 864 710
+		mosaic 'GUIPOP46'
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 -1
+				text lua "list_GUICG_20_2[rowNumber]"
+				text style "list"
+				pad 8 0 0 0
+			}
+		}
+		area 36 96 312 498
+		rowheight	34
+		table		"list_GUICG_20_2"
+		var			"list_GUICG_20_2_idx"
+		scrollbar	'GUISCRC'
+		action
+		"
+			Infinity_OnCharacterImportItemSelect(list_GUICG_20_2_idx - 1)
+		"
+	}
+	text
+	{
+		area 364 96 440 490
+		text 10963
+		text style normal
+		scrollbar 'GUISCRC'
+	}
+	button
+	{
+		on escape
+		area 196 650 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu('CHARGEN_IMPORT'); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		area 438 650 230 40
+		bam GUIBUTMT
+		text lua "NextOrDone()"
+		text style "button"
+		clickable lua "list_GUICG_20_2_idx ~= 0"
+		action "Infinity_PopMenu('CHARGEN_IMPORT'); createCharScreen:OnDoneButtonClick()"
+	}
+
+}

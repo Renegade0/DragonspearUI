@@ -1,0 +1,107 @@
+menu
+{
+	name 'CONNECTION_NAME'
+	align center center
+	modal
+	onOpen
+	"
+		connectionNameNameEdit = ''
+		Infinity_FocusTextEdit('connectionNameNameEditArea')
+	"
+
+	label
+	{
+		area 0 0 658 240
+		mosaic "GUIERR6"
+	}
+	label
+	{
+		area		12 16 632 70
+		text		style 'title'
+		text  		"PLAYER_NAME_LABEL"
+	}
+
+	button
+	{
+		bam 		GUIOSW
+		on esc
+		area 		614 0 44 44
+		sequence 	2
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+
+	edit
+	{
+		name		"connectionNameNameEditArea"
+		area		22 92 606 50
+		var			connectionNameNameEdit
+		text style	"edit"
+		text align 	center center
+		maxlines	1
+		fill        112 111 111 64
+		action
+		"
+			--On return pressed
+			if (key_pressed == 13) then
+				local stringStart = string.find(connectionNameNameEdit, '%S')
+				if stringStart ~= nil then
+					connectionPlayerNameEdit = string.sub(connectionNameNameEdit, stringStart, string.len(connectionNameNameEdit) )
+					Infinity_PopMenu()
+
+					Infinity_GetPasswordRequired(mp_shownSessions[selectedMp]['actualIndex'])
+					if passwordReq == 0 then
+						Infinity_PopMenu();
+						Infinity_PopMenu();
+						mp_sessions[mp_shownSessions[selectedMp]['actualIndex']]['password'] = passwordMp
+						Infinity_JoinMultiplayerGame(mp_shownSessions[selectedMp]['actualIndex'])
+					else
+						Infinity_PushMenu('CONNECTION_PASSWORD')
+					end
+				end
+				return -1
+			end
+			return 1
+		"
+	}
+
+	button
+	{
+		area 		343 170 230 40
+		bam			'GUIBUTMT'
+		text style	"button"
+		text		"DONE_BUTTON"
+		clickable lua "connectionNameNameEdit ~='' and string.find(connectionNameNameEdit, '%S') ~= nil"
+		action
+		"
+			Infinity_PopMenu();
+			local stringStart = string.find(connectionNameNameEdit, '%S')
+			connectionPlayerNameEdit = string.sub(connectionNameNameEdit, stringStart, string.len(connectionNameNameEdit) )
+
+			Infinity_GetPasswordRequired(mp_shownSessions[selectedMp]['actualIndex'])
+			if passwordReq == 0 then
+				Infinity_PopMenu();
+				Infinity_PopMenu();
+				mp_sessions[mp_shownSessions[selectedMp]['actualIndex']]['password'] = passwordMp
+				Infinity_JoinMultiplayerGame(mp_shownSessions[selectedMp]['actualIndex'])
+			else
+				Infinity_PushMenu('CONNECTION_PASSWORD')
+			end
+		"
+	}
+
+	button
+	{
+		on escape
+		area 79 170 230 40
+		bam			'GUIBUTMT'
+		text style	"button"
+		text		"BACK_BUTTON"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}

@@ -1,0 +1,116 @@
+menu
+{
+	name 'STORE_DRINKS'
+	align center center
+	ignoreEsc
+	onOpen
+	"
+		storeScreen:UpdateBuyDrinksPanel()
+		store.drinkText = ''
+	"
+
+	label
+	{
+		area 0 0 864 756
+		mosaic GUISTIDB
+	}
+	label
+	{
+		area 0 32 864 44
+		text "DRINKS_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 0 76 864 36
+		text lua "Infinity_FetchString(storeScreen:GetStoreName())"
+		text style "label"
+	}
+--	label
+--	{
+--		area 719 70 110 48
+--		text lua "game:GetPartyGold()"
+--		text style "gold"
+--	}
+	label
+	{
+		area 18 127 70 30
+		text "DRINK_LABEL"
+		text style "label"
+	}
+	label
+	{
+		area 300 127 118 31
+		text "COST_LABEL"
+		text style "label"
+		text align center center
+	}
+	label
+	{
+		area 18 157 0 0
+		rectangle 1
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 5 0 200 60
+				text lua "store.drinks[rowNumber].name"
+				text style "normal"
+				text align left center
+			}
+			label
+			{
+				area 310 0 64 60
+				text lua "store.drinks[rowNumber].value"
+				text style "gold"
+				text align center center
+			}
+			label
+			{
+				enabled "store.drinks[rowNumber].valid == 0"
+				area 0 0 308 60
+				fill 0 0 0 150
+			}
+		}
+		area 18 161 408 503
+		rowheight	60
+		table		"store.drinks"
+		var			"storeDrinksVar"
+		scrollbar 'GUISCRC'
+	}
+	button
+	{
+		area 118 676 201 40
+		bam GUIBUTNT
+		text "BUY_BUTTON"
+		text style "button"
+		clickable lua "storeDrinksVar ~= nil and storeDrinksVar ~= 0"
+		action
+		"
+			storeScreen:OnBuyDrinkButtonClick(storeDrinksVar - 1)
+		"
+	}
+	label
+	{
+		area 629 142 127 93
+		bam lua "store.qualityIcon"
+	}
+	label
+	{
+		area 466 142 155 93
+		text "RUMORS_LABEL"
+		text style "label_parchment"
+	}
+	text
+	{
+		area 466 240 368 404
+		text lua "store.drinkText"
+		text style "normal_parchment"
+		scrollbar 'GUISCRP'
+	}
+
+}

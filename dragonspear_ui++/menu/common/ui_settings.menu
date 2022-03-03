@@ -1,0 +1,384 @@
+menu
+{
+	name 'UI_SETTINGS'
+	align center center
+	modal
+	onOpen
+	"
+		CheatMode = Infinity_GetINIValue('Game Options','CheatMode',1)
+		LeftSideMenu = Infinity_GetINIValue('Game Options','LeftSideMenu',1)
+		ClassicDialog = Infinity_GetINIValue('Game Options','ClassicDialog',1)
+		MultiPortraitPicker = Infinity_GetINIValue('Game Options','MultiPortraitPicker',1)
+		LargePortraits = Infinity_GetINIValue('Game Options','LargePortraits',1)
+		PermThief = Infinity_GetINIValue('Game Options','PermThief',1)
+		QuicklootMode = Infinity_GetINIString('Game Options','QuicklootMode',1)
+		QuicklootENum = Infinity_GetINIString('Game Options','QuicklootENumber',1)
+		JournalSize = Infinity_GetINIString('Game Options','SelectedJournalSize',1)
+		QuicklootStartPref = Infinity_GetINIString('Game Options','QuicklootStartPreference',1)
+		disableDialogOnSpace = Infinity_GetINIValue('Game Options', 'Disable Space Key In Conversations', 1)
+
+		thievingKeyAssigned = 0 ~= Infinity_GetINIValue('Keymap Action', 'Thieving', 0)
+		permThiefButtonHelp = t('RG_UI_THIEFBUTT1')
+		if not thievingKeyAssigned then
+			permThiefButtonHelp = permThiefButtonHelp .. '\n\n^W' .. t('RG_UI_THIEFBUTT_WARN')
+		end
+	"
+	onClose "
+		thievingKeyAssigned = nil
+		permThiefButtonHelp = nil
+		UIhelp = nil
+	"
+
+	label
+	{
+		area	0 0 1024 768
+		mosaic	GUITUTB
+	}
+	label
+	{
+		area		450 40 150 44
+		text		'RG_UI_TITLE'
+		text style	title
+	}
+
+
+-- Left Side Menu >> Toggles to Right Side Menu
+
+-- Classic dialog toggle
+	label
+	{
+		area 	106 130 315 46
+		text 	"RG_UI_CLASSIC_DIALOG"
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		area		421 130 83 46
+		bam			ROUNDBUT
+		glow lua 	"ClassicDialog == 1"
+		align 		center center
+		action		"
+		"
+	}
+	button
+	{
+		area		106 130 400 46
+		action		"
+			ClassicDialog = duiToggle(ClassicDialog, 0, 1)
+			local history = ClassicDialog == 0 and 'On' or 'Off'
+			Infinity_SetINIValue('Game Options', 'ShowMessageHistory', history)
+			Infinity_SetINIValue('Game Options', 'ClassicDialog', ClassicDialog)
+		"
+		actionEnter	"UIhelp = t('RG_UI_CLASSIC_DIALOG1')"
+		actionExit "UIhelp = nil"
+	}
+
+
+-- Cheat Mode >> Toggles to ON / OFF
+	label
+	{
+		area 	106 180 315 46
+		text	'RG_UI_CHEAT'
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		area		421 180 85 46
+		bam			ROUNDBUT
+		glow lua 	"CheatMode == 1"
+		align 		center center
+		action		"
+		"
+	}
+	button
+	{
+		area		106 180 400 46
+		action		"
+			CheatMode = duiToggle(CheatMode, 0, 1)
+			Infinity_SetINIValue('Game Options', 'CheatMode', CheatMode)
+		"
+		actionEnter	"UIhelp = t('RG_UI_CHEAT1')"
+		actionExit "UIhelp = nil"
+	}
+
+-- Enable multiportrait picker
+	label
+	{
+		area 	106 230 315 46
+		text	'RG_UI_MPPICKER'
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		area		421 230 85 46
+		bam			ROUNDBUT
+		glow lua 	"MultiPortraitPicker == 1"
+		align 		center center
+		action		"
+		"
+	}
+	button
+	{
+		area		106 230 400 46
+		action		"
+			MultiPortraitPicker = duiToggle(MultiPortraitPicker, 0, 1)
+			Infinity_SetINIValue('Game Options', 'MultiPortraitPicker', MultiPortraitPicker)
+		"
+		actionEnter	"UIhelp = t('RG_UI_MPPICKER1')"
+		actionExit "UIhelp = nil"
+	}
+
+-- Large portraits
+	label
+	{
+		area 	106 280 315 46
+		text	'RG_UI_LPORTRAITS'
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		area		421 280 85 46
+		bam			ROUNDBUT
+		glow lua 	"LargePortraits == 1"
+		align 		center center
+		action		"
+		"
+	}
+	button
+	{
+		area		106 280 400 46
+		action		"
+			LargePortraits = duiToggle(LargePortraits, 0, 1)
+			Infinity_SetINIValue('Game Options', 'LargePortraits', LargePortraits)
+		"
+		actionEnter	"UIhelp = t('RG_UI_LPORTRAITS1')"
+		actionExit "UIhelp = nil"
+	}
+
+-- Permanent thieving button
+	label
+	{
+		area 	106 330 315 46
+		text	'RG_UI_THIEFBUTT'
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		area		421 330 85 46
+		bam			ROUNDBUT
+		glow lua 	"PermThief == 1"
+		clickable lua "thievingKeyAssigned"
+		align 		center center
+		action		"
+		"
+	}
+	button
+	{
+		area		106 330 400 46
+		action		"
+			PermThief = duiToggle(PermThief, 0, 1)
+			Infinity_SetINIValue('Game Options', 'PermThief', PermThief)
+		"
+		actionEnter	"UIhelp = permThiefButtonHelp"
+		actionExit "UIhelp = nil"
+	}
+
+
+-- Journal Size
+	text
+	{
+		area		106 380 315 46
+		text lua	'UIStrings.UI_JMode'
+		text style	normal
+		text align	left center
+	}
+	button
+	{
+		area		421 380 85 46
+		text lua	'JournalSize'
+		text style 	"normal"
+		text align 	center center
+		text color	'R'
+	}
+	button
+	{
+		area		106 380 400 46
+		action		"
+			JournalSize = duiToggle(JournalSize, UIStrings.UI_Small, UIStrings.UI_Large)
+			Infinity_SetINIValue('Game Options', 'SelectedJournalSize', JournalSize)
+		"
+		actionEnter	"UIhelp = UIStrings.UI_JToggle"
+		actionExit "UIhelp = nil"
+	}
+
+
+-- Quickloot Mode
+	label
+	{
+		area 		106 430 315 46
+		text lua 	'UIStrings.UI_QLMode'
+		text style 	"normal"
+		text align 	left center
+	}
+	button
+	{
+		area		421 430 85 46
+		text lua	'QuicklootMode'
+		text style 	"normal"
+		text align 	center center
+		text color	'R'
+	}
+	button
+	{
+		area		106 430 400 46
+		action		"
+			QuicklootMode = duiToggle(QuicklootMode, UIStrings.UI_Advanced, UIStrings.UI_Expert)
+			Infinity_SetINIValue('Game Options', 'QuicklootMode', QuicklootMode)
+		"
+		actionEnter	"UIhelp = UIStrings.UI_QToggle"
+		actionExit "UIhelp = nil"
+	}
+
+
+-- Quickloot Expert Mode - Rows Choice
+	text
+	{
+		enabled 	"QuicklootMode == UIStrings.UI_Expert"
+		area		131 480 99 38
+		text lua	'UIStrings.UI_QRows'
+		text style	normal
+		text align	left center
+		actionEnter	"UIhelp = UIStrings.UI_QRowsExp"
+		actionExit "UIhelp = nil"
+	}
+#for i, n in ipairs({{2, 'Two'}, {3, 'Three'}, {4, 'Four'},{5, 'Five'}, {6, 'Six'}, {10, 'Ten'}}) do
+	button
+	{
+		enabled 	"QuicklootMode == UIStrings.UI_Expert"
+		area		`230 + 46 * (i - 1)` 480 46 38
+		text lua	"duiHighlightSelectedText('`n[1]`', '`n[2]`', QuicklootENum)"
+		text style	"normal"
+		text align 	center center
+		action "
+			QuicklootENum = '`n[2]`'
+			Infinity_SetINIValue('Game Options', 'QuicklootENumber', QuicklootENum)
+		"
+	}
+#end
+
+-- Quickloot Hidden/Visible
+	text
+	{
+		area		131 530 375 38
+		text lua	'UIStrings.UI_QShow'
+		text style	normal
+		text align	left center
+		actionEnter	"UIhelp = UIStrings.UI_QShowExp"
+		actionExit "UIhelp = nil"
+	}
+	button
+	{
+		area		421 530 85 38
+		text lua	"QuicklootStartPref"
+		text style	"normal"
+		text align 	center center
+		text color	'R'
+		action
+		"
+			QuicklootStartPref = duiToggle(QuicklootStartPref, UIStrings.UI_Visible, UIStrings.UI_Hidden)
+			groundItemsButtonToggle = QuicklootStartPref == UIStrings.UI_Visible and 1 or 0
+			Infinity_SetINIValue('Game Options', 'QuicklootStartPreference', QuicklootStartPref)
+		"
+	}
+
+	label
+	{
+		area 	106 570 315 46
+		text	'RG_UI_DIALOG_DISABLE_SPACE'
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		area		421 570 85 46
+		bam			ROUNDBUT
+		glow lua 	"disableDialogOnSpace == 1"
+		align 		center center
+	}
+	button
+	{
+		area		106 570 400 46
+		action		"
+			disableDialogOnSpace = duiToggle(disableDialogOnSpace, 0, 1)
+			Infinity_SetINIValue('Game Options', 'Disable Space Key In Conversations', disableDialogOnSpace)
+		"
+		actionEnter	"UIhelp = t('RG_UI_DIALOG_DISABLE_SPACE_HELP')"
+		actionExit "UIhelp = nil"
+	}
+
+#if WITH_LEFT_SIDE_PORTRAITS then
+	label
+	{
+		area 	106 610 315 46
+		text	'RG_UI_LEFTPORTRAITS'
+		text style "normal"
+		text align left center
+	}
+	button
+	{
+		area		421 610 85 46
+		bam			ROUNDBUT
+		glow lua 	"duiLeftSidePortrait == 1"
+		align 		center center
+	}
+	button
+	{
+		area		106 610 400 46
+		action		"
+			duiLeftSidePortrait = duiToggle(duiLeftSidePortrait, 0, 1)
+			Infinity_SetINIValue('Game Options', 'Left Side Portrait', duiLeftSidePortrait)
+		"
+		actionEnter	"UIhelp = t('RG_UI_LEFTPORTRAITS1')"
+		actionExit "UIhelp = nil"
+	}
+#end
+
+-- UI Help section
+	text
+	{
+		enabled 	"UIhelp ~= nil"
+		area		574 130 402 110
+		text lua	'UIhelp'
+		text style	normal
+		text align	left top
+		text point	12
+		scrollbar	'GUISCRC'
+	}
+	button
+	{
+		bam			GUIBUTNT
+		area		188 700 201 43
+		text  "CANCEL_BUTTON"
+		text style	"button"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		bam			GUIBUTNT
+		area		638 700 201 43
+		text  "DONE_BUTTON"
+		text style	"button"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}

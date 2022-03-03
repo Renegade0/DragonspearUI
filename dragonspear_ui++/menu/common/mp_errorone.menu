@@ -1,0 +1,31 @@
+menu
+{
+	name 'MP_ERRORONE'
+	align center center
+	modal
+	label
+	{
+		mosaic 'GUIERR6'
+		area 0 0 657 253
+	}
+	label
+	{
+		area 29 21 600 126
+		text lua "Infinity_FetchString( mpErrorText )"
+		text style "normal"
+		align center center
+	}
+	button
+	{
+		on return
+		area 213 170 230 40
+		text "DONE_BUTTON" -- done
+		text style "button"
+		align center center
+		bam GUIBUTMT
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}

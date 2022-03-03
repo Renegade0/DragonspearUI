@@ -1,0 +1,183 @@
+menu
+{
+	name 'CHARACTER_SCRIPT'
+	align center center
+	ignoreesc
+	onOpen
+	"
+		doneEnabled = characterScreen:IsDoneButtonClickable(currentID)
+		currentPanelID = const.SCRIPT_ID
+
+		showingSmartOptions = (scriptList_idx == 2)
+		scriptDescription = t(scriptOptions[scriptList_idx][2])
+
+		for index, var in pairs(scriptOptions) do
+			var[5] = characterScreen:GetTempSmartScriptLocal(var[3])
+			if var[5] == false then
+				var[4] = 0
+			else
+				var[4] = 2
+			end
+		end
+	"
+	label
+	{
+		area 0 0 864 710
+		mosaic GUIPOP55
+	}
+	label
+	{
+		area 94 32 690 54
+		text "SCRIPTS_TITLE"
+		text style "title"
+	}
+
+	label
+	{
+		area 426 468 414 168
+		mosaic GUINOTE
+		enabled "showingSmartOptions == true"
+	}
+
+	text
+	{
+		area 444 478 376 110
+		text lua "scriptDescription"
+		scrollbar 'GUISCRC'
+		text style	normal
+		enabled "showingSmartOptions == true"
+	}
+
+	text
+	{
+		area 444 102 376 486
+		text lua "scriptDescription"
+		scrollbar 'GUISCRC'
+		text style	normal
+		enabled "showingSmartOptions == false"
+	}
+
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 -1
+				enabled "scriptList[rowNumber] ~= ''"
+				text lua "formatScriptName(scriptList[rowNumber])"
+				text style	"normal"
+				pad 8 0 0 0
+			}
+			label
+			{
+				area -10 -10 10000 10000
+				enabled "scriptList[rowNumber] == ''"
+				rectangle	1
+			}
+		}
+		area 44 102 376 492
+		rowheight	18
+		table		"scriptList"
+		var			"scriptList_idx"
+		scrollbar	'GUISCRC'
+		action
+		"
+			showingSmartOptions = (scriptList_idx == 2)
+			if scriptList[scriptList_idx] ~= '' then
+				Infinity_OnScriptItemSelect(scriptList_idx - 1)
+				doneEnabled = characterScreen:IsDoneButtonClickable(currentID)
+			else
+				scriptList_idx = 0
+				scriptDescription = ''
+				doneEnabled = false
+			end
+		"
+	}
+
+	list
+	{
+
+		column
+		{
+			width 80
+			label
+			{
+				area 10 0 -1 -1
+				text lua "t( scriptOptions[rowNumber][1])"
+				text style	"normal"
+				text align right center
+			}
+		}
+		column
+		{
+			width 20
+			label
+			{
+				area		10 12 32 32
+				bam			ROUNDBUT
+				scaleToClip
+				frame		lua "scriptOptions[rowNumber][4]"
+			}
+		}
+
+		area 444 102 376 358
+
+		rowheight	50
+		table		"scriptOptions"
+		var			selScriptOpt
+		scrollbar	'GUISCRC'
+		enabled 	"showingSmartOptions == true"
+
+		action
+		"
+			scriptDescription = t(scriptOptions[selScriptOpt][2])
+			selectedSL = 0
+			selFeedOpt = 0
+
+			if(cellNumber == 2) then
+				Infinity_PlaySound('GAM_09')
+				handleScriptOptionChange(selScriptOpt)
+			end
+		"
+	}
+
+	button
+	{
+		on escape
+		bam 'GUIBUTMT'
+		sequence 0
+		area 196 653 230 40
+		text style "button"
+		text	"CANCEL_BUTTON"
+		action
+		"
+			characterScreen:OnCancelButtonClick()
+			Infinity_PopMenu()
+			currentPanelID = 17
+		"
+	}
+	button
+	{
+		clickable lua "doneEnabled"
+		bam 'GUIBUTMT'
+		sequence 0
+		area  438 653 230 40
+		text style "button"
+		text "DONE_BUTTON"
+		action
+		"
+			if showingSmartOptions == true then
+				for index, var in pairs(scriptOptions) do
+					characterScreen:SetTempSmartScriptLocal(var[3], var[5])
+				end
+			end
+
+			characterScreen:OnDoneButtonClick()
+			Infinity_PopMenu()
+			currentPanelID = 17
+
+		"
+	}
+}

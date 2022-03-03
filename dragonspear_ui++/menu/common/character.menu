@@ -1,0 +1,762 @@
+menu
+{
+	name	'CHARACTER'
+	modal lua "not CurrentlyInGame()"
+	align center center
+	ignoreEsc
+	onopen
+	"
+		currentTab = 1
+		currentTabIndex = 1
+		currentItem = 0
+		showStats = 0
+		showJustText = 0
+		showClassInfo = 0
+		showAbilityBonuses = 0
+		showMemorized = 0
+		showBothLists = 0
+		characterViewable = true
+		toggleCombatStats = 0
+		showOverview = true
+		showClass = false
+		showBiography = false
+		showStatistics = false
+		rgrecpage = nil
+		record = nil
+
+		if(CurrentlyInGame()) then
+			pushSidebars()
+		end
+		updateAttrTable()
+		--getOverview()
+
+		if(currentPanelID == const.EXPORT_ID) then
+			Infinity_PushMenu('CHARACTER_EXPORT')
+		else
+			if(currentPanelID == const.CUSTOMIZE_ID) then
+				Infinity_PushMenu('CHARACTER_CUSTOMIZE')
+			else
+				currentPanelID = 0
+			end
+		end
+		Infinity_PopMenu('WORLD_QUICKLOOT');
+	"
+	onclose
+	"
+		Infinity_PopMenu('CHARACTER_CUSTOMIZE')
+		Infinity_PopMenu('CHARACTER_BIOGRAPHY')
+		Infinity_PopMenu('CHARACTER_SHOW_BIOGRAPHY')
+		Infinity_PopMenu('CHARACTER_INFO')
+		Infinity_PopMenu('CHARACTER_SCRIPT')
+		Infinity_PopMenu('CHARACTER_EXPORT')
+		Infinity_PopMenu('CHARACTER_SOUND')
+		Infinity_PopMenu('CHARACTER_COLOR')
+		Infinity_PopMenu('CHARACTER_SHOW_CLASSINFO')
+		Infinity_PopMenu('CHARGEN_PORTRAIT')
+		record = nil
+		popSidebars()
+	"
+
+	label
+	{
+		area	0 0 1364 756
+		mosaic	"GUIREC2"
+	}
+	--label
+	--{
+	--	enabled "currentTab == 6"
+	--	area	804 84 254 624
+	--	mosaic	"RGRECBOX"
+	--}
+
+
+	label
+	{
+		name		"LABEL_2_268435495"
+		area		250 34 868 40
+		text		'RG_RECORD'
+		text style  	'title'
+		text align	center center
+	}
+
+	label
+	{
+		area		568 86 226 38
+		text		lua "characters[currentID].name"
+		text style  	'normal'
+		text align	center center
+		enabled "characterViewable"
+	}
+
+	label
+	{
+		area		280 214 210 4
+		enabled		"record.classes[1].progress ~= nil"
+		progressbar lua "record.classes[1].progress"  -- progress percentage, number 0-100
+		greyscale	0 --display greyscale or not, number 0-1
+		progressbar color	128 0 0 255	 --color when percentage != 100
+		progressbar full	128 0 0 255	 --color when percentage == 100
+	}
+	label
+	{
+		enabled		"record.classes[1].progress ~= nil"
+		area		278 212 214 8
+		mosaic rgprogb
+	}
+	label
+	{
+		area		280 190 237 30
+		text		lua "record.classes[1].xp"
+		text style  'normal'
+		text align	left top
+		text shadow 1
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 244 210 4
+		enabled		"record.classes[2] ~= nil and record.classes[2].progress ~= nil"
+		progressbar	lua "record.classes[2].progress"  -- progress percentage, number 0-100
+		greyscale	0 --display greyscale or not, number 0-1
+		progressbar color	128 0 0 255	 --color when percentage != 100
+		progressbar full	128 0 0 255	 --color when percentage == 100
+	}
+	label
+	{
+		area		278 242 214 8
+		enabled		"record.classes[2] ~= nil and record.classes[2].progress ~= nil"
+		mosaic rgprogb
+	}
+	label
+	{
+		area		280 220 237 30
+		enabled		"record.classes[2] ~= nil"
+		text		lua "record.classes[2].xp"
+		text style  'normal'
+		text align	left top
+		text shadow 1
+	}
+	label
+	{
+		area		280 245 237 30
+		enabled		"record.classes[2] and record.classes[2].inactive ~= nil"
+		text		lua "record.classes[2].inactive"
+		text style  'normal'
+		text align	left top
+		text shadow 1
+	}
+	label
+	{
+		area		280 274 210 4
+		enabled		"record.classes[3] ~= nil and record.classes[3].progress ~= nil"
+		progressbar	lua "record.classes[3].progress"  -- progress percentage, number 0-100
+		greyscale	0 --display greyscale or not, number 0-1
+		progressbar color	128 0 0 255	 --color when percentage != 100
+		progressbar full	128 0 0 255	 --color when percentage == 100
+	}
+	label
+	{
+		area		278 272 214 8
+		enabled		"record.classes[3] ~= nil and record.classes[3].progress ~= nil"
+		mosaic rgprogb
+	}
+	label
+	{
+		area		280 250 237 30
+		enabled		"record.classes[3] ~= nil"
+		text		lua "record.classes[3].xp"
+		text style  'normal'
+		text align	left top
+		text shadow 1
+	}
+
+	label
+	{
+		area		27 100 237 30
+		text lua 	"Infinity_FetchString(1048) .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		27 130 237 30
+		text lua 	"Infinity_FetchString(1049) .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		27 160 237 30
+		text lua 	"getClassTitle() .. ': '" --19721 multi, 19722 dual, inactive 24371
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		27 190 237 30
+		text lua 	"getClassString1() .. ' ' .. Infinity_FetchString(7192) .. ' ' .. getLevelString1() .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		27 220 237 30
+		enabled		"record.classes[2] ~= nil"
+		text lua 	"getClassString2() .. ' - ' .. Infinity_FetchString(7192) .. ' ' .. getLevelString2() .. ': '"
+		text style  'normal'
+		text align	right top
+	}
+	label
+	{
+		area		27 250 237 30
+		enabled 	"record.classes[3] ~= nil"
+		text lua 	"getClassString3() .. ' - ' .. Infinity_FetchString(7192) .. ' ' .. getLevelString3() .. ': '"
+		text style  'normal'
+		text align	right top
+	}
+	label
+	{
+		area 280 100 270 30
+		text lua "Infinity_FetchString(characters[currentID].gender) .. ' ' .. Infinity_FetchString(characters[currentID].race)"
+		text style 'normal'
+		text align left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area 280 130 270 30
+		text lua "Infinity_FetchString(characters[currentID].alignment)"
+		text style 'normal'
+		text align left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area 280 160 270 30
+		text lua "characters[currentID].class"
+		text style 'normal'
+		text align left top
+		enabled "characterViewable"
+	}
+	--label
+	--{
+	--	area 280 190 38 30
+	--	text lua "getLevelString1()"
+	--	text style 'normal'
+	--	text align left top
+	--}
+	--label
+	--{
+	--	area 280 220 38 30
+	--	text lua "getLevelString2()"
+	--	text style 'normal'
+	--	text align left top
+	--}
+	--label
+	--{
+	--	area 280 250 38 30
+	--	text lua "getLevelString3()"
+	--	text style 'normal'
+	--	text align left top
+	--}
+	label
+	{
+		area		70 305 194 30
+		text		lua "Infinity_FetchString( attributeItems[1][1].strRef) .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		70 335 194 30
+		text		lua "Infinity_FetchString( attributeItems[2][1].strRef) .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		70 365 194 30
+		text		lua "Infinity_FetchString( attributeItems[3][1].strRef) .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		70 395 194 30
+		text		lua "Infinity_FetchString( attributeItems[4][1].strRef) .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		70 425 194 30
+		text		lua "Infinity_FetchString( attributeItems[5][1].strRef) .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		70 455 194 30
+		text		lua "Infinity_FetchString( attributeItems[6][1].strRef) .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 305 270 30
+		text		lua  "displayAttr(1) .. '^X' .. '   (' .. getStrengthDetail() .. ')' .. '^B'"
+		text style  'normal'
+		text align left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 335 270 30
+		text		lua  "displayAttr(2) .. '^X' .. '   (' .. getDexDetail() .. ')' .. '^B'"
+		text style  'normal'
+		text align left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 365 270 30
+		text		lua  "displayAttr(3) .. '^X' .. '   (' .. getConDetail() .. ')' .. '^B'"
+		text style  'normal'
+		text align left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 395 270 30
+		text		lua  "displayAttr(4)"
+		text style  'normal'
+		text align left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 425 270 30
+		text		lua  "displayAttr(5)"
+		text style  'normal'
+		text align left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 455 270 30
+		text		lua  "displayAttr(6) .. '^X' .. '   (' .. getChaDetail() .. ')' .. '^B'"
+		text style  'normal'
+		text align left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		344 512 34 30
+		text lua 	'characters[currentID].AC.slashing'
+		text style  'normal'
+		text align	left top
+		text color	X
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		398 512 30 30
+		text lua 	'characters[currentID].AC.piercing'
+		text style  'normal'
+		text align	left top
+		text color	X
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		446 512 32 30
+		text lua 	'characters[currentID].AC.crushing'
+		text style  'normal'
+		text align	left top
+		text color	X
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		498 512 38 30
+		text lua 	'characters[currentID].AC.missile'
+		text style  'normal'
+		text align	left top
+		text color	X
+		enabled "characterViewable"
+	}
+	-- cover up AC icons
+	label
+	{
+		area	312 512 190 30
+		fill	0 0 0 255
+		enabled "not characterViewable"
+	}
+	--70 305 194 30
+	label
+	{
+		area		70 512 194 30
+		text lua 	"t('ARMOR_CLASS_LABEL') .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		70 542 194 30
+		text lua 	"t('HIT_POINTS_LABEL') .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		70 572 194 30
+		text lua 	"t('THAC0_LABEL') .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		70 602 194 30
+		text lua 	"t('DAMAGE_LABEL') .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		70 632 194 30
+		text lua 	"Infinity_FetchString(characters[currentID].proficiencies.numAttacks.strRef) .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		70 662 194 30
+		text lua 	"t('CURRENT_SCRIPT_LABEL') .. ': '"
+		text style  'normal'
+		text align	right top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 512 42 30
+		text lua 	"characters[currentID].AC.current"
+		text style  'normal'
+		text align	left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 542 270 30
+		text lua 	"characters[currentID].HP.current .. '/' .. characters[currentID].HP.max"
+		text style  'normal'
+		text align	left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 572 270 30
+		text lua 	"getTHAC()"
+		text style  'normal'
+		text align	left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 602 270 30
+		text lua 	"getDmg()"
+		text style  'normal'
+		text align	left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 632 270 30
+		text lua 	"characters[currentID].proficiencies.numAttacks.current"
+		text style  'normal'
+		text align	left top
+		enabled "characterViewable"
+	}
+	label
+	{
+		area		280 662 270 30
+		text lua 	"characters[currentID].proficiencies.currentScript"
+		text style  'normal'
+		text align	left top
+		enabled "characterViewable"
+	}
+	button
+	{
+		area 816 668 114 32
+		bam 'RGRECBTS'
+		highlightgroup	rgrecpage
+		text 'RG_OVERVIEW'
+		text style "button"
+		pad 10 4 10 4
+		--action "currentTab = 1; updateAttrTable()"
+		action "showOverview = true; showClass = false; showBiography = false; showStatistics = false; updateAttrTable()"
+	}
+	button
+	{
+		area 936 668 114 32
+		bam 'RGRECBTS'
+		highlightgroup	rgrecpage
+		text 'STATS_NORMAL'
+		text style "button"
+		pad 10 4 10 4
+		--action "currentTab = 6; updateAttrTable()"
+		action "showOverview = false; showClass = false; showBiography = false; showStatistics = true; updateAttrTable()"
+	}
+	button
+	{
+		area 1056 668 114 32
+		bam 'RGRECBTS'
+		highlightgroup	rgrecpage
+		text 'BIOGRAPHY_LABEL'
+		text style "button"
+		pad 10 4 10 4
+		--action "currentTab = 7; updateAttrTable()"
+		action "showOverview = false; showClass = false; showBiography = true; showStatistics = false; updateAttrTable()"
+	}
+	button
+	{
+		area 1176 668 114 32
+		bam 'RGRECBTS'
+		highlightgroup	rgrecpage
+		text 'CLASS_BUTTON'
+--		text 'RG_CLASS_BUTTON'
+		text style "button"
+		pad 10 4 10 4
+		--action "currentTab = 2; updateAttrTable()"
+		action "showOverview = false; showClass = true; showBiography = false; showStatistics = false; updateAttrTable()"
+	}
+
+	list
+	{
+		column
+		{
+			width 100
+
+			-- status effect icon
+			label
+			{
+				area        0 5 -1 -1 -- '5' aligns the icon with the text
+				bam         lua "listItems[rowNumber].bam"
+				sequence    lua "listItems[rowNumber][1]"
+				enabled     "listItems[rowNumber][1] ~= nil"
+			}
+
+			label
+			{
+				area        0 0 -1 -1
+				text        lua "listItems[rowNumber][2]"
+				text style  'normal'
+				text align    left bottom
+				--pad 0 -3 0 0
+			}
+		}
+
+		enabled "showOverview and characterViewable"
+		area 830 102 454 558
+		rowheight	dynamic
+		table		"listItems"
+		var		notrealValue
+		scrollbar	'GUISCRC'
+		hidehighlight
+	}
+
+	-- class section
+
+	text
+	{
+		enabled		"showClass and characterViewable"
+		area		830 102 454 558
+		text		lua "getClassString()"
+		text style  'normal'
+		scrollbar	'GUISCRC'
+	}
+
+	text
+	{
+		enabled		"showBiography and characterViewable"
+		area		830 102 454 558
+		text		lua "Infinity_FetchString(characters[currentID].biography)"
+		text style  'normal'
+		scrollbar	'GUISCRC'
+	}
+
+	--getStatistics1()
+
+	label
+	{
+		enabled		"showStatistics and characterViewable"
+		area		812 112 254 263
+		text		lua "getStatistics1()"
+		text style  'normal'
+		text align	right top
+		scrollbar	'GUISCRC'
+	}
+	label
+	{
+		enabled		"showStatistics and characterViewable"
+		area		1078 112 212 263
+		text		lua "getStatistics2()"
+		text style  'normal'
+		text align	left top
+		scrollbar	'GUISCRC'
+	}
+	label
+	{
+		enabled		"showStatistics and characterViewable"
+		area		806 386 290 270
+		text		lua "getStatistics3()"
+		text style  'normal'
+		text align	right top
+		scrollbar	'GUISCRC'
+	}
+	label
+	{
+		enabled		"showStatistics and characterViewable"
+		area		1100 386 106 270
+		text		lua "getStatistics4()"
+		text style  'normal'
+		text align	center top
+		scrollbar	'GUISCRC'
+	}
+	label
+	{
+		enabled		"showStatistics and characterViewable"
+		area		1206 386 98 270
+		text		lua "getStatistics5()"
+		text style  'normal'
+		text align	center top
+		scrollbar	'GUISCRC'
+	}
+
+	button
+	{
+		name		"BUTTON_2_2"
+		area		577 156 210 330
+		--text		lua "characters[currentID].portrait"
+		text align	center center
+		text point	10
+		text color	B
+		bitmap		lua "characters[currentID].portrait"
+		action
+		"
+			Infinity_Log(dump(characters, 0))
+		"
+	}
+
+	button
+	{
+		enabled 	"CurrentlyInGame()"
+		name		"BUTTON_2_50"
+		area		572 587 220 42
+		text		"CUSTOMIZE_BUTTON"
+		text style "button"
+		bam		RGRECBTW
+		sequence	2
+		clickable lua "characterScreen:IsMultiPlayerModifyable()"
+		pad 8 8 8 8
+		action
+		"
+			characterScreen:OnCustomizeButtonClick();
+		"
+	}
+	button
+	{
+		enabled 	"CurrentlyInGame()"
+		name		"BUTTON_2_36"
+		area		572 671 220 42
+		text		"EXPORT_BUTTON"
+		text style "button"
+		bam		RGRECBTW
+		sequence	2
+		clickable lua "characterScreen:IsExportButtonClickable()"
+		pad 8 8 8 8
+		action
+		"
+			characterScreen:OnExportButtonClick();
+		"
+	}
+
+	button
+	{
+		enabled 	"CurrentlyInGame()"
+		clickable	lua "characterScreen:IsReformPartyButtonClickable()"
+		name		"BUTTON_2_51"
+		area		572 629 220 42
+		text		"REFORM_PARTY_BUTTON"
+		text style "button"
+		bam		RGRECBTW
+		sequence	2
+		pad 8 8 8 8
+		action		"characterScreen:OnReformPartyButtonClick();"
+	}
+	button
+	{
+		enabled 	"CurrentlyInGame()"
+		name		"BUTTON_2_0"
+		area		572 545 220 42
+		text		"DUAL_CLASS_BUTTON"
+		text style "button"
+		bam		RGRECBTW
+		sequence	2
+		pad 8 8 8 8
+		clickable	lua "characterScreen:IsDualClassButtonClickable()"
+		action
+		"
+			popup2Button('DUALCLASS_CONFIRMATION', 'YES_BUTTON', function() characterScreen:OnDualClassButtonClick() end, 'NO_BUTTON')
+		"
+	}
+	button
+	{
+		enabled 	"CurrentlyInGame()"
+		name		"BUTTON_2_37"
+		area		572 503 220 42
+		text		"LEVEL_UP_BUTTON"
+		text style "button"
+		bam		RGRECBTW
+		sequence	3
+		pad 8 8 8 8
+		clickable	lua "characterScreen:IsLevelUpButtonClickable()"
+		action		" characterScreen:OnLevelUpButtonClick();"
+	}
+
+	button
+	{
+		enabled 	"CurrentlyInGame()"
+		on escape
+		area		1298 16 53 44
+		action
+		"
+			e:SelectEngine(worldScreen)
+		"
+	}
+
+	button
+	{
+		enabled 	"not CurrentlyInGame()"
+		area		394 664 200 40
+		text		"DONE_BUTTON"
+		text style 	"button"
+		bam			GUIBUTNT
+		sequence	3
+		action		"Infinity_PopMenu()"
+	}
+}

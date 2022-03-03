@@ -1,0 +1,165 @@
+menu
+{
+	name 'WORLD_DIALOG_RIGHT_BUTTONS'
+	align right center
+	ignoreEsc
+	--ignoreFocus 1
+	enabled "canShowDialogButton(11)"
+	label
+	{
+		area 0 0 85 780
+		rectangle 4
+	}
+	button
+	{
+		area 15 25 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'11'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(11)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[11].marker)
+		"
+	}
+	button
+	{
+		area 15 100 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'12'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(12)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[12].marker)
+		"
+	}
+	button
+	{
+		area 15 175 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'13'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(13)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[13].marker)
+		"
+	}
+	button
+	{
+		area 15 250 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'14'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(14)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[14].marker)
+		"
+	}
+	button
+	{
+		area 15 325 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'15'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(15)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[15].marker)
+		"
+	}
+	button
+	{
+		area 15 400 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'16'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(16)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[16].marker)
+		"
+	}
+	button
+	{
+		area 15 475 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'17'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(17)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[17].marker)
+		"
+	}
+
+	button
+	{
+		area 15 550 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'18'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(18)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[18].marker)
+		"
+	}
+
+	button
+	{
+		area 15 625 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'19'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(19)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[19].marker)
+		"
+	}
+	button
+	{
+		area 15 700 54 54
+		bam CBUTT
+		scaleToClip
+		text lua "'20'"
+		text style "button"
+		pad -3 -6 0 0
+		enabled "canShowDialogButton(20)"
+		clickable lua "not dialogEntryGreyed()"
+		action
+		"
+			worldScreen:OnDialogReplyClick(dialogResponses[20].marker)
+		"
+	}
+}

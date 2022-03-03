@@ -1,0 +1,62 @@
+menu
+{
+	name 'CHARGEN_GENDER'
+--	modal
+	align center center
+	ignoreesc
+	onOpen "toggleMale = 0; toggleFemale = 0"
+
+	label
+	{
+		area 0 0 1444 818
+		mosaic 'RGCGGEN'
+	}
+	label
+	{
+		area 476 86 500 38
+		text lua "Infinity_FetchString(11990)"
+		text style "title"
+	}
+	label
+	{
+		area 526 454 392 210
+		text lua "Infinity_FetchString(createCharGenderHelp)"
+		text style "normal"
+	}
+	button
+	{
+		area 526 248 188 166
+		bam GUIGEND1
+		sequence 0
+		toggle toggleMale
+		action "toggleFemale = 0; createCharScreen:OnGenderSelectButtonClick(1)"
+	}
+	button
+	{
+		area 730 248 188 166
+		bam GUIGEND1
+		sequence 1
+		toggle toggleFemale
+		action "toggleMale = 0; createCharScreen:OnGenderSelectButtonClick(2)"
+	}
+
+	button
+	{
+		on escape
+		area 484 724 230 40
+		bam GUIBUTMT
+		text "BACK_BUTTON"
+		text style "button"
+		action "Infinity_PopMenu(); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		area 730 724 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action "Infinity_PopMenu(); createCharScreen:OnDoneButtonClick()"
+	}
+}

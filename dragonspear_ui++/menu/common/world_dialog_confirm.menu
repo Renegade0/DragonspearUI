@@ -1,0 +1,19 @@
+menu
+{
+	name 'WORLD_DIALOG_CONFIRM'
+	offset 0 -5
+	align center bottom
+	ignoreEsc
+	button
+	{
+		area 0 0 300 45
+		--bam GUIBUTWT
+		text lua "dialogButtonText"
+		enabled "#worldPlayerDialogChoices == 0 and ClassicDialog == 1"
+		text style "button"
+		action
+		"
+			worldScreen:StepDialog()
+		"
+	}
+}

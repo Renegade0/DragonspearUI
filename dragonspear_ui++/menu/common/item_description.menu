@@ -1,0 +1,89 @@
+menu
+{
+	name 'ITEM_DESCRIPTION'
+	align center center
+	modal
+	label
+	{
+		area 0 0 1364 756
+		mosaic GUIINVHI
+	}
+	label
+	{
+		area 335 31 700 44
+		text "ITEM_TITLE"
+		text style title
+	}
+	label
+	{
+		area 344 89 52 52
+		icon lua "itemDesc.item.icon"
+	}
+	label
+	{
+		area 531 82 300 50
+		text lua "itemDesc.item.name"
+		text align center center
+		text style "label"
+	}
+	label
+	{
+		area 156 182 280 46
+		text lua "itemDesc.item.name"
+		text style "normal_parchment"
+		text align center top
+	}
+	text
+	{
+		area 449 182 759 474
+		text lua "itemDesc.item.description"
+		scrollbar 'GUISCRP'
+		text style "normal_parchment"
+	}
+	label
+	{
+		area 156 228 280 348
+		bam lua "itemDesc.item.descPicture"
+		sequence 0
+		frame 0
+		align center center
+	}
+	button
+	{
+		bam			GUIBUTMT
+		sequence	6
+		area		331 679 230 40
+		enabled "itemDescLeftButtonEnabled()"
+		text lua "itemDescLeftButtonText()"
+		text style "button"
+		action
+		"
+			itemDescLeftButtonAction()
+		"
+	}
+	button
+	{
+		bam			GUIBUTMT
+		sequence	6
+		area		568 679 230 40
+		text  "DONE_BUTTON"
+		text style "button"
+		action
+		"
+			Infinity_PopMenu( );
+		"
+	}
+	button
+	{
+		bam			GUIBUTMT
+		sequence	6
+		area		805 679 230 40
+		enabled "itemDescRightButtonEnabled()"
+		text lua "itemDescRightButtonText()"
+		text style "button"
+		action
+		"
+			itemDescRightButtonAction()
+		"
+	}
+}

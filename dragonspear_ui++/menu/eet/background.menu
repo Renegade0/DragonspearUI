@@ -1,0 +1,76 @@
+menu
+{
+	name 'BACKGROUND'
+	align top left
+	onOpen "
+	Infinity_PlayMovie('RGDBACK1','RGDBACK1')
+	Infinity_PlayMovie('RGDBACK2','RGDBACK2')
+	Infinity_PlayMovie('RGDBACK3','RGDBACK3')
+	Infinity_PlayMovie('RGDBACK4','RGDBACK4')
+	Infinity_PlayMovie('RGDBACK5','RGDBACK5')
+	Infinity_PlayMovie('RGDBACK6','RGDBACK6')
+	Infinity_PlayMovie('RGDBACK7','RGDBACK7')
+	getBackgroundSize()
+	--startCampaignData[currentCampaign]
+	"
+	movie
+	{
+		enabled "currentCampaign == 1"
+		name "RGDBACK1"
+		area 0 0 1920 1080
+	}
+	movie
+	{
+		enabled "currentCampaign == 2"
+		name "RGDBACK2"
+		area 0 0 1920 1080
+	}
+	movie
+	{
+		enabled "currentCampaign == 3"
+		name "RGDBACK3"
+		area 0 0 1920 1080
+	}
+	movie
+	{
+		enabled "currentCampaign == 4"
+		name "RGDBACK4"
+		area 0 0 1920 1080
+	}
+	movie
+	{
+		enabled "currentCampaign == 5"
+		name "RGDBACK5"
+		area 0 0 1920 1080
+	}
+	movie
+	{
+		enabled "currentCampaign == 6"
+		name "RGDBACK6"
+		area 0 0 1920 1080
+	}
+	movie
+	{
+		enabled "currentCampaign == 7"
+		name "RGDBACK7"
+		area 0 0 1920 1080
+	}
+	--label
+	--{
+	--	enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 0"
+	--	area 0 0 10000 8000
+	--	mosaic "RGBACK1"
+	--}
+	--label
+	--{
+	--	enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 1"
+	--	area 0 0 10000 8000
+	--	mosaic "RGBACK2"
+	--}
+	--label
+	--{
+	--	enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
+	--	area 0 0 10000 8000
+	--	mosaic "RGBACK3"
+	--}
+}

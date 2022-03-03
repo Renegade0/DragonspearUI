@@ -1,0 +1,15 @@
+menu
+{
+	name 'LEFT_SIDEBAR_HIDDEN'
+	align left bottom
+	ignoreEsc
+	button
+	{
+		area 0 10 21 106
+		bam RGGHID
+		action
+		"
+			toggleSidebar('LEFT')
+		"
+	}
+}

@@ -1,0 +1,105 @@
+menu
+{
+	name 'CHAPTER'
+	align top left
+	ignoreEsc
+	onopen "getChapterArea()"
+	label
+	{
+		name "chpImage"
+		area 25 65 1872 947
+	#if GAME_VERSION == 'sod' then
+		--bam 'GUIDRM2'
+	#end
+		bam lua "chapterBackground"
+		ScaleToClip
+	}
+	label
+	{
+		name "chpTopLeft"
+		area 0 0 3840 2160
+		mosaic 'RGCHPB1'
+		align top left
+	}
+	label
+	{
+		name "chpBottomLeft"
+		area 0 725 3840 355
+		mosaic 'RGCHPB2'
+		align bottom left
+	}
+	label
+	{
+		name "chpTopRight"
+		area 1633 0 287 2160
+		mosaic 'RGCHPB3'
+		align top right
+	}
+	label
+	{
+		name "chpBottomRight"
+		area 1633 721 287 359
+		mosaic 'RGCHPB4'
+		align bottom right
+	}
+	label
+	{
+		name "chpTextRect"
+		area 1355 139 455 536
+		rectangle 0
+		rectangle opacity 150
+	}
+	text
+	{
+		name "chpNumber"
+		area 660 10 600 50
+	#if GAME_VERSION == 'eet' then
+		--text lua "rgChapterNumber()"
+		--text style title
+	#else
+		text lua "rgChapterNumber()"
+		text style title
+	#end
+	}
+	text
+	{
+--		name "text_CHAPTERSCROLL_item"
+		name "chpText"
+		area 1368 146 436 522
+		text lua "text_CHAPTERSCROLL"
+		text style normal
+		scrollbar 'GUISCRC'
+		scrollbar func 'UpdateChapterScroll'
+		scrollbar hide lua 'text_CHAPTERSCROLL_auto == 1'
+		action
+		"
+			text_CHAPTERSCROLL_auto = 0
+		"
+	}
+	button
+	{
+		name "chpDoneButt"
+		area 965 1022 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "chapterScreen:IsDoneButtonClickable()"
+		action
+		"
+			chapterScreen:OnDoneButtonClick()
+		"
+	}
+	button
+	{
+		name "chpReplayButt"
+		area 725 1022 230 40
+		bam GUIBUTMT
+		text "REPLAY_BUTTON"
+		text style "button"
+		clickable lua "chapterScreen:IsReplayButtonClickable()"
+		action
+		"
+			chapterScreen:OnReplayButtonClick()
+		"
+	}
+}

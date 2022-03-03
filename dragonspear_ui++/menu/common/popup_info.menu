@@ -1,0 +1,28 @@
+menu
+{
+	name 'POPUP_INFO'
+	align center center
+	modal
+	label
+	{
+		area 0 0 657 234
+		mosaic GUIERR6
+	}
+	label
+	{
+		area 29 21 580 126
+		text lua "getStringFromAmbiguousSource(TEXT_popup_info)"
+		text style	"label"
+	}
+	button
+	{
+		area 213 170 200 40
+		bam GUIBUTNT
+		text "DONE_BUTTON"
+		text style	"button"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}

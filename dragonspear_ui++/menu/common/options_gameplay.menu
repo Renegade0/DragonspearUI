@@ -1,0 +1,409 @@
+menu
+{
+	name	'OPTIONS_GAMEPLAY'
+	align center center
+	modal
+	onOpen
+	"
+		panelID = 8
+		helpString = 'GAMEPLAY_DESCRIPTION'
+		selectedOpt = 0
+		selectedSL = 0
+
+		if Infinity_GetOption(59, 8) ~= 0 and toggleTitles[1][3] == 65 then
+			removeStoryModeOption()
+		elseif Infinity_GetOption(59, 8) == 0 and toggleTitles[1][3] ~= 65 then
+			addStoryModeOption()
+		end
+
+		ttDelaySLDR = Infinity_GetOption(1, panelID)
+		keyboardSLDR = Infinity_GetOption(3, panelID)
+		mouseSLDR = Infinity_GetOption(2, panelID)
+		difficultySLDR = Infinity_GetOption(12, panelID)
+
+		for index, var in pairs(toggleTitles) do
+			var[5] = Infinity_GetOption(var[3], panelID)
+			if var[5] == 0 then
+				var[4] = 0
+			else
+				var[4] = 2
+			end
+		end
+
+		if Infinity_CanCloudSave() == false and (toggleTitles[1][3] == 60 or toggleTitles[2][3] == 60) then
+			removeOptionFromList(toggleTitles,60)
+		end
+	"
+
+	button
+	{
+		area	0 0 1444 818
+		mosaic	RGOPTIO
+		action
+		"
+			helpString = 'GAMEPLAY_DESCRIPTION'
+			selectedOpt = 0
+			selectedSL = 0
+		"
+	}
+	label
+	{
+		area		252 32 944 44
+		text		"GAMEPLAY_TITLE"
+		text style	title
+	}
+
+	list
+	{
+
+		column
+		{
+			width 85
+			label
+			{
+				area 10 0 -1 -1
+				text lua "t( toggleTitles[rowNumber][1])"
+				text style "normal"
+				text align left center
+			}
+		}
+		column
+		{
+			width 15
+			label
+			{
+				area		20 8 32 32
+				bam			ROUNDBUT
+				scaleToClip
+				frame		lua "toggleTitles[rowNumber][4]"
+			}
+		}
+
+		area 146 138 400 574
+
+		rowheight	46
+		table		"toggleTitles"
+		var		selectedOpt
+		scrollbar	'GUISCRC'
+
+		action
+		"
+			panelID = 8
+			selectedSL = 0
+			helpString = toggleTitles[selectedOpt][2]
+
+			if(cellNumber == 2) then
+				Infinity_PlaySound('GAM_09')
+
+				toggleTitles[selectedOpt][4] = toggleFrame(toggleTitles[selectedOpt][4])
+
+				if toggleTitles[selectedOpt][4] == 0 then
+					toggleTitles[selectedOpt][5] = 0
+				else
+					toggleTitles[selectedOpt][5] = 1
+				end
+			end
+			if selectedOpt == 1 and toggleTitles[1][5] == 1 then
+				groundItemsButtonToggle = 1
+				highlightButtonToggle = 1
+			end
+		"
+	}
+
+	label
+	{
+		area 1010 134 316 578
+		Rectangle 3
+	}
+
+	text
+	{
+		area		1036 158 268 534
+		text		lua "t(helpString)"
+		text style	normal
+		text align	left top
+		text point	12
+		scrollbar	'GUISCRC'
+	}
+
+	text
+	{
+		area		600 153 200 34
+		text		"TOOLTIP_DELAY_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 1)"
+		action
+		"
+			helpString = 'TOOLTIP_DELAY_DESCRIPTION'
+			selectedOpt = 0
+			selectedSL = 1
+		"
+	}
+	slider
+	{
+		area 806 148 200 39
+		position "ttDelaySLDR"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	40
+		pad 5 0 4 0
+		action
+		"
+			helpString = 'TOOLTIP_DELAY_DESCRIPTION'
+			selectedOpt = 0
+			selectedSL = 1
+		"
+	}
+
+	text
+	{
+		area		600 203 200 35
+		text		"KEYBOARD_SCRLSPEED_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 2)"
+		enabled "not e:IsTouchUI()"
+		action
+		"
+			helpString = 'KEYBOARD_SCRLSPEED_DESCRIPTION'
+			selectedOpt = 0
+			selectedSL = 2
+		"
+	}
+	slider
+	{
+		area 806 198 200 40
+		position "keyboardSLDR"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	40
+		pad 5 0 4 0
+		enabled "not e:IsTouchUI()"
+		action
+		"
+			helpString = 'KEYBOARD_SCRLSPEED_DESCRIPTION'
+			selectedOpt = 0
+			selectedSL = 2
+		"
+	}
+
+	text
+	{
+		area		600 254 200 36
+		text		"MOUSE_SCRLSPEED_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 3)"
+		enabled "not e:IsTouchUI()"
+		action
+		"
+			helpString = 'MOUSE_SCRLSPEED_DESCRIPTION'
+			selectedOpt = 0
+			selectedSL = 3
+		"
+	}
+	slider
+	{
+		area 806 250 200 40
+		position "mouseSLDR"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	40
+		pad 5 0 4 0
+		enabled "not e:IsTouchUI()"
+		action
+		"
+			helpString = 'MOUSE_SCRLSPEED_DESCRIPTION'
+			selectedOpt = 0
+			selectedSL = 3
+		"
+	}
+
+	text
+	{
+		area		600 349 200 35
+		text		"DIFFICULTY_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+		text highlight lua "getSelected(selectedSL, 4)"
+		enabled "Infinity_GetOption(59, 8) == 0"
+		action
+		"
+			helpString = 'DIFFICULTY_DESCRIPTION'
+			selectedOpt = 0
+			selectedSL = 4
+		"
+	}
+	slider
+	{
+		area 806 345 200 39
+		position "difficultySLDR"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	5
+		pad 5 0 4 0
+		enabled "Infinity_GetOption(59, 8) == 0 and toggleTitles[1][4] == 0"
+		action
+		"
+			helpString = 'DIFFICULTY_DESCRIPTION'
+			selectedOpt = 0
+			selectedSL = 4
+		"
+	}
+	label
+	{
+		area		806 384 200 35
+		text		lua "t( getDifficulty(difficultySLDR) )"
+		text style	"label"
+		text align	center center
+		enabled "Infinity_GetOption(59, 8) == 0 and toggleTitles[1][4] == 0"
+	}
+	--fakes for story mode
+	slider
+	{
+		area 806 345 200 39
+		position "0"
+		bam	 'SLDRSTAR'
+		sliderBackground 'SLDRBACK'
+		scaleToClip
+		sequence 0
+		frame	 1
+		settings	5
+		pad 5 0 4 0
+		enabled "Infinity_GetOption(59, 8) == 0 and toggleTitles[1][4] ~= 0"
+		action
+		"
+			helpString = 'DIFFICULTY_DESCRIPTION'
+			selectedOpt = 0
+			selectedSL = 4
+		"
+	}
+	label
+	{
+		area		806 384 200 35
+		text		lua "t( getDifficulty(0) )"
+		text style	"label"
+		text align	center center
+		enabled "Infinity_GetOption(59, 8) == 0 and toggleTitles[1][4] ~= 0"
+	}
+	label
+	{
+		area 806 345 200 35
+		enabled "Infinity_GetOption(59, 8) == 0 and toggleTitles[1][4] ~= 0"
+		rectangle 0
+		rectangle opacity 150
+	}
+
+	button
+	{
+		bam			GUIBUTNT
+		sequence	0
+		area		712 492 200 40
+		text		"ASSIGN_KEYS_BUTTON"
+		text style	"button"
+		enabled "not e:IsTouchUI()"
+		action
+		"
+			Infinity_PushMenu( 'OPTIONS_KEYBINDINGS' );
+			selectedOpt = 0
+		"
+	}
+	button
+	{
+		area		712 600 200 40
+		bam			GUIBUTNT
+		sequence	2
+		text 		"FEEDBACK_BUTTON"
+		text style	"button"
+		action
+		"
+
+			Infinity_PushMenu( 'OPTIONS_FEEDBACK' );
+			selectedOpt = 0
+		"
+	}
+	button
+	{
+		area		712 546 200 40
+		bam			GUIBUTNT
+		sequence	2
+		text 		"AUTO_PAUSE_BUTTON"
+		text style	"button"
+		action
+		"
+			selectedOpt = 0
+			Infinity_PushMenu( 'OPTIONS_AUTOPAUSE' );
+		"
+	}
+	button
+	{
+		area		712 654 200 40
+		bam			GUIBUTNT
+		text 		"RG_UI_SETTINGS"
+		text style	"button"
+		action
+		"
+			selectedOpt = 0
+			Infinity_PushMenu('UI_SETTINGS');
+		"
+	}
+	button
+	{
+		on escape
+		area		304 734 200 40
+		bam			GUIBUTNT
+		sequence	2
+		text 		"CANCEL_BUTTON"
+		text style	"button"
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		area		968 734 200 40
+		bam			GUIBUTNT
+		sequence	2
+		text 		"DONE_BUTTON" -- Done
+		text style	"button"
+		action
+		"
+			panelID = 8
+			Infinity_ChangeOption( 1, ttDelaySLDR, panelID)
+			Infinity_ChangeOption( 3, keyboardSLDR, panelID )
+			Infinity_ChangeOption( 2, mouseSLDR, panelID )
+			Infinity_ChangeOption( 12, difficultySLDR + 1, panelID) -- cannot set story mode through slider
+
+			selectedOpt = 0
+			selectedSL = 0
+
+			for index, var in pairs(toggleTitles) do
+
+				Infinity_ChangeOption( var[3], var[5], panelID)
+
+			end
+
+			panelID = 8
+			Infinity_PopMenu()
+		"
+	}
+
+}

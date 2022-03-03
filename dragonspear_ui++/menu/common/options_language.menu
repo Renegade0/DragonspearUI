@@ -1,0 +1,133 @@
+menu
+{
+	name	'OPTIONS_LANGUAGE'
+	modal
+	align center center
+	onOpen
+	"
+		if e:IsTouchUI() then
+			displayLanguages = tabletLanguages
+		else
+			displayLanguages = languages
+		end
+		showsubtitles = Infinity_GetINIValue('Program Options', 'Display Subtitles', 1)
+		findCurrentLanguage()
+	"
+
+	button
+	{
+		area	0 0 1444 818
+		mosaic	RGOPTIO
+	}
+--	label
+--	{
+--		area 368 64 636 650
+--		Rectangle 3
+--	}
+--	label
+--	{
+--		area 372 588 624 111
+--		mosaic	GUWBTP39
+--	}
+
+	label
+	{
+		area 250 26 948 56
+		text "LANGUAGE_TITLE"
+		text style "title"
+	}
+	list
+	{
+		column {
+			width 100
+			label
+			{
+				area 0 0 -1 -1
+				text lua "displayLanguages[rowNumber][4]"
+				text style	"normal"
+				text align center center
+			}
+		}
+
+		area		146 138 392 450
+		rowheight	28
+		table		"displayLanguages"
+		var			language
+		scrollbar	'GUISCRC'
+	}
+	text
+	{
+		area		600 140 722 466
+		text lua	"languageDetails()"
+		text style	normal
+		text align	center top
+		scrollbar	'GUISCRC'
+	}
+
+	label
+	{
+		area		234 596 170 34
+		text	"SHOW_SUBTITLES_LABEL"
+		text style	"label"
+		text align	right center
+		text upper
+	}
+	label
+	{
+		area		186 642 318 46
+		text lua 	"Infinity_FetchString(`REF_OPTIONS_LANGUAGE_1`)"
+		text style	"normal"
+		text align	center center
+		text upper
+	}
+	label
+	{
+		area		600 616 722 96
+		text lua 	"Infinity_FetchString(`REF_OPTIONS_LANGUAGE_2`)"
+		text style	"normal"
+		text align	center center
+		text color 	'$'
+	}
+
+	button
+	{
+		area		412 596 36 34
+		bam			ROUNDBUT
+		scaleToClip
+		toggle		showsubtitles
+	}
+
+	button
+	{
+		on escape
+		area		304 732 230 40
+		bam			GUIBUTMT
+		text	"CANCEL_BUTTON"
+		text style	"button"
+		sequence 1
+		action
+		"
+			-- cancel
+			for index, var in pairs(displayLanguages) do
+				Infinity_Log(var[3])
+			end
+			Infinity_PopMenu();
+		"
+	}
+
+	button
+	{
+		area		936 732 230 40
+		bam			GUIBUTMT
+		text 		"DONE_BUTTON"
+		text style	"button"
+		action
+		"
+			-- done
+			dui_set_language(displayLanguages[language][1])
+			Infinity_SetLanguage(displayLanguages[language][1],showsubtitles)
+			Infinity_PopMenu()
+		"
+	}
+
+}

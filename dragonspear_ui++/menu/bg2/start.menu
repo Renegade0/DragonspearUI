@@ -1,0 +1,370 @@
+menu
+{
+	name 'START'
+	align top left
+	size 1024 768
+	ignoreesc
+	onOpen "
+		if isTob == nil then
+			isTob = 0
+		end
+		campaignsString = ''
+		canContinue = startEngine:HasGameToContinue()
+		Infinity_PlayMovie('flames','flames')
+		duiInitSettings({ doFirstLoad = true })
+		getMenuPanelArea()
+		e:CheckGUISong()
+		local state = startEngine:GetEngineState()
+		if lastStartMenu and lastStartMenu ~= 'START' then
+			Infinity_PopMenu('START')
+			Infinity_PushMenu(lastStartMenu)
+			lastStartMenu = nil
+		elseif state == 1 or state == 3 then
+			Infinity_PopMenu('START')
+			Infinity_PushMenu('START_SP')
+		elseif state == 2 then
+			Infinity_PopMenu('START')
+			Infinity_PushMenu('START_MP')
+		end
+		Infinity_SetBackground('BACKGROUND')
+
+		--If we're coming back from the tutorial make sure we're set to our actual campaign.
+		--if(startEngine:GetCampaign() == const.START_CAMPAIGN_BG) then
+		--	startEngine:OnSoAButtonClick(false)
+		--end
+	"
+	onClose "
+		local state = startEngine:GetEngineState()
+		if state == 1 then
+			Infinity_PopMenu('START_SP')
+		elseif state == 2 then
+			Infinity_PopMenu('START_MP')
+		end
+
+	"
+	label
+	{
+		name "MenuPanel1"
+		area 1476 190 368 470
+		mosaic "RGMMENU"
+	}
+	movie
+	{
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
+		name "flames"
+		area 324 124 404 564
+		loop
+	}
+	label
+	{
+		name "MenuTitle1"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 0"
+		area 1410 78 488 96
+		bam 'RGTITLE'
+		sequence 0
+		frame 0
+	}
+	label
+	{
+		name "MenuTitle2"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 1"
+		area 1410 78 488 96
+		bam 'RGTITLE'
+		sequence 0
+		frame 1
+	}
+	label
+	{
+		name "MenuTitle3"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
+		area 1388 78 488 96
+		bam 'RGTITLE'
+		sequence 0
+		frame 2
+		--ScaleToClip
+	}
+
+	button
+	{
+		name "MenuButton1"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 250 249 45
+		pad 10 8 10 8
+		text style "button"
+		--text 9372
+		text "CONTINUE_BUTTON"
+		clickable lua "canContinue"
+		action "startEngine:OnContinueGame()"
+	}
+	button
+	{
+		name "MenuButton2"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 300 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "NEW_GAME_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnNewGameButtonClick();"
+	}
+	button
+	{
+		name "MenuButton3"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 350 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "LOAD_GAME_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnLoadGameButtonClick()"
+	}
+	button
+	{
+		name "MenuButton4"
+		bam 'STARTBUT'
+		enabled "getTutorialEnabled()"
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 400 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "TUTORIAL_BUTTON"
+		action
+		"
+			Infinity_PopMenu();
+			startEngine:OnTutorialButtonClick()
+		"
+	}
+	button
+	{
+		name "MenuButton4x"
+		bam 'STARTBUT'
+		enabled "getCampaignImportEnabled()"
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 400 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "IMPORT_GAME_BUTTON"
+		action
+		"
+			Infinity_PopMenu();
+			startEngine:OnImportCharacterButtonClick();
+		"
+	}
+	button
+	{
+		name "MenuButton5"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 450 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "MULTIPLAYER_BUTTON"
+		action
+		"
+			startEngine:OnMultiPlayerButtonClick()
+		"
+	}
+	button
+	{
+		name "MenuButton6"
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 1536 500 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "OPTIONS_BUTTON"
+		action "
+			Infinity_TransitionMenu('START_OPTIONS')
+			optionsScreen:SetEngineState(1)
+			startEngine:OnOptionsButtonClick()
+			lastStartMenu = 'START'
+		"
+	}
+	button
+	{
+		name "MenuButton7"
+		area 1536 550 249 45
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		pad 10 8 10 8
+		text style "button"
+		text "QUIT_GAME_BUTTON"
+		enabled "not e:IsTouchUI()"
+		on escape
+		action
+		"
+			startEngine:OnQuitButtonClick()
+		"
+	}
+	button
+	{
+		area 0 0 1 1
+		enabled "e:IsTouchUI()"
+		on escape
+		action
+		"
+			startEngine:OnQuitButtonClick()
+		"
+	}
+
+	label
+	{
+		name "MenuCampA1"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 0"
+		area 41 917 160 160
+		mosaic 'rgopt4'
+	}
+	label
+	{
+		name "MenuCampA2"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG and isTob == 1"
+		area 175 917 160 160
+		mosaic 'rgopt4'
+	}
+	label
+	{
+		name "MenuCampA3"
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
+		area 309 917 160 160
+		mosaic 'rgopt4'
+	}
+	label
+	{
+		name "MenuCampB1"
+		area 56 932 130 132
+		mosaic 'rgopt3'
+	}
+	label
+	{
+		name "MenuCampB2"
+		area 190 932 134 132
+		mosaic 'rgopt3'
+	}
+	label
+	{
+		name "MenuCampB3"
+		area 324 932 134 132
+		mosaic 'rgopt3'
+	}
+
+	text
+	{
+		name "MenuCChooser1"
+		bam "CMPGSML"
+		sequence 3
+		frame lua "getCampaignHighlight(1)"
+		area 58 934 116 116
+		align center center
+		--tooltip lua "getCampaignTooltip(1)"
+		action
+		"
+			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BG or isTob ~= 0 then
+			startEngine:OnSoAButtonClick(true);
+			isTob = 0
+			end
+
+		"
+		actionEnter
+		"
+			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BG or isTob ~= 0 then
+			highlightedCampaign = 1;
+			end
+			campaignsString = t('RG_MENU_BG2_CAMPAIGN1')
+		"
+		actionExit
+		"
+			highlightedCampaign = nil;
+			campaignsString = ''
+		"
+	}
+	text
+	{
+		name "MenuCChooser2"
+		bam "CMPGSML"
+		sequence 2
+		frame lua "getCampaignHighlight(2)"
+		area 192 934 116 116
+		align center center
+		--tooltip lua "getCampaignTooltip(2)"
+		action
+		"
+			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BG or isTob ~= 1 then
+			startEngine:OnToBButtonClick(true);
+			isTob = 1
+			end
+
+		"
+		actionEnter
+		"
+			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BG or isTob ~= 1 then
+			highlightedCampaign = 2;
+			end
+			campaignsString = t('RG_MENU_BG2_CAMPAIGN2')
+		"
+		actionExit
+		"
+			highlightedCampaign = nil;
+			campaignsString = ''
+		"
+	}
+	text
+	{
+		name "MenuCChooser3"
+		bam "CMPGSML"
+		sequence 1
+		frame lua "getCampaignHighlight(3)"
+		area 326 934 116 116
+		align center center
+		--tooltip lua "getCampaignTooltip(3)"
+		action
+		"
+			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BP then
+			startEngine:OnTBPButtonClick(true);
+			isTob = 0
+			end
+
+		"
+		actionEnter
+		"
+			if startEngine:GetCampaign() ~= const.START_CAMPAIGN_BP then
+			highlightedCampaign = 3;
+			end
+			campaignsString = t('RG_MENU_BG2_CAMPAIGN3')
+		"
+		actionExit
+		"
+			highlightedCampaign = nil;
+			campaignsString = ''
+		"
+	}
+
+	label
+	{
+		name "MenuVsLabel"
+		area 1788 1039 132 41
+		text style "normal"
+		text align center center
+		text lua "CBaldurChitin:GetVersionString()"
+	}
+
+	label
+	{
+		name "MenuCampLabel1"
+		area 60 870 750 35
+		text style "title"
+		text color '5'
+		text align left center
+		text lua "t('RG_MENU_BG2_CAMPAIGN') .. ': ' .. campaignsString"
+	}
+	label
+	{
+		name "MenuCampLabel2"
+		area 58 868 750 35
+		text style "title"
+		--text shadow 5
+		text color '$'
+		text align left center
+		text lua "t('RG_MENU_BG2_CAMPAIGN') .. ': ' .. campaignsString"
+	}
+}

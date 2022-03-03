@@ -1,0 +1,261 @@
+menu
+{
+	name 'IMPORTPARTY'
+	align center center
+	label
+	{
+		mosaic 'GMPCARBD'
+		area 0 0 1024 768
+	}
+	label
+	{
+		area 162 16 700 44
+		text "CREATE_PARTY_TITLE"
+		text style "title"
+	}
+	label
+	{
+		enabled		"game:GetMissionPackInfoTBP()"
+		area 		54 584 902 62
+		scrollbar	'GUISCRC'
+		text style	"normal"
+		text 			69563
+	}
+
+	--portraits
+	label
+	{
+		area 67 180 64 90
+		bam 'GUIRSP10'
+		sequence 0
+	}
+	button
+	{
+		area 71 182 56 86
+		bitmap lua "partyImport.character[1].portrait"
+		clickable lua "partyImport.character[1].name ~= ''"
+		action
+		"
+			createPartyScreen:OnPortraitButtonClick(0)
+		"
+	}
+	label
+	{
+		area 67 315 64 90
+		bam 'GUIRSP10'
+		sequence 0
+	}
+	button
+	{
+		area 71 317 56 86
+		bitmap lua "partyImport.character[2].portrait"
+		clickable lua "partyImport.character[2].name ~= ''"
+		action
+		"
+			createPartyScreen:OnPortraitButtonClick(1)
+		"
+	}
+	label
+	{
+		area 67 454 64 90
+		bam 'GUIRSP10'
+		sequence 0
+	}
+	button
+	{
+		area 71 456 56 86
+		bitmap lua "partyImport.character[3].portrait"
+		clickable lua "partyImport.character[3].name ~= ''"
+		action
+		"
+			createPartyScreen:OnPortraitButtonClick(2)
+		"
+	}
+	label
+	{
+		area 557 180 64 90
+		bam 'GUIRSP10'
+		sequence 0
+	}
+	button
+	{
+		area 561 182 56 86
+		bitmap lua "partyImport.character[4].portrait"
+		clickable lua "partyImport.character[4].name ~= ''"
+		action
+		"
+			createPartyScreen:OnPortraitButtonClick(3)
+		"
+	}
+	label
+	{
+		area 557 315 64 90
+		bam 'GUIRSP10'
+		sequence 0
+	}
+	button
+	{
+		area 561 317 56 86
+		bitmap lua "partyImport.character[5].portrait"
+		clickable lua "partyImport.character[5].name ~= ''"
+		action
+		"
+			createPartyScreen:OnPortraitButtonClick(4)
+		"
+	}
+	label
+	{
+		area 557 454 64 90
+		bam 'GUIRSP10'
+		sequence 0
+	}
+	button
+	{
+		area 561 456 56 86
+		bitmap lua "partyImport.character[6].portrait"
+		clickable lua "partyImport.character[6].name ~= ''"
+		action
+		"
+			createPartyScreen:OnPortraitButtonClick(5)
+		"
+	}
+
+	button
+	{
+		area 527 710 200 40
+		bam 'GUIBUTNT'
+		sequence 1
+		text "PLAY_IMPORT_BUTTON" -- Play
+		text style 'button'
+		clickable lua "partyImport.playbuttonclickable"
+		action
+		"
+			createPartyScreen:OnDoneButtonClick()
+		"
+	}
+	button
+	{
+		on escape
+		area 305 710 200 40
+		bam 'GUIBUTNT'
+		sequence 0
+		text "BACK_BUTTON" -- Back
+		text style 'button'
+		action
+		"
+			createPartyScreen:OnBackButtonClick()
+		"
+	}
+
+	--delete/create buttons
+	button
+	{
+		area 155 180 300 40
+		bam 'GUIBUTWT'
+		sequence 0
+		text lua "partyImport.character[1].createdelete"
+		text style "button"
+		action
+		"
+			createPartyScreen:OnCreateDeleteButtonClick(0)
+		"
+	}
+	button
+	{
+		area 155 317 300 40
+		bam 'GUIBUTWT'
+		sequence 2
+		text lua "partyImport.character[2].createdelete"
+		text style "button"
+		action
+		"
+			createPartyScreen:OnCreateDeleteButtonClick(1)
+		"
+	}
+	button
+	{
+		area 155 452 300 40
+		bam 'GUIBUTWT'
+		sequence 1
+		text lua "partyImport.character[3].createdelete"
+		text style "button"
+		action
+		"
+			createPartyScreen:OnCreateDeleteButtonClick(2)
+		"
+	}
+	button
+	{
+		area 645 180 300 40
+		bam 'GUIBUTWT'
+		sequence 0
+		text lua "partyImport.character[4].createdelete"
+		text style "button"
+		action
+		"
+			createPartyScreen:OnCreateDeleteButtonClick(3)
+		"
+	}
+	button
+	{
+		area 645 317 300 40
+		bam 'GUIBUTWT'
+		sequence 2
+		text lua "partyImport.character[5].createdelete"
+		text style "button"
+		action
+		"
+			createPartyScreen:OnCreateDeleteButtonClick(4)
+		"
+	}
+	button
+	{
+		area 645 452 300 40
+		bam 'GUIBUTWT'
+		sequence 1
+		text lua "partyImport.character[6].createdelete"
+		text style "button"
+		action
+		"
+			createPartyScreen:OnCreateDeleteButtonClick(5)
+		"
+	}
+
+	-- character labels
+	label
+	{
+		area 155 228 314 50
+		text lua "partyImport.character[1].name"
+		text style "title"
+	}
+	label
+	{
+		area 155 365 314 50
+		text lua "partyImport.character[2].name"
+		text style "title"
+	}
+	label
+	{
+		area 155 500 314 50
+		text lua "partyImport.character[3].name"
+		text style "title"
+	}
+	label
+	{
+		area 645 228 314 50
+		text lua "partyImport.character[4].name"
+		text style "title"
+	}
+	label
+	{
+		area 645 365 314 50
+		text lua "partyImport.character[5].name"
+		text style "title"
+	}
+	label
+	{
+		area 645 500 314 50
+		text lua "partyImport.character[6].name"
+		text style "title"
+	}
+}

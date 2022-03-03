@@ -1,0 +1,88 @@
+menu
+{
+	name 'EPILOGUE'
+	align center center
+	ignoreEsc
+#if GAME_VERSION == 'sod' then
+	onOpen
+	"
+		generateMegaCredits()
+	"
+#end
+	label
+	{
+		area 0 0 1024 768
+		mosaic "NPCCHAP"
+	}
+	text
+	{
+		area 100 50 828 36
+		text style "title"
+		text "MAIN_GAME_LABEL"
+	}
+#if GAME_VERSION ~= 'bg1' then
+	text
+	{
+		area 100 86 828 34
+		text style "title"
+	#if GAME_VERSION == 'sod' then
+		text "EXPANSION_LABEL"
+	#else
+		text "EXPANSION_BG2_LABEL"
+	#end
+	}
+#end
+	label
+	{
+		area 110 176 274 430
+#if GAME_VERSION == 'sod' then
+		mosaic lua "epilogueImage"
+#else
+		bitmap lua "epilogueImage"
+#end
+	}
+	text
+	{
+		name "text_CHAPTERSCROLL_item"
+		area 440 148 492 482
+#if GAME_VERSION == 'sod' then
+		text lua "megacredits"
+#else
+		text lua "text_CHAPTERSCROLL"
+#end
+		text style normal
+		text align center top
+		scrollbar 'GUISCRC'
+		scrollbar func 'UpdateChapterScroll'
+		scrollbar hide lua 'text_CHAPTERSCROLL_auto == 1'
+		action
+		"
+			text_CHAPTERSCROLL_auto = 0
+		"
+	}
+	button
+	{
+		area 526 662 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "chapterScreen:IsDoneButtonClickable()"
+		action
+		"
+			megacredits = ''
+			chapterScreen:OnDoneButtonClick()
+		"
+	}
+	button
+	{
+		area 284 662 230 40
+		bam GUIBUTMT
+		text "REPLAY_BUTTON"
+		text style "button"
+		clickable lua "chapterScreen:IsReplayButtonClickable()"
+		action
+		"
+			chapterScreen:OnReplayButtonClick()
+		"
+	}
+}

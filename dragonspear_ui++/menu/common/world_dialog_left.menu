@@ -1,0 +1,20 @@
+menu
+{
+	name 'WORLD_DIALOG_LEFT'
+	align left center
+	ignoreEsc
+	--ignoreFocus 1
+	onOpen
+	"
+		Infinity_PushMenu('WORLD_DIALOG_LEFT_BUTTONS')
+	"
+	onClose
+	"
+		Infinity_PopMenu('WORLD_DIALOG_LEFT_BUTTONS')
+	"
+	label
+	{
+		area 0 0 80 1536
+		mosaic GUIWLSP
+	}
+}

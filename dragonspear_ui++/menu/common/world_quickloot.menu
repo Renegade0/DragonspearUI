@@ -1,0 +1,194 @@
+menu
+{
+	name 'WORLD_QUICKLOOT'
+	align left top
+	ignoreEsc
+	onOpen
+	"
+		QLSearchString = ''
+	"
+	button
+	{
+		area 114 172 -1 -1
+		name "QLreset"
+		on e
+		enabled "getSlotContainerId(0,'containerId') and QuicklootMode == UIStrings.UI_Advanced"
+		action
+		"
+			local x,y,w,h = Infinity_GetArea('QLdisplaybackground')
+			if h < 1 then
+				dragQLY((#loot.groundItems * 52) + 124)
+			elseif h > 0 then
+				dragQLY(-h-40)
+			end
+			toggleY = 0
+		"
+	}
+	button
+	{
+		area 0 0 328 -40
+		enabled "getSlotContainerId(0,'containerId') and QuicklootMode == UIStrings.UI_Advanced"
+		name "QLdisplaybackground"
+		rectangle 6
+		rectangle opacity 160
+	}
+	label
+	{
+		area 0 -40 328 40
+		enabled "getSlotContainerId(0,'containerId') and QuicklootMode == UIStrings.UI_Advanced"
+		name "QLeditboxbackground"
+		rectangle 6
+	}
+	edit
+	{
+		area 30 -40 268 40
+		enabled "getSlotContainerId(0,'containerId') and QuicklootMode == UIStrings.UI_Advanced"
+		name "QLeditbox"
+		var QLSearchString
+		placeholder "..."
+		text style "edit"
+		text align center center
+		maxlines	1
+
+	}
+	button
+	{
+		enabled "QLSearchString ~= '' and QuicklootMode == UIStrings.UI_Advanced"
+		area 298 -40 30 40
+		name "QLeditboxX"
+		text "X"
+		text style "button"
+		action
+		"
+			QLSearchString = ''
+		"
+	}
+	list
+	{
+		column
+		{
+			width 310
+			button
+			{
+				area 5 0 52 52
+				bam STONSLOT
+				enabled "QLfilter(rowNumber) and QuicklootMode == UIStrings.UI_Advanced"
+				frame lua "loot.groundItems[rowNumber].item['frame']"
+				icon lua "loot.groundItems[rowNumber].item['icon']"
+				tint lua "loot.groundItems[rowNumber].item['tint']"
+				usages lua "loot.groundItems[rowNumber].item['usages']" --how many selected
+				count lua "loot.groundItems[rowNumber].item['count']" --How many to a stack
+				align center center
+			}
+			button
+			{
+				area 79 0 230 52
+				enabled "QLfilter(rowNumber) and QuicklootMode == UIStrings.UI_Advanced"
+				text lua "loot.groundItems[rowNumber].item['name']"
+				text style "normal"
+				text align left center
+			}
+		}
+		area 			4 10 318 -60
+		enabled 		"getSlotContainerId(0,'containerId') and QuicklootMode == UIStrings.UI_Advanced"
+		name 			"QLdisplayrows"
+		rowheight		dynamic
+		hidehighlight
+		table			"loot.groundItems"
+		var				"selectedLootItem"
+		scrollbar 		'GUISCRC'
+		scrollbar hide lua "getHeight()"
+		action
+		"
+			PickUpItem()
+			if #loot.groundItems == 0 then repositionQuickloot() end
+		"
+	}
+	label
+	{
+		name "QLhandle"
+		enabled "getSlotContainerId(0,'containerId') and QuicklootMode == UIStrings.UI_Advanced"
+		area 66 0 195 28
+		mosaic "RGTAB1"
+		text lua "#loot.groundItems + 1"
+		text style "parchment"
+		text color 255 255 255 255
+		text point 14
+		text align center center
+	}
+	handle
+	{
+		name "QLhandleL"
+		enabled "getSlotContainerId(0,'containerId') and QuicklootMode == UIStrings.UI_Advanced"
+		area 66 0 50 28
+		actionDrag
+		"
+			dragQLX(motionX)
+		"
+	}
+	handle
+	{
+		name "QLhandleMid"
+		enabled "getSlotContainerId(0,'containerId') and QuicklootMode == UIStrings.UI_Advanced"
+		area 116 0 95 28
+		actionDrag
+		"
+			dragQLY(motionY)
+		"
+	}
+	handle
+	{
+		name "QLhandleR"
+		enabled "getSlotContainerId(0,'containerId') and QuicklootMode == UIStrings.UI_Advanced"
+		area 211 0 50 28
+		actionDrag
+		"
+			dragQLX(motionX)
+		"
+	}
+
+	button
+	{
+		area 0 0 0 0
+		enabled "QuicklootMode == UIStrings.UI_Expert"
+		text lua "hideQuicklootSlot()"
+	}
+	button
+	{
+		name "quicklootArrowL"
+		area 8 5 0 0
+		bam RGQAROW
+		sequence 1
+		enabled "(worldScreen:GroundScrollEnabled(-6) or worldScreen:GroundScrollEnabled(6)) and QuicklootMode == UIStrings.UI_Expert"
+		action
+		"
+		worldScreen:OnGroundScroll(-6)
+		"
+	}
+	button
+	{
+		name "quicklootArrowR"
+		area 42 5 0 0
+		bam RGQAROW
+		sequence 0
+		enabled "(worldScreen:GroundScrollEnabled(-6) or worldScreen:GroundScrollEnabled(6)) and QuicklootMode == UIStrings.UI_Expert"
+		action
+		"
+		worldScreen:OnGroundScroll(6)
+		"
+	}
+
+#local i = 0
+#for y = 5, 491, 54 do
+	#for x = 76, 347, 54 do
+	button
+	{
+		name "quicklootSlot`i`"	enabled "QuicklootMode == UIStrings.UI_Expert and getSlotContainerId(`i`)"	area `x` `y` 0 0	bam STONSLOT	tooltip lua	"getGroundItemProperty(`i`,'name')"	tint lua	"getGroundItemProperty(`i`,'tint')"
+		icon lua	"getGroundItemProperty(`i`,'icon')"	count lua	"getGroundItemProperty(`i`,'count')"	usages lua	"getGroundItemProperty(`i`,'usages')"
+		action "groundItemClick2(`i`)"	actionEnter "mouseOverQuicklootContainer = getSlotContainerId(`i`,'containerId')"	actionExit "mouseOverQuicklootContainer = nil"
+		actionAlt "showGroundItemDescription(`i`)"
+	}
+	#i = i + 1
+	#end
+#end
+}

@@ -1,0 +1,82 @@
+menu
+{
+	name 'SODCREDIT'
+	align center center
+	onOpen
+	"
+		generateMegaCredits()
+		chapterScreen:OnReplayButtonClick()
+	"
+	label
+	{
+		area 0 0 1024 768
+		mosaic "NPCCHAP"
+	}
+	text
+	{
+		area 100 50 828 36
+		text style "title"
+		text "MAIN_GAME_LABEL"
+		enabled "not e:IsTouchUI()"
+	}
+	text
+	{
+		area 100 86 828 34
+		text style "title"
+		text "EXPANSION_LABEL"
+		enabled "not e:IsTouchUI()"
+	}
+	text
+	{
+		area 100 50 828 78
+		text style "title"
+		text "EXPANSION_LABEL"
+		enabled "e:IsTouchUI()"
+	}
+	label
+	{
+		area 110 176 274 430
+		mosaic "credi_02"
+	}
+	text
+	{
+		name "text_CHAPTERSCROLL_item"
+		area 440 148 492 482
+		text lua "megacredits"
+		text style normal
+		text align center top
+		scrollbar 'GUISCRC'
+		scrollbar func 'UpdateChapterScroll'
+		scrollbar hide lua 'text_CHAPTERSCROLL_auto == 1'
+		action
+		"
+			text_CHAPTERSCROLL_auto = 0
+		"
+	}
+	button
+	{
+		area 526 662 230 40
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style "button"
+		on escape
+		clickable lua "chapterScreen:IsDoneButtonClickable()"
+		action
+		"
+			megacredits = ''
+			Infinity_PopMenu()
+		"
+	}
+	button
+	{
+		area 284 662 230 40
+		bam GUIBUTMT
+		text "REPLAY_BUTTON"
+		text style "button"
+		clickable lua "chapterScreen:IsReplayButtonClickable()"
+		action
+		"
+			chapterScreen:OnReplayButtonClick()
+		"
+	}
+}

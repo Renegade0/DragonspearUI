@@ -1,0 +1,135 @@
+menu
+{
+	name "MP_CHAT_OVERLAY"
+	enabled "e:IsMultiplayer()"
+	align right top
+	ignoreEsc
+	offset -120 0
+	onOpen
+	"
+		chatViewed = 1
+	"
+	label
+	{
+		name "mpChatDisplayBackground"
+		enabled "showMpChat"
+		area 0 0 300 281
+		rectangle 4
+		rectangle opacity 200
+	}
+	label
+	{
+		area 0 0 300 42
+		rectangle 0
+
+	}
+	label
+	{
+		area 10 8 28 28
+		bam "CHTICN"
+		frame 1
+		opacity lua "getChatIconOpacity()"
+
+	}
+	label
+	{
+		area 10 8 28 28
+		bam "CHTICN"
+		frame 0
+		opacity lua "255 - getChatIconOpacity()"
+	}
+	label
+	{
+		area 42 0 252 42
+		text "MULTIPLAYER_CHAT_LABEL"
+		text style "label"
+	}
+	button
+	{
+		area 0 0 300 42
+		toggle "showMpChat"
+		tooltip lua "getChatBarTooltip()"
+		action
+		"
+			chatViewed = 1
+			mpChatboxScrollToBottom = 1
+			if showMpChat == 1 then
+				Infinity_FocusTextEdit('mpChatEdit')
+			else
+				Infinity_FocusTextEdit('')
+			end
+		"
+	}
+
+	label
+	{
+		name "mpChatPreview"
+		enabled "showMpChat == 0"
+		opacity lua "getMPMessageOpacity()"
+		area 0 42 300 56
+		text style "normal"
+		text lua "getMPMessage()"
+		pad 8 8 8 8
+		ignoreEvents
+		fill 0 0 0 200
+	}
+	text
+	{
+		name "mpChatDisplay"
+		enabled "showMpChat"
+		area 20 46 258 180
+		text lua "mpChatText"
+		scrollbar 'GUISCRC'
+		scrollbar func "mpChatboxScroll"
+		text style	normal
+	}
+	label
+	{
+		name "mpChatEditBackground"
+		enabled "showMpChat"
+		area 0 233 300 48
+		rectangle 0
+	}
+	edit
+	{
+		name		"mpChatEdit"
+		enabled 	"showMpChat"
+		area		10 243 290 28
+		var			mpChatEditOverlay
+		scrollbar	'GUISCRC'
+		text style	"edit"
+		maxchars 255
+		fill            112 111 111 64
+		action
+		"
+			--On return pressed
+			if (key_pressed == 13) then
+				if (mpChatEditOverlay ~= '') then
+					Infinity_SendChatMessage(mpChatEditOverlay, false)
+					Infinity_PlaySound('WAL_19B')
+					mpChatEditOverlay=''
+					resizeMpEditBox()
+					mpChatboxScrollToBottom = 1
+					return -1
+				end
+			end
+			return 1
+		"
+		actionalt
+		"
+			resizeMpEditBox()
+		"
+	}
+	handle
+	{
+		name "mpChatHandle"
+		area 104 281 95 36
+		bam "MPCHATAB"
+		enabled "showMpChat"
+		tooltip lua "t('MULTIPLAYER_CHAT_RESIZE_TOOLTIP')"
+		actionDrag
+		"
+			dragMPChat(motionY)
+		"
+	}
+}

@@ -1,0 +1,230 @@
+menu
+{
+	name 'CHARGEN'
+	align center center
+	ignoreesc
+	onopen "randomCharacter = 0;"
+	label
+	{
+		area 0 0 1444 818
+		mosaic 'RGCGB'
+	}
+	label
+	{
+		area 376 32 690 44
+		text "CHARGEN_TITLE"
+		text style "title"
+	}
+	text
+	{
+		area 358 184 342 512
+		text lua "chargen.information"
+		scrollbar 'GUISCRC'
+		text style "normal"
+	}
+	text
+	{
+		enabled "createCharScreen:GetCurrentStep() >= 17"
+		area 748 184 342 512
+		text lua "createBioEdit"
+		scrollbar 'GUISCRC'
+		text style "normal"
+	}
+	label
+	{
+		area 1142 248 210 330
+		bitmap lua "chargen.portrait"
+	}
+
+	button
+	{
+		area 90 243 212 33
+		bam RGCGBUT
+		sequence 0
+		clickable lua "createCharScreen:GetCurrentStep() == 0"
+		glow lua "createCharScreen:GetCurrentStep() == 0"
+		text "GENDER_BUTTON"
+		text style "button"
+		pad 8 2 8 2
+		action "createCharScreen:OnMenuButtonClick()"
+	}
+	button
+	{
+		area 90 278 212 33
+		bam RGCGBUT
+		sequence 1
+		clickable lua "createCharScreen:GetCurrentStep() == 3"
+		glow lua "createCharScreen:GetCurrentStep() == 3"
+		text "RACE_BUTTON"
+		text style "button"
+		pad 8 2 8 2
+		action "createCharScreen:OnMenuButtonClick()"
+	}
+	button
+	{
+		area 90 313 212 33
+		bam RGCGBUT
+		sequence 2
+		clickable lua "createCharScreen:GetCurrentStep() == 4"
+		glow lua "createCharScreen:GetCurrentStep() == 4"
+		text "CLASS_TITLE"
+		text style "button"
+		pad 8 2 8 2
+		action "createCharScreen:OnMenuButtonClick()"
+	}
+	button
+	{
+		area 90 348 212 33
+		bam RGCGBUT
+		sequence 1
+		clickable lua "createCharScreen:GetCurrentStep() == 7"
+		glow lua "createCharScreen:GetCurrentStep() == 7"
+		text "ALIGNMENT_BUTTON"
+		text style "button"
+		pad 8 2 8 2
+		action "createCharScreen:OnMenuButtonClick()"
+	}
+
+	button
+	{
+		area 90 383 212 33
+		bam RGCGBUT
+		sequence 0
+		clickable lua "createCharScreen:GetCurrentStep() == 8"
+		glow lua "createCharScreen:GetCurrentStep() == 8"
+		text "ABILITIES_BUTTON"
+		text style "button"
+		pad 8 2 8 2
+		action "createCharScreen:OnMenuButtonClick()"
+	}
+	button
+	{
+		area 90 418 212 33
+		bam RGCGBUT
+		sequence 1
+		clickable lua "createCharScreen:GetCurrentStep() == 9"
+		glow lua "createCharScreen:GetCurrentStep() == 9"
+		text "SKILLS_BUTTON"
+		text style "button"
+		pad 8 2 8 2
+		action "createCharScreen:OnMenuButtonClick()"
+	}
+	button
+	{
+		area 90 453 212 33
+		bam RGCGBUT
+		sequence 2
+		clickable lua "createCharScreen:GetCurrentStep() == 15"
+		glow lua "createCharScreen:GetCurrentStep() == 15"
+		text "APPEARANCE_BUTTON"
+		text style "button"
+		pad 8 2 8 2
+		action "createCharScreen:OnMenuButtonClick()"
+	}
+	button
+	{
+		area 90 488 212 33
+		bam RGCGBUT
+		sequence 0
+		clickable lua "createCharScreen:GetCurrentStep() == 17"
+		glow lua "createCharScreen:GetCurrentStep() == 17"
+		text "BIOGRAPHY_BUTTON"
+		text style "button"
+		pad 8 2 8 2
+		action "createCharScreen:OnBiographyButtonClick()"
+	}
+	button
+	{
+		area 90 523 212 33
+		bam RGCGBUT
+		sequence 1
+		clickable lua "createCharScreen:GetCurrentStep() == 17"
+		glow lua "createCharScreen:GetCurrentStep() == 17"
+		text "NAME_BUTTON"
+		text style "button"
+		pad 8 2 8 2
+		action "createCharScreen:OnMenuButtonClick()"
+	}
+
+	button
+	{
+		area 1134 604 230 40
+		text "IMPORT_BUTTON"
+		text style "button"
+		bam GUIBUTMT
+		action "
+			createCharScreen:OnImportCharacterButtonClick()
+			randomCharacter = createCharScreen:GetCurrentStep() == 0
+		"
+	}
+	button
+	{
+		enabled "createCharScreen:GetCurrentStep() == 0"
+		area 82 604 230 40
+		text "RG_RANDOM"
+		text style "button"
+		pad 8 2 8 2
+		bam GUIBUTMT
+		action "randChar()"
+	}
+	button
+	{
+		enabled "randomCharacter == 1 and createCharScreen:GetCurrentStep() == 15"
+		area 82 604 230 44
+		text "RG_RANDOM"
+		text style "button"
+		pad 8 2 8 2
+		bam GUIBUTMT
+		action "
+			chargen.information = nil
+			randomCharacter = 0
+			for i=1,5,1 do
+				createCharScreen:OnMainBackButtonClick()
+			end
+			randomCharacter = 1
+			randChar()
+		"
+	}
+	button
+	{
+		on escape
+		area 352 732 230 40
+		text "BACK_BUTTON"
+		text style "button"
+		bam GUIBUTMT
+		clickable lua "createCharScreen:IsMainBackButtonClickable()"
+		action
+		"
+		createCharScreen:OnMainBackButtonClick()
+		randomCharacter = 0
+		"
+	}
+	button
+	{
+		on escape
+		area 352 732 232 40
+		text "CANCEL_BUTTON"
+		text style "button"
+		bam GUIBUTMT
+		enabled "not createCharScreen:IsMainBackButtonClickable()"
+		action "createCharScreen:OnMainCancelButtonClick()"
+	}
+	button
+	{
+		area 610 732 230 40
+		text lua "chargenAcceptOrExport()"
+		text style "button"
+		bam GUIBUTMT
+		clickable lua "createCharScreen:IsChargenComplete()"
+		action "createCharScreen:AcceptCharacter(-1)"
+	}
+	button
+	{
+		area 866 732 230 40
+		text "CREATE_PARTY_BUTTON"
+		text style "button"
+		bam GUIBUTMT
+		clickable lua "createCharScreen:IsAdvancedButtonClickable() == true"
+		action "createCharScreen:OnAdvancedButtonClick()"
+	}
+}

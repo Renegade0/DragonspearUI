@@ -1,0 +1,86 @@
+menu
+{
+	name 'textflash'
+	opacity lua 'getOpacityForInfoBlock(1000)'
+	enabled 'getOpacityForInfoBlock(1000) ~= 0'
+	align center top
+	offset 0 10
+
+	label
+	{
+		area 0 0 500 140
+		mosaic 'GUINOTE'
+	}
+	label
+	{
+		area 75 10 348 26
+		text lua "getTitleString()"
+		text style "label"
+		text align left center
+		text point 14
+		text color C
+	}
+	label
+	{
+		area 75 36 348 26
+		text lua "getSubtitleString()"
+		text style "label"
+		text align left center
+		text point 14
+		text color D
+	}
+
+	label
+	{
+		area 20 64 472 62
+		text lua "getBodyString()"
+		text style "normal"
+		text align left center
+	}
+	label
+	{
+		area 16 9 50 50
+		bam RGGBUT
+		sequence 2
+		frame lua "rggbuttHighlight2()"
+	}
+	button
+	{
+		area 0 0 500 140
+		action
+		"
+			FindTitle = getSubtitleString()
+			if(sidebarsGreyed ~= 1) and journalOpen ~= 1 then
+				if JournalSize == UIStrings.UI_Large then
+					e:GetActiveEngine():OnLeftPanelButtonClick(2)
+				elseif JournalSize == UIStrings.UI_Small then
+					e:GetActiveEngine():OnLeftPanelButtonClick(2)
+				end
+			end
+			CloseAll_Small()
+			findQuestPopUp()
+			local tf = next(textflashes)
+			local id = textflashes[tf][5]
+			if not quests[entryToQuest[id]] then
+				journalMode = const.JOURNAL_MODE_JOURNAL
+				selectedJournal = tf
+			else
+				setSelectedQuest(id)
+			end
+			CheckForOpenedQuests_Small()
+		"
+	}
+	button
+	{
+		bam GUIOSW
+		on esc
+		area 448 4 44 44
+		sequence 2
+		action
+		"
+			--end the animation
+			local tf = next(textflashes)
+			textflashes[tf] = nil
+		"
+	}
+}

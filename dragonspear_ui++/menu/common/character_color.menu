@@ -1,0 +1,233 @@
+menu
+{
+	name 'CHARACTER_COLOR'
+	align center center
+	ignoreesc
+
+	onOpen
+	"
+		if inventory then
+			inventory:togglePause()
+		end
+		Infinity_UpdateLuaStats()
+
+		SLIDER_color_hair = characters[id].colors.hair
+		SLIDER_color_skin = characters[id].colors.skin
+		SLIDER_color_major = characters[id].colors.major
+		SLIDER_color_minor = characters[id].colors.minor
+
+		SLIDER_color_hair_start = SLIDER_color_hair
+		SLIDER_color_skin_start = SLIDER_color_skin
+		SLIDER_color_major_start = SLIDER_color_major
+		SLIDER_color_minor_start = SLIDER_color_minor
+		greySidebars()
+	"
+	onClose
+	"
+		if(SLIDER_color_hair_start ~= -1) then Infinity_SetHairColor(SLIDER_color_hair_start) end
+		if(SLIDER_color_skin_start ~= -1) then Infinity_SetSkinColor(SLIDER_color_skin_start) end
+		if(SLIDER_color_major_start ~= -1) then Infinity_SetMajorColor(SLIDER_color_major_start) end
+		if(SLIDER_color_minor_start ~= -1) then Infinity_SetMinorColor(SLIDER_color_minor_start) end
+		ungreySidebars()
+
+		if inventory then
+			inventory:togglePause()
+		end
+	"
+	label
+	{
+		area 0 0 1444 818
+		mosaic lua "rgColorBackground()"
+	}
+	label
+	{
+		area 340 288 760 396
+		rectangle 3
+	}
+	label
+	{
+		area 330 82 780 44
+		text "COLOR_CHOICES_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 331 32 780 44
+		enabled "e:GetActiveEngine() == createCharScreen"
+		text "CHARGEN_TITLE"
+		text style "title"
+	}
+
+	button
+	{
+		area 594 134 114 160
+		paperdoll 0
+	}
+	button
+	{
+		area 728 134 114 160
+		paperdoll 1
+	}
+
+	label
+	{
+		area 1030 370 42 44
+		colordisplay 6
+	}
+	label
+	{
+		area 1030 444 42 44
+		colordisplay 3
+	}
+	label
+	{
+		area 1030 550 42 44
+		colordisplay 2
+	}
+	label
+	{
+		area 1030 624 42 44
+		colordisplay 1
+	}
+
+	label
+	{
+		area 368 308 704 32
+		text "APPEARANCE_LABEL"
+		text style "label"
+		text point 14
+	}
+
+	label
+	{
+		area 368 340 704 30
+		text "HAIR_LABEL"
+		text style "label"
+	}
+	slider
+	{
+		palette 6
+		area 368 370 662 44
+		bam	 'SLDRSTAR'
+		scaleToClip
+		position "SLIDER_color_hair"
+		sequence 0
+		frame	 1
+		settings lua "game:GetPaletteSize(6)"
+		action
+		"
+			Infinity_SetHairColor(SLIDER_color_hair)
+		"
+	}
+
+	label
+	{
+		area 368 414 704 30
+		text "SKIN_LABEL"
+		text style "label"
+	}
+	slider
+	{
+		palette 3
+		area 368 444 662 44
+		bam	 'SLDRSTAR'
+		scaleToClip
+		position "SLIDER_color_skin"
+		sequence 0
+		frame	 1
+		settings lua "game:GetPaletteSize(3)"
+		action
+		"
+			Infinity_SetSkinColor(SLIDER_color_skin)
+		"
+	}
+
+	label
+	{
+		area 368 488 704 32
+		text "CLOTHING_LABEL"
+		text style "label"
+		text point 14
+	}
+
+	label
+	{
+		area 368 520 704 30
+		text "MAJOR_LABEL"
+		text style "label"
+	}
+	slider
+	{
+		palette 2
+		area 368 550 662 44
+		bam	 'SLDRSTAR'
+		scaleToClip
+		position "SLIDER_color_major"
+		sequence 0
+		frame	 1
+		settings lua "game:GetPaletteSize(2)"
+		action
+		"
+			Infinity_SetMajorColor(SLIDER_color_major)
+		"
+	}
+
+	label
+	{
+		area 368 594 704 30
+		text "MINOR_LABEL"
+		align center center
+		text style "label"
+	}
+	slider
+	{
+		palette 1
+		area 368 624 662 44
+		bam	 'SLDRSTAR'
+		scaleToClip
+		position "SLIDER_color_minor"
+		sequence 0
+		frame	 1
+		settings lua "game:GetPaletteSize(1)"
+		action
+		"
+			Infinity_SetMinorColor(SLIDER_color_minor)
+		"
+	}
+	button
+	{
+		on escape
+		area 382 724 230 40
+		bam GUIBUTMT
+		sequence 2
+		text "CANCEL_BUTTON"
+		text style "button"
+		action
+		"
+			Infinity_PopMenu('CHARACTER_COLOR',0,0)
+		"
+	}
+	button
+	{
+		on return
+		area 818 724 230 40
+		bam GUIBUTMT
+		sequence 2
+		text "DONE_BUTTON"
+		text style "button"
+		action
+		"
+			--save settings
+			SLIDER_color_hair_start = SLIDER_color_hair
+			SLIDER_color_skin_start = SLIDER_color_skin
+			SLIDER_color_major_start = SLIDER_color_major
+			SLIDER_color_minor_start = SLIDER_color_minor
+
+			if (e:GetActiveEngine() == createCharScreen) then
+				createCharScreen:OnDoneButtonClick()
+			end
+
+			Infinity_PopMenu('CHARACTER_COLOR',0,0)
+		"
+	}
+}
